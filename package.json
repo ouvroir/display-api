@@ -1,9 +1,10 @@
 {
-  "name": "CRAFTS",
+  "name": "crafts",
   "version": "1.0.0",
   "description": "Configurable RESTful APIs For Triple Stores",
   "main": "app.js",
   "scripts": {
+    "server": "node --env-file=.env app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Guillermo Vega-Gorgojo",

@@ -1,2 +1,6 @@
+# dir
 node_modules
+
+# files
+.env
 NOTES.md
