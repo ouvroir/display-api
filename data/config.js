@@ -1,3 +1,6 @@
+const dev = process.env.NODE_ENV === "development";
+console.log("dev:", dev);
+
 const config = {
 	// node server
 	port: 8888,
