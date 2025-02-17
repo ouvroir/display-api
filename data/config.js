@@ -9,7 +9,7 @@ const config = {
 	dataPath: "data",
 	
 	// web server
-	scheme: "http",
+	scheme: dev ? "http" : "https",
 	authority: "localhost:8888",
 	prepath: "", 
 	
@@ -18,20 +18,20 @@ const config = {
 	listDumpFileEnding: "_dumpIndex.json",
 	
 	// lang
-	nolang: "nolang",
+	nolang: "en",
 	
 	// root
-	root: 'changeme',
-	rootEmail: 'changeme@email.com',	
+	root: "root",
+	rootEmail: process.env.SMTP_USER,	
 	
 	// SMTP server
 	smtpServer: {
-		host: "YOURSMTPSERVER",
-		port: 465,
+		host: "ntnlv.ca",
+		port: process.env.SMTP_SERVER_PORT,
 		secure: true,
 		auth: {
-			user: 'USER',
-			pass: 'PASS'
+			user: process.env.SMTP_USER,
+			pass: process.env.SMTP_PASS
 		}
  	},
  	
@@ -40,7 +40,7 @@ const config = {
  	millisecsCleanCache: 60*60*1000, // every hour
  	
  	// google analytics
- 	gaTrackId: 'YOURID'
+ 	gaTrackId: ""
 }
 
 module.exports = config

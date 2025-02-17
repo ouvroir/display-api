@@ -1,0 +1,30 @@
+{
+  "apiId": "display",
+  "endpoints": [
+    {
+      "id": "read",
+      "sparqlURI": "http://localhost:8080/feux-pales-persistent/sparql",
+      "graphURI": "urn:x-arq:DefaultGraph",
+      "httpMethod": "GET",
+      "authInfo": {
+        "user": "admin",
+        "password": "pw",
+        "type": "basic"
+      }
+    }
+  ],
+  "model": [],
+  "queryTemplates": [
+    {
+      "id": "getExhibitions",
+      "description": "Get instances of exhibition.",
+      "template": "SELECT DISTINCT ?exhibition ?label WHERE {?exhibition a <http://www.cidoc-crm.org/cidoc-crm/E7_Activity>;<http://www.cidoc-crm.org/cidoc-crm/P2_has_type> <http://vocab.getty.edu/aat/300054766>;<http://www.w3.org/2000/01/rdf-schema#label> ?label}",
+      "variables": [
+        "exhibition",
+        "label"
+      ],
+      "parameters" :[],
+      "endpoint": "read"
+    }
+  ]
+}

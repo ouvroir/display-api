@@ -5,16 +5,16 @@ const options = {
 	swaggerDefinition: {
 		openapi: '3.0.0',
 		info: {
-			title: 'Configurable RESTful APIs For Triple Stores',
+			title: 'Display CRAFTS - Configurable RESTful APIs For Triple Stores',
 			version: '1.0.0',
 			license: {
-				name: "Apache 2.0",
+				name: "CRAFTS API: Apache 2.0",
 				url: "http://www.apache.org/licenses/LICENSE-2.0",
 			},
 			contact: {
-				name: "Guillermo Vega-Gorgojo",
-				url: "https://www.gsic.uva.es/members/guiveg",
-				email: "guiveg@tel.uva.es",
+				name: "Ouvroir d’histoire de l’art et de muséologie numériques",
+				url: "https://ouvroir.umontreal.ca",
+				email: "david.valentine@umontreal.ca",
 			}
 		},
 		servers: [
