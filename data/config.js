@@ -10,7 +10,7 @@ const config = {
 	
 	// web server
 	scheme: dev ? "http" : "https",
-	authority: "localhost:8888",
+	authority:  dev ? "localhost:8888" : "crafts.ntnlv.ca:450",
 	prepath: "", 
 	
 	// users, api and dump lists
