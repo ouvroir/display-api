@@ -25,6 +25,40 @@
       ],
       "parameters": [],
       "endpoint": "displayRead"
+    },
+    {
+      "id": "getSetUsedbyExhibition",
+      "description": "Get instances of set used by an exhibition.",
+      "template": "SELECT DISTINCT ?exhib ?set WHERE{BIND(<{{{exhibition}}}> AS ?exhib) ?exhib <http://www.cidoc-crm.org/cidoc-crm/P16_used_specific_object> ?set.}",
+      "variables": [
+        "exhib",
+        "set"
+      ],
+      "parameters": [
+        {
+          "label": "exhibition",
+          "type": "iri",
+          "optional": false
+        }
+      ],
+      "endpoint": "displayRead"
+    },
+    {
+      "id": "getExhibitsWithinExhibition",
+      "description": "Get instances of exhibit used by an exhibition.",
+      "template": "SELECT DISTINCT ?exhib ?exhibit WHERE {BIND(<{{{exhibition}}}> AS ?exhib) ?exhib <http://www.cidoc-crm.org/cidoc-crm/P16_used_specific_object> ?set. ?exhibit <https://linked.art/ns/terms/member_of> ?set.}",
+      "variables": [
+        "exhib",
+        "set"
+      ],
+      "parameters": [
+        {
+          "label": "exhibition",
+          "type": "iri",
+          "optional": false
+        }
+      ],
+      "endpoint": "displayRead"
     }
   ]
 }

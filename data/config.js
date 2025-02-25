@@ -21,7 +21,7 @@ const config = {
 	listDumpFileEnding: "_dumpIndex.json",
 	
 	// lang
-	nolang: "en",
+	nolang: "fr",
 	
 	// root
 	root: "root",
