@@ -2,13 +2,13 @@
   "apiId": "display",
   "endpoints": [
     {
-      "id": "read",
-      "sparqlURI": "http://localhost:8080/feux-pales-persistent/sparql",
+      "id": "displayRead",
+      "sparqlURI": "http://localhost:8080/display/sparql",
       "graphURI": "urn:x-arq:DefaultGraph",
       "httpMethod": "GET",
       "authInfo": {
-        "user": "admin",
-        "password": "pw",
+        "user": "",
+        "password": "",
         "type": "basic"
       }
     }
@@ -23,8 +23,8 @@
         "exhibition",
         "label"
       ],
-      "parameters" :[],
-      "endpoint": "read"
+      "parameters": [],
+      "endpoint": "displayRead"
     }
   ]
 }
