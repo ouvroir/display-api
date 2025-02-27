@@ -18,12 +18,12 @@
       "id": "exhibition",
       "oprops": [
         {
-          "label": "cidoc:P2_has_type",
+          "label": "classified_as",
           "iri": "http://www.cidoc-crm.org/cidoc-crm/P2_has_type",
           "endpoint": "displayRead"
         },
         {
-          "label": "cidoc:P16_used_specific_object",
+          "label": "used_specific_object",
           "targetId": "set",
           "embed": true,
           "iri": "http://www.cidoc-crm.org/cidoc-crm/P16_used_specific_object",
@@ -32,19 +32,19 @@
       ],
       "dprops": [
         {
-          "label": "rdfs:label",
+          "label": "_label",
           "iri": "http://www.w3.org/2000/01/rdf-schema#label",
           "endpoint": "displayRead"
         },
         {
-          "label": "P1_is_identified_by/P190_has_symbolic_content",
+          "label": "identified_by",
           "iri": "http://www.cidoc-crm.org/cidoc-crm/P1_is_identified_by>/<http://www.cidoc-crm.org/cidoc-crm/P190_has_symbolic_content",
           "endpoint": "displayRead"
         }
       ],
       "types": [
         {
-          "label": "rdf:type",
+          "label": "type",
           "restrictions": [
             "FILTER (?type NOT IN ( <http://www.w3.org/2002/07/owl#Thing>, <http://www.w3.org/2000/01/rdf-schema#Resource> ))"
           ],
@@ -58,19 +58,19 @@
       ],
       "dprops": [
         {
-          "label": "rdfs:label",
+          "label": "_label",
           "iri": "http://www.w3.org/2000/01/rdf-schema#label",
           "endpoint": "displayRead"
         },
         {
-          "label": "cidoc:P67i_is_referred_to_by",
+          "label": "referred_to_by",
           "iri": "http://www.cidoc-crm.org/cidoc-crm/P67i_is_referred_to_by>/<http://www.cidoc-crm.org/cidoc-crm/P190_has_symbolic_content",
           "endpoint": "displayRead"
         }
       ],
       "types": [
         {
-          "label": "rdf:type",
+          "label": "type",
           "restrictions": [
             "FILTER (?type NOT IN ( <http://www.w3.org/2002/07/owl#Thing>, <http://www.w3.org/2000/01/rdf-schema#Resource> ))"
           ],
@@ -82,26 +82,26 @@
       "id": "setWithExhibits",
       "oprops": [
         {
-          "label": "ls:has_member",
+          "label": "member",
           "iri": "https://linked.art/ns/terms/has_member",
           "endpoint": "displayRead"
         }
       ],
       "dprops": [
         {
-          "label": "rdfs:label",
+          "label": "_label",
           "iri": "http://www.w3.org/2000/01/rdf-schema#label",
           "endpoint": "displayRead"
         },
         {
-          "label": "cidoc:P67i_is_referred_to_by",
+          "label": "referred_to_by",
           "iri": "http://www.cidoc-crm.org/cidoc-crm/P67i_is_referred_to_by>/<http://www.cidoc-crm.org/cidoc-crm/P190_has_symbolic_content",
           "endpoint": "displayRead"
         }
       ],
       "types": [
         {
-          "label": "rdf:type",
+          "label": "type",
           "restrictions": [
             "FILTER (?type NOT IN ( <http://www.w3.org/2002/07/owl#Thing>, <http://www.w3.org/2000/01/rdf-schema#Resource> ))"
           ],
@@ -120,14 +120,14 @@
       ],
       "dprops": [
         {
-          "label": "rdfs:label",
+          "label": "_label",
           "iri": "http://www.w3.org/2000/01/rdf-schema#label",
           "endpoint": "displayRead"
         }
       ],
       "types": [
         {
-          "label": "rdf:type",
+          "label": "type",
           "restrictions": [
             "FILTER (?type NOT IN ( <http://www.w3.org/2002/07/owl#Thing>, <http://www.w3.org/2000/01/rdf-schema#Resource> ))"
           ],
