@@ -1681,12 +1681,18 @@ async function deleteApi(req, res, next) {
   *         required: true
   *         schema:
   *           type: string
+  *           enum:
+  *           - display
   *         description: The id of the API
   *       - name: id
   *         in: query
   *         required: true
   *         schema:
   *           type: string
+  *           enum:
+  *           - exhibition
+  *           - setWithExhibits
+  *           - exhibit
   *         description: The id of a model element defined in the API
   *       - name: iri
   *         in: query
