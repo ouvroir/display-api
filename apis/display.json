@@ -139,7 +139,7 @@
       "oprops": [
         {
           "label": "spaces",
-          "iri": "https://linked.art/ns/terms/has_member> ^ <https://w3id.org/display#hasExhibit",
+          "iri": "https://linked.art/ns/terms/has_member>^<https://w3id.org/display#hasExhibit",
           "targetId": "space",
           "endpoint": "displayRead"
         }
