@@ -2575,12 +2575,17 @@ async function deleteResource(req, res, next) {
   *         required: true
   *         schema:
   *           type: string
+  *           enum:
+  *           - display
   *         description: The id of the API
   *       - name: id
   *         in: query
   *         required: true
   *         schema:
   *           type: string
+  *           enum:
+  *           - getExhibitions
+  *           - getExhibitWithSpecificRelations
   *         description: The id of a query template element defined in the API
   *     responses:
   *       '200': 

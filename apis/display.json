@@ -113,7 +113,7 @@
       "id": "exhibit",
       "oprops": [
         {
-          "label": "display:hasTopologicalRelationWith",
+          "label": "has_topological_relation_with",
           "iri": "https://w3id.org/display#hasTopologicalRelationWith",
           "endpoint": "displayRead"
         }
@@ -139,7 +139,7 @@
   "queryTemplates": [
     {
       "id": "getExhibitions",
-      "description": "Get instances of exhibition.",
+      "description": "Get all instances of exhibition.",
       "template": "SELECT DISTINCT ?exhibition ?label WHERE {?exhibition a <http://www.cidoc-crm.org/cidoc-crm/E7_Activity>;<http://www.cidoc-crm.org/cidoc-crm/P2_has_type> <http://vocab.getty.edu/aat/300054766>;<http://www.w3.org/2000/01/rdf-schema#label> ?label}",
       "variables": [
         "exhibition",
@@ -147,6 +147,24 @@
       ],
       "parameters": [],
       "endpoint": "displayRead"
+    },
+    {
+      "id": "getExhibitWithSpecificRelations",
+      "endpoint": "displayRead",
+      "description": "Get an exhibit with its specific topologicla relationships.",
+      "template": "SELECT ?exhibit ?relation ?object WHERE {BIND(<{{{iri}}}> AS ?exhibit) ?exhibit ?relation ?object. ?relation <http://www.w3.org/2000/01/rdf-schema#subPropertyOf>+ <https://w3id.org/display#hasTopologicalRelationWith>. FILTER (?relation != <https://w3id.org/display#hasTopologicalRelationWith>) FILTER (?relation != <https://w3id.org/display#spatialRelationship>) FILTER (?relation != <https://w3id.org/display#proximalRelationship>)}",
+      "variables": [
+        "exhibit",
+        "relation",
+        "object"
+      ],
+      "parameters": [
+        {
+          "label": "iri",
+          "type": "iri",
+          "optional": false
+        }
+      ]
     },
     {
       "id": "getSetUsedbyExhibition",
