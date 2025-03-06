@@ -149,11 +149,6 @@
           "label": "_label",
           "iri": "http://www.w3.org/2000/01/rdf-schema#label",
           "endpoint": "/display/sparql"
-        },
-        {
-          "label": "referred_to_by",
-          "iri": "http://www.cidoc-crm.org/cidoc-crm/P67i_is_referred_to_by>/<http://www.cidoc-crm.org/cidoc-crm/P190_has_symbolic_content",
-          "endpoint": "/display/sparql"
         }
       ],
       "types": [
