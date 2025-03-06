@@ -2,7 +2,7 @@
   "apiId": "display",
   "endpoints": [
     {
-      "id": "displayRead",
+      "id": "/display/sparql",
       "sparqlURI": "http://localhost:8080/display/sparql",
       "graphURI": "urn:x-arq:DefaultGraph",
       "httpMethod": "GET",
@@ -20,26 +20,26 @@
         {
           "label": "classified_as",
           "iri": "http://www.cidoc-crm.org/cidoc-crm/P2_has_type",
-          "endpoint": "displayRead"
+          "endpoint": "/display/sparql"
         },
         {
           "label": "used_specific_object",
           "targetId": "set",
           "embed": true,
           "iri": "http://www.cidoc-crm.org/cidoc-crm/P16_used_specific_object",
-          "endpoint": "displayRead"
+          "endpoint": "/display/sparql"
         }
       ],
       "dprops": [
         {
           "label": "_label",
           "iri": "http://www.w3.org/2000/01/rdf-schema#label",
-          "endpoint": "displayRead"
+          "endpoint": "/display/sparql"
         },
         {
           "label": "identified_by",
           "iri": "http://www.cidoc-crm.org/cidoc-crm/P1_is_identified_by>/<http://www.cidoc-crm.org/cidoc-crm/P190_has_symbolic_content",
-          "endpoint": "displayRead"
+          "endpoint": "/display/sparql"
         }
       ],
       "types": [
@@ -48,7 +48,7 @@
           "restrictions": [
             "FILTER (?type NOT IN ( <http://www.w3.org/2002/07/owl#Thing>, <http://www.w3.org/2000/01/rdf-schema#Resource> ))"
           ],
-          "endpoint": "displayRead"
+          "endpoint": "/display/sparql"
         }
       ]
     },
@@ -60,12 +60,12 @@
         {
           "label": "_label",
           "iri": "http://www.w3.org/2000/01/rdf-schema#label",
-          "endpoint": "displayRead"
+          "endpoint": "/display/sparql"
         },
         {
           "label": "referred_to_by",
           "iri": "http://www.cidoc-crm.org/cidoc-crm/P67i_is_referred_to_by>/<http://www.cidoc-crm.org/cidoc-crm/P190_has_symbolic_content",
-          "endpoint": "displayRead"
+          "endpoint": "/display/sparql"
         }
       ],
       "types": [
@@ -74,7 +74,7 @@
           "restrictions": [
             "FILTER (?type NOT IN ( <http://www.w3.org/2002/07/owl#Thing>, <http://www.w3.org/2000/01/rdf-schema#Resource> ))"
           ],
-          "endpoint": "displayRead"
+          "endpoint": "/display/sparql"
         }
       ]
     },
@@ -84,19 +84,19 @@
         {
           "label": "member",
           "iri": "https://linked.art/ns/terms/has_member",
-          "endpoint": "displayRead"
+          "endpoint": "/display/sparql"
         }
       ],
       "dprops": [
         {
           "label": "_label",
           "iri": "http://www.w3.org/2000/01/rdf-schema#label",
-          "endpoint": "displayRead"
+          "endpoint": "/display/sparql"
         },
         {
           "label": "referred_to_by",
           "iri": "http://www.cidoc-crm.org/cidoc-crm/P67i_is_referred_to_by>/<http://www.cidoc-crm.org/cidoc-crm/P190_has_symbolic_content",
-          "endpoint": "displayRead"
+          "endpoint": "/display/sparql"
         }
       ],
       "types": [
@@ -105,7 +105,7 @@
           "restrictions": [
             "FILTER (?type NOT IN ( <http://www.w3.org/2002/07/owl#Thing>, <http://www.w3.org/2000/01/rdf-schema#Resource> ))"
           ],
-          "endpoint": "displayRead"
+          "endpoint": "/display/sparql"
         }
       ]
     },
@@ -115,14 +115,14 @@
         {
           "label": "has_topological_relation_with",
           "iri": "https://w3id.org/display#hasTopologicalRelationWith",
-          "endpoint": "displayRead"
+          "endpoint": "/display/sparql"
         }
       ],
       "dprops": [
         {
           "label": "_label",
           "iri": "http://www.w3.org/2000/01/rdf-schema#label",
-          "endpoint": "displayRead"
+          "endpoint": "/display/sparql"
         }
       ],
       "types": [
@@ -131,7 +131,7 @@
           "restrictions": [
             "FILTER (?type NOT IN ( <http://www.w3.org/2002/07/owl#Thing>, <http://www.w3.org/2000/01/rdf-schema#Resource> ))"
           ],
-          "endpoint": "displayRead"
+          "endpoint": "/display/sparql"
         }
       ]
     },{
@@ -141,19 +141,19 @@
           "label": "spaces",
           "iri": "https://linked.art/ns/terms/has_member>^<https://w3id.org/display#hasExhibit",
           "targetId": "space",
-          "endpoint": "displayRead"
+          "endpoint": "/display/sparql"
         }
       ],
       "dprops": [
         {
           "label": "_label",
           "iri": "http://www.w3.org/2000/01/rdf-schema#label",
-          "endpoint": "displayRead"
+          "endpoint": "/display/sparql"
         },
         {
           "label": "referred_to_by",
           "iri": "http://www.cidoc-crm.org/cidoc-crm/P67i_is_referred_to_by>/<http://www.cidoc-crm.org/cidoc-crm/P190_has_symbolic_content",
-          "endpoint": "displayRead"
+          "endpoint": "/display/sparql"
         }
       ],
       "types": [
@@ -162,7 +162,7 @@
           "restrictions": [
             "FILTER (?type NOT IN ( <http://www.w3.org/2002/07/owl#Thing>, <http://www.w3.org/2000/01/rdf-schema#Resource> ))"
           ],
-          "endpoint": "displayRead"
+          "endpoint": "/display/sparql"
         }
       ]
     }
@@ -177,11 +177,11 @@
         "label"
       ],
       "parameters": [],
-      "endpoint": "displayRead"
+      "endpoint": "/display/sparql"
     },
     {
       "id": "getExhibitWithSpecificRelations",
-      "endpoint": "displayRead",
+      "endpoint": "/display/sparql",
       "description": "Get an exhibit with its specific topological relationships.",
       "template": "SELECT ?exhibit ?relation ?object WHERE {BIND(<{{{iri}}}> AS ?exhibit) ?exhibit ?relation ?object. ?relation <http://www.w3.org/2000/01/rdf-schema#subPropertyOf>+ <https://w3id.org/display#hasTopologicalRelationWith>. FILTER (?relation != <https://w3id.org/display#hasTopologicalRelationWith>) FILTER (?relation != <https://w3id.org/display#spatialRelationship>) FILTER (?relation != <https://w3id.org/display#proximalRelationship>)}",
       "variables": [
@@ -212,7 +212,7 @@
           "optional": false
         }
       ],
-      "endpoint": "displayRead"
+      "endpoint": "/display/sparql"
     },
     {
       "id": "getExhibitsWithinExhibition",
@@ -229,7 +229,7 @@
           "optional": false
         }
       ],
-      "endpoint": "displayRead"
+      "endpoint": "/display/sparql"
     }
   ]
 }
