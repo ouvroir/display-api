@@ -79,7 +79,7 @@
       ]
     },
     {
-      "id": "setWithExhibits",
+      "id": "exhibitsSet",
       "oprops": [
         {
           "label": "member",
@@ -135,11 +135,11 @@
         }
       ]
     },{
-      "id": "setWithSpaces",
+      "id": "exhibitionSpaces",
       "oprops": [
         {
           "label": "spaces",
-          "iri": "https://linked.art/ns/terms/has_member>^<https://w3id.org/display#hasExhibit",
+          "iri": "http://www.cidoc-crm.org/cidoc-crm/P16_used_specific_object>/<https://linked.art/ns/terms/has_member>^<https://w3id.org/display#hasExhibit",
           "targetId": "space",
           "endpoint": "/display/sparql"
         }
@@ -169,7 +169,7 @@
   ],
   "queryTemplates": [
     {
-      "id": "getExhibitions",
+      "id": "exhibitions",
       "description": "Get all instances of exhibition.",
       "template": "SELECT DISTINCT ?exhibition ?label WHERE {?exhibition a <http://www.cidoc-crm.org/cidoc-crm/E7_Activity>;<http://www.cidoc-crm.org/cidoc-crm/P2_has_type> <http://vocab.getty.edu/aat/300054766>;<http://www.w3.org/2000/01/rdf-schema#label> ?label}",
       "variables": [
@@ -180,7 +180,7 @@
       "endpoint": "/display/sparql"
     },
     {
-      "id": "getExhibitWithSpecificRelations",
+      "id": "exhibitWithSpecificRelations",
       "endpoint": "/display/sparql",
       "description": "Get an exhibit with its specific topological relationships.",
       "template": "SELECT ?exhibit ?relation ?object WHERE {BIND(<{{{iri}}}> AS ?exhibit) ?exhibit ?relation ?object. ?relation <http://www.w3.org/2000/01/rdf-schema#subPropertyOf>+ <https://w3id.org/display#hasTopologicalRelationWith>. FILTER (?relation != <https://w3id.org/display#hasTopologicalRelationWith>) FILTER (?relation != <https://w3id.org/display#spatialRelationship>) FILTER (?relation != <https://w3id.org/display#proximalRelationship>)}",

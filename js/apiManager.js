@@ -1692,8 +1692,8 @@ async function deleteApi(req, res, next) {
   *           enum:
   *           - exhibit
   *           - exhibition
-  *           - setWithExhibits
-  *           - setWithSpaces
+  *           - exhibitionSpaces
+  *           - exhibitsSet
   *         description: The id of a model element defined in the API
   *       - name: iri
   *         in: query
@@ -2585,8 +2585,8 @@ async function deleteResource(req, res, next) {
   *         schema:
   *           type: string
   *           enum:
-  *           - getExhibitions
-  *           - getExhibitWithSpecificRelations
+  *           - exhibitions
+  *           - exhibitWithSpecificRelations
   *         description: The id of a query template element defined in the API
   *     responses:
   *       '200': 
