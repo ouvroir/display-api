@@ -1694,6 +1694,7 @@ async function deleteApi(req, res, next) {
   *           - exhibition
   *           - exhibitionSpaces
   *           - exhibitsSet
+  *           - space
   *         description: The id of a model element defined in the API
   *       - name: iri
   *         in: query

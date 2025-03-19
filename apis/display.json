@@ -160,6 +160,47 @@
           "endpoint": "/display/sparql"
         }
       ]
+    },{
+      "id": "space",
+      "oprops": [
+        {
+          "label": "has_exhibit",
+          "iri": "https://w3id.org/display#hasExhibit",
+          "targetId": "exhibit",
+          "endpoint": "/display/sparql"
+        },{
+          "label": "adjacent_zone",
+          "iri": "https://w3id.org/bot#adjacentZone",
+          "targetId": "zone",
+          "endpoint": "/display/sparql"
+        },{
+          "label": "intersects_zone",
+          "iri": "https://w3id.org/bot#intersectsZone",
+          "targetId": "zone",
+          "endpoint": "/display/sparql"
+        },{
+          "label": "has_exhibition_space",
+          "iri": "https://w3id.org/display#hasExhibitionSpace",
+          "targetId": "zone",
+          "endpoint": "/display/sparql"
+        }
+      ],
+      "dprops": [
+        {
+          "label": "_label",
+          "iri": "http://www.w3.org/2000/01/rdf-schema#label",
+          "endpoint": "/display/sparql"
+        }
+      ],
+      "types": [
+        {
+          "label": "type",
+          "restrictions": [
+            "FILTER (?type NOT IN ( <http://www.w3.org/2002/07/owl#Thing>, <http://www.w3.org/2000/01/rdf-schema#Resource> ))"
+          ],
+          "endpoint": "/display/sparql"
+        }
+      ]
     }
   ],
   "queryTemplates": [
@@ -191,40 +232,6 @@
           "optional": false
         }
       ]
-    },
-    {
-      "id": "getSetUsedbyExhibition",
-      "description": "Redondant avec Décrire > Une exposition. Get instances of set used by an exhibition.",
-      "template": "SELECT DISTINCT ?exhib ?set WHERE{BIND(<{{{exhibition}}}> AS ?exhib) ?exhib <http://www.cidoc-crm.org/cidoc-crm/P16_used_specific_object> ?set.}",
-      "variables": [
-        "exhib",
-        "set"
-      ],
-      "parameters": [
-        {
-          "label": "exhibition",
-          "type": "iri",
-          "optional": false
-        }
-      ],
-      "endpoint": "/display/sparql"
-    },
-    {
-      "id": "getExhibitsWithinExhibition",
-      "description": "Redondant avec Décrire > Un ensemble d’exhibits. Get instances of exhibit used by an exhibition.",
-      "template": "SELECT DISTINCT ?exhib ?exhibit WHERE {BIND(<{{{exhibition}}}> AS ?exhib) ?exhib <http://www.cidoc-crm.org/cidoc-crm/P16_used_specific_object> ?set. ?exhibit <https://linked.art/ns/terms/member_of> ?set.}",
-      "variables": [
-        "exhib",
-        "set"
-      ],
-      "parameters": [
-        {
-          "label": "exhibition",
-          "type": "iri",
-          "optional": false
-        }
-      ],
-      "endpoint": "/display/sparql"
     }
   ]
 }
