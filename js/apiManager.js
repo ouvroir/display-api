@@ -394,6 +394,75 @@ var apis = {};
  *         The `id` corresponds to a previous step in the `DumpConfig` object.
  *         Steps of types `resource` or `resource` need a `key` to extract the values of the step results (check the corresponding model element of the API).
  *         Steps of type `query` need a `variable` to extract the values of the step results (check the corresponding query template of the API).
+ *
+ *     exhibit:
+ *       type: object
+ *       properties:
+ *         iri: 
+ *           type: string
+ *           format: uri
+ *           description: |
+ *             `IRI` de la ressource décrite.
+ *         type: 
+ *           type: array
+ *           items: 
+ *             type: string
+ *             format: uri
+ *           description: |
+ *             Classes auxquelles appartient la ressource.
+ *         _label:
+ *           type: string
+ *           description: |
+ *             Étiquette interne sans sémantique associée (`rdfs:label`).
+ *         title:
+ *           type: string
+ *           description: |
+ *             Titre de la ressource décrite.
+ *         creator:
+ *           type: string
+ *           format: uri
+ *           description: |
+ *             Créateur de la ressource décrite.
+ *         has_topological_relation_with:
+ *           type: array
+ *           items:
+ *             type: string
+ *             format: uri
+ *           description: |
+ *             Relations topologiques génériques entre l’exhibit décrit et tous les autres exhibits avec lesquels il est lié topologiquement. Note : renvoie les relations topologiques génériques (shallow relationships); pour les relations spécifiques, voir `/apis/display/query`.
+ *       required: [iri, type]
+ *       description: |
+ *         Description d’une ressource de la classe `display:Exhibit`.
+ *
+ *     space:
+ *       type: object
+ *       properties:
+ *         iri: 
+ *           type: string
+ *           format: uri
+ *           description: |
+ *             `IRI` de la ressource décrite.
+ *         type: 
+ *           type: array
+ *           items: 
+ *             type: string
+ *             format: uri
+ *           description: |
+ *             Classes auxquelles appartient la ressource.
+ *         #_label:
+ *         #  type: string
+ *         #  description: |
+ *         #    Étiquette interne sans sémantique associée (`rdfs:label`).
+ *         #has_exhibit:
+ *         #  type: array
+ *         #  items:
+ *         #    type: string
+ *         #    format: uri
+ *         #  description: |
+ *         #    Exhibits topologiquement liés à la ressource décrite.
+ *       required: [iri, type]
+ *       description: |
+ *         Description d’une ressource de la classe `display:ExhibitionSpace`.
  * 
  *   securitySchemes:
  *     BasicAuth:
@@ -1709,10 +1778,13 @@ async function deleteApi(req, res, next) {
   *         description: The data about a resource
   *         content:
   *           application/json:
-  *             schema: 
-  *               type: object
-  *               description: The object schema is defined in the corresponding model element of the API  
-  *       '400': 
+  *             schema:
+  *               anyOf:
+  *               - $ref: '#/components/schemas/exhibit'
+  *               - $ref: '#/components/schemas/space'
+  *               #type: object
+  *               #description: The object schema is defined in the corresponding model element of the API  
+  *       '400':
   *         description: Invalid request
   *         content:
   *           application/json:

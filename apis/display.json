@@ -113,6 +113,11 @@
       "id": "exhibit",
       "oprops": [
         {
+          "label": "creator",
+          "iri": "http://www.cidoc-crm.org/cidoc-crm/P108i_was_produced_by>/<http://www.cidoc-crm.org/cidoc-crm/P14_carried_out_by",
+          "endpoint": "/display/sparql"
+        },
+        {
           "label": "has_topological_relation_with",
           "iri": "https://w3id.org/display#hasTopologicalRelationWith",
           "endpoint": "/display/sparql"
@@ -122,6 +127,11 @@
         {
           "label": "_label",
           "iri": "http://www.w3.org/2000/01/rdf-schema#label",
+          "endpoint": "/display/sparql"
+        },
+        {
+          "label": "identified_by",
+          "iri": "http://www.cidoc-crm.org/cidoc-crm/P1_is_identified_by>/<http://www.cidoc-crm.org/cidoc-crm/P190_has_symbolic_content",
           "endpoint": "/display/sparql"
         }
       ],
@@ -169,6 +179,11 @@
           "targetId": "exhibit",
           "endpoint": "/display/sparql"
         },{
+          "label": "has_exhibition_space",
+          "iri": "https://w3id.org/display#hasExhibitionSpace",
+          "targetId": "zone",
+          "endpoint": "/display/sparql"
+        },{
           "label": "adjacent_zone",
           "iri": "https://w3id.org/bot#adjacentZone",
           "targetId": "zone",
@@ -176,11 +191,6 @@
         },{
           "label": "intersects_zone",
           "iri": "https://w3id.org/bot#intersectsZone",
-          "targetId": "zone",
-          "endpoint": "/display/sparql"
-        },{
-          "label": "has_exhibition_space",
-          "iri": "https://w3id.org/display#hasExhibitionSpace",
           "targetId": "zone",
           "endpoint": "/display/sparql"
         }
