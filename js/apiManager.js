@@ -430,7 +430,7 @@ var apis = {};
  *             format: uri
  *           description: |
  *             Relations topologiques génériques entre l’exhibit décrit et tous les autres exhibits avec lesquels il est lié topologiquement. Note : renvoie les relations topologiques génériques (shallow relationships); pour les relations spécifiques, voir `/apis/display/query`.
- *       required: [iri, type]
+ *       required: [iri]
  *       description: |
  *         Description d’une ressource de la classe `display:Exhibit`.
  *
@@ -443,12 +443,10 @@ var apis = {};
  *           description: |
  *             `IRI` de la ressource décrite.
  *         type: 
- *           type: array
- *           items: 
- *             type: string
- *             format: uri
- *           description: |
- *             Classes auxquelles appartient la ressource.
+ *           type: string
+ *           format: uri
+ *     #     description: |
+ *     #        Classes auxquelles appartient la ressource.
  *         #_label:
  *         #  type: string
  *         #  description: |
@@ -460,7 +458,7 @@ var apis = {};
  *         #    format: uri
  *         #  description: |
  *         #    Exhibits topologiquement liés à la ressource décrite.
- *       required: [iri, type]
+ *       required: [iri]
  *       description: |
  *         Description d’une ressource de la classe `display:ExhibitionSpace`.
  * 
@@ -1779,11 +1777,11 @@ async function deleteApi(req, res, next) {
   *         content:
   *           application/json:
   *             schema:
-  *               anyOf:
-  *               - $ref: '#/components/schemas/exhibit'
-  *               - $ref: '#/components/schemas/space'
-  *               #type: object
-  *               #description: The object schema is defined in the corresponding model element of the API  
+  *             #  anyOf:
+  *             #  - $ref: '#/components/schemas/exhibit'
+  *             #  - $ref: '#/components/schemas/space'
+  *               type: object
+  *               description: The object schema is defined in the corresponding model element of the API  
   *       '400':
   *         description: Invalid request
   *         content:
