@@ -2231,7 +2231,17 @@ async function putResource(req, res, next) {
 	const mel = _.find(apis[apiId].config.model, (el) => el.id === id);
 	if (mel != undefined) {		
 		// obtengo el objeto del body y lo valido
-		const objr = req.body;		
+		let objr = req.body;
+    // construction de l’iri pour l’enregistrement des ressources
+    switch (objr.type) {
+      case "Exhibit":
+      case "Space":
+          objr.type = `https://w3id.org/display#${objr.type}`
+        break;
+      default:
+        break;
+    }
+
 		try {
 			modelValidator.validateResource(iri, objr, mel, apis[apiId].config, "root");
 		} catch(error) {
