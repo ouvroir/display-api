@@ -35,12 +35,15 @@ WHERE {\n\
 		id: "types",
 		description: "Obtain the types of a list of iris (\"firis\"). The inferred types can be also obtained by setting \"inferred\" to true. Additional \"restrictions\" can be added, e.g. to filter the types to extract",
 		template: 
-'SELECT DISTINCT ?iri ?type  \n \
+'SELECT DISTINCT ?iri ?type ?mapping  \n \
 WHERE { \n \
 ?iri a{{#inferred}}/<http://www.w3.org/2000/01/rdf-schema#subClassOf>*{{/inferred}} ?type . \n \
+OPTIONAL { \n \
+?type <https://ntnlv.ca/ns/utils#jsonldmapping> ?mapping \n \
+} \n \
 {{#restrictions}}{{{.}}}\n{{/restrictions}}\
 FILTER (?iri IN ( {{{firis}}} )) }',
-		variables: [ "iri", "type" ],
+		variables: [ "iri", "type", "mapping" ],
 		parameters: [
 			{ label: "firis", type: "firi[]", optional: false },
 			{ label: "inferred", type: "boolean", optional: true },

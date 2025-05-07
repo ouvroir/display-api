@@ -23,8 +23,17 @@ async function queryEndpoint(endpoint, querytemp, pars, qinfo) {
 	// preparo opciones de la consulta (método HTTP)
 	let options = {};
 	options.method = endpoint.httpMethod == undefined? "GET" : endpoint.httpMethod;
-	
-	// icicializo respuesta (utilizaré fetch para obtener los resultados de la consulta	)
+
+  // Fuseki needs a request body when using POST method
+  if (options.method == "POST") {
+    options.headers = {
+      // avoid adding update= in the body
+      "Content-Type": "application/sparql-update"
+    };
+    options.body = query;
+  }
+
+  // icicializo respuesta (utilizaré fetch para obtener los resultados de la consulta	)
 	let response = null;
 	// preparo autorización si hace falta
 	if (endpoint.authInfo != undefined) {
@@ -45,11 +54,30 @@ async function queryEndpoint(endpoint, querytemp, pars, qinfo) {
 		logmes.query = query;
 		logmes.result = 'success';
 		logger.debug(logmes);
-	
-		// get the response body and return it
-		let json = await response.json();
+
+    let json, text;
+
+    if (options.method == "POST") {
+      // POST with Fuseki doesn't return JSON so we build it
+      // Preserve the sparql binding for now
+      // (in case it is needed elsewhere... but there is no binding )
+      json = {
+        "head": {
+          "vars": [ 'iri', 'value' ]
+        },
+        "results": {
+          "bindings": []
+        }
+      };
+      text = await response.text();
+    } else {
+      // get the response body and return it
+      json = await response.json();
+    }
 		// incluyo la consulta
 		json.query = query;
+    json.text = text;
+
 		return Promise.resolve(json);			
 	} else {
 		// lanzo error

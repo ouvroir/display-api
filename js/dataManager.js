@@ -123,8 +123,14 @@ function formatResource(iri, mel, api, writeonlytoo) {
 	if (ent == undefined)
 		return null;
 
-	// preparo objeto a devolver
-	var obj = { iri: iri };	
+  let obj = {};
+
+  // add @context attribute if set in API config
+  if (mel.context) // see context attribute in API config
+    obj["@context"] = mel.context;
+
+  // preparo objeto a devolver
+  obj["id"] = iri;
 	
 	// incluyo types
 	for (let i=0; i<mel.types.length; i++) {
@@ -190,8 +196,14 @@ function formatResource(iri, mel, api, writeonlytoo) {
 					}			
 				}
 				// refinamiento: si el resultado es una lista con un objeto, quito la lista y me quedo con el objeto
-				if (obj[oprop.label].length == 1)
-					obj[oprop.label] = obj[oprop.label][0];
+				//if (obj[oprop.label].length == 1)
+          //obj[oprop.label] = obj[oprop.label][0];
+
+        // Propriétés utilisant toujours exactement une valeur :
+        // ne pas les mettre dans une liste (array), selon Linked Art
+        const hasSingleValue = ["TimeSpan", "MeasurementUnit"];
+        if (hasSingleValue.includes(obj[oprop.label][0].type))
+  				obj[oprop.label] = obj[oprop.label][0];
 			}
 		}
 	}
@@ -355,7 +367,8 @@ async function extractType(iris, id, ttype, api, qinfo) {
 		_.each(datos.results.bindings, function(row) {
 			// recupero datos y almaceno
 			const miiri = row.iri.value;
-			const mitype = row.type.value;
+      //const mitype = row.type.value;
+			const mitype = (typeof row.mapping != "undefined") ? row.mapping.value : row.type.value;
 			objaux[miiri].push(mitype);
 		});
 		// y ahora guardo en el sitio adecuado de la caché
@@ -454,9 +467,11 @@ async function extractDataProps(iris, id, dprops, api, qinfo) {
 				}
 				// si es un literal guardo en el array un objeto con clave la etiqueta de lenguaje y valor el literal
 				else if (value.type === "literal") {
-					var lang = value["xml:lang"] == undefined? config.nolang : value["xml:lang"];
-					let lit = {};
-					lit[lang] = value.value;
+//					var lang = value["xml:lang"] == undefined? config.nolang : value["xml:lang"];
+//					let lit = {};
+//					lit[lang] = value.value;
+          // always only one literal value (Linked Art)
+          const lit = value.value;
 					objaux[eviri].push( lit );			
 				}
 				// no incluyo iris ni blank nodes

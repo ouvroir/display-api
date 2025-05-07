@@ -1856,13 +1856,48 @@ async function getResource(req, res, next) {
 		obj.iris.push(iri);
 		
 		try {
-			// recupero datos
+
+      // il faut mettre ça dans la dataManager , car ne fonctionnera pas pour liste de ressources,dans la boucle
+      // ASK à utiliser éventuellement pour conditionner les traitements en écriture
+      const askQuery = `ASK{<${obj.iris[0]}> ?p ?o}`;
+      const ask = await fetch("http://localhost:8080/display/query", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/sparql-query",
+        },
+        body: askQuery
+      });
+      const askResponse = await ask.json();
+      try {
+        if (!askResponse.boolean) {
+          throw new Error(`Resource not found`);
+        }
+      } catch (err) {
+        objresp.status = 404;
+        objresp.message = "Resource not found";
+        res.errorMessage = objresp.message;
+        res.status(objresp.status).send(objresp);
+        return;
+      }
+
+      // recupero datos
 			let datos = await dataManager.getData(obj, {quuid: req.quuid, apiId: apiId});
 			// incorporo consultas para el log
 			res.numberOfQueries = datos.numberOfQueries;
 			res.allQueries = datos.allQueries;			
 			// si hay salida la devuelvo
 			if (datos.data != undefined && datos.data.length == 1) {
+        try {
+          if (!datos.data[0].type) {
+            throw new Error(`the provided iri does not match the expected type for this resource.`);
+          };
+        } catch(err) {
+          objresp.status = 400;
+          objresp.message = 'Invalid request: '+ err.message;
+          res.errorMessage = objresp.message;
+          res.status(objresp.status).send(objresp);
+          return;
+        }
 				res.type('json');
 				res.send( datos.data[0] );
 				return;
@@ -2196,7 +2231,17 @@ async function putResource(req, res, next) {
 	const mel = _.find(apis[apiId].config.model, (el) => el.id === id);
 	if (mel != undefined) {		
 		// obtengo el objeto del body y lo valido
-		const objr = req.body;		
+		let objr = req.body;
+    // construction de l’iri pour l’enregistrement des ressources
+    switch (objr.type) {
+      case "Exhibit":
+      case "Space":
+          objr.type = `https://w3id.org/display#${objr.type}`
+        break;
+      default:
+        break;
+    }
+
 		try {
 			modelValidator.validateResource(iri, objr, mel, apis[apiId].config, "root");
 		} catch(error) {
