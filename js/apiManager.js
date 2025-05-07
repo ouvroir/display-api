@@ -398,22 +398,22 @@ var apis = {};
  *     exhibit:
  *       type: object
  *       properties:
- *         iri: 
+ *         iri:
  *           type: string
  *           format: uri
  *           description: |
  *             `IRI` de la ressource décrite.
- *         type: 
+ *         type:
  *           type: array
- *           items: 
+ *           items:
  *             type: string
  *             format: uri
  *           description: |
  *             Classes auxquelles appartient la ressource.
  *         _label:
- *           type: string
+ *           type: object
  *           description: |
- *             Étiquette interne sans sémantique associée (`rdfs:label`).
+ *             Étiquette interne sans sémantique associée (`rdfs:label`). Renvoie un objet ou une liste d’objet s’il y plus d’une valeur.
  *         title:
  *           type: string
  *           description: |
@@ -1759,8 +1759,7 @@ async function deleteApi(req, res, next) {
   *           enum:
   *           - exhibit
   *           - exhibition
-  *           - exhibitionSpaces
-  *           - exhibitsSet
+  *           - set
   *           - space
   *         description: The id of a model element defined in the API
   *       - name: iri
@@ -1775,13 +1774,10 @@ async function deleteApi(req, res, next) {
   *       '200': 
   *         description: The data about a resource
   *         content:
-  *           application/json:
+  *           application/ld+json:
   *             schema:
-  *             #  anyOf:
-  *             #  - $ref: '#/components/schemas/exhibit'
-  *             #  - $ref: '#/components/schemas/space'
   *               type: object
-  *               description: The object schema is defined in the corresponding model element of the API  
+  *               description: The object schema is defined in the corresponding model element of the API
   *       '400':
   *         description: Invalid request
   *         content:
@@ -2700,9 +2696,6 @@ async function deleteResource(req, res, next) {
   *         required: true
   *         schema:
   *           type: string
-  *           enum:
-  *           - exhibitions
-  *           - exhibitWithSpecificRelations
   *         description: The id of a query template element defined in the API
   *     responses:
   *       '200': 
