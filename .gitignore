@@ -1,7 +1,9 @@
 # dir
 node_modules
+.vscode
 
 # files
 .env*
 NOTES.md
 post-receive
+/*.sh
