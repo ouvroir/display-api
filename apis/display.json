@@ -315,6 +315,13 @@
           "endpoint": "/display/sparql"
         },
         {
+          "label": "carried_out_by",
+          "iri": "http://www.cidoc-crm.org/cidoc-crm/P14_carried_out_by",
+          "targetId": "coreProperties",
+          "embed": true,
+          "endpoint": "/display/sparql"
+        },
+        {
           "label": "timespan",
           "targetId": "timeSpan",
           "embed": true,
