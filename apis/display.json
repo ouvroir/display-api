@@ -308,6 +308,13 @@
           "endpoint": "/display/sparql"
         },
         {
+          "label": "referred_to_by",
+          "iri": "http://www.cidoc-crm.org/cidoc-crm/P67i_is_referred_to_by",
+          "targetId": "referred_to_by",
+          "embed": true,
+          "endpoint": "/display/sparql"
+        },
+        {
           "label": "timespan",
           "targetId": "timeSpan",
           "embed": true,
@@ -342,6 +349,11 @@
     {
       "id": "identified_by",
       "dprops":[
+        {
+          "label": "_label",
+          "iri": "http://www.w3.org/2000/01/rdf-schema#label",
+          "endpoint": "/display/sparql"
+        },
         {
           "label": "content",
           "iri": "http://www.cidoc-crm.org/cidoc-crm/P190_has_symbolic_content",
@@ -427,6 +439,46 @@
       ]
     },
     {
+      "id": "referred_to_by",
+      "dprops":[
+        {
+          "label": "_label",
+          "iri": "http://www.w3.org/2000/01/rdf-schema#label",
+          "endpoint": "/display/sparql"
+        },
+        {
+          "label": "content",
+          "iri": "http://www.cidoc-crm.org/cidoc-crm/P190_has_symbolic_content",
+          "endpoint": "/display/sparql"
+        }
+      ],
+      "oprops": [
+        {
+          "label": "classified_as",
+          "iri": "http://www.cidoc-crm.org/cidoc-crm/P2_has_type",
+          "targetId": "classified_as",
+          "embed": true,
+          "endpoint": "/display/sparql"
+        },
+        {
+          "label": "language",
+          "iri": "http://www.cidoc-crm.org/cidoc-crm/P72_has_language",
+          "targetId": "language",
+          "embed": true,
+          "endpoint": "/display/sparql"
+        }
+      ],
+      "types":[
+        {
+          "label": "type",
+          "restrictions": [
+            "FILTER (?type IN ( <http://www.cidoc-crm.org/cidoc-crm/E33_Linguistic_Object> ))"
+          ],
+          "endpoint": "/display/sparql"
+        }
+      ]
+    },
+    {
       "id": "set",
       "context": "https://linked.art/ns/v1/linked-art.json",
       "dprops": [
@@ -466,6 +518,13 @@
         }
       ],
       "oprops": [
+        {
+          "label": "referred_to_by",
+          "iri": "http://www.cidoc-crm.org/cidoc-crm/P67i_is_referred_to_by",
+          "targetId": "referred_to_by",
+          "embed": true,
+          "endpoint": "/display/sparql"
+        },
         {
           "label": "contains_exhibit",
           "iri": "https://w3id.org/display#hasExhibitionSpace>*/<https://w3id.org/display#containsExhibit",
