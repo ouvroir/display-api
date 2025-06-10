@@ -449,6 +449,10 @@ function getTriple(iri, valor, subel, tsubel) { // valores de tsubel => 0: type 
 			tripla.o = valor;
 	} else { // type o oprop
 		// obtengo la iri objeto de manera diferente si hay algo embebido o no
+
+    if (typeof valor === "object")
+      valor.iri = valor.id;
+
 		const oiri = typeof valor === "object"? valor.iri : valor;
 		tripla.o = '<' + oiri + '>';
 	

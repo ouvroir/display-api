@@ -539,6 +539,8 @@ function validatePatch(patch, mel, apiconfig) {
 						if (evmel == undefined)
 							throw new Error('Bad format of value[' + j + '] at patch[' + i +']. Cannot embed an object for this API model element');
 						let newsource = "value[" + j + "]";
+            // map id vers iri pour le traitement par CRAFTS
+            valor.iri = valor.id;
 						try {
 							validateResource(valor.iri, valor, evmel, apiconfig, newsource);
 						} catch(err) {
