@@ -14,7 +14,9 @@ async function putResource(iri, objr, mel, api, qinfo) {
 	obj.api = api;
 	obj.id = mel.id;
 	obj.iris = [ iri ];
-	// recupero datos,  incluyendo datos de escritura (la caché de la API se actualizará automáticamente)
+
+  // recupero datos,  incluyendo datos de escritura (la caché de la API se actualizará automáticamente)
+  // DV dans getData() le format JSON-LD est construit, mais aussi utilisé pour la lecture (méthode get), donc la conversion stringToIri doit se faire ailleurs
 	let datos = await dataManager.getData(obj, qinfo, true); // en datos.data[0] habrá una representación del recurso
 	
 	// objeto donde guardo los recursos a borrar de la caché
@@ -105,7 +107,12 @@ async function deleteResource(iri, mel, api, qinfo) {
 	obj.iris = [ iri ];
 	// recupero datos,  incluyendo datos de escritura (la caché de la API se actualizará automáticamente)
 	let datos = await dataManager.getData(obj, qinfo, true); // en datos.data[0] habrá una representación del recurso
-		
+
+  // jsonldMapping stringToIri
+  // construction de l’iri pour la suppression des ressources
+  // let string = datos.data[0].type;
+  // datos.data[0].type = jsonldMapping.stringToIri(string);
+
 	// objeto donde guardo los recursos a borrar de la caché
 	let borrar = {};
 	

@@ -27,7 +27,9 @@ async function queryEndpoint(endpoint, querytemp, pars, qinfo) {
   // Fuseki needs a request body when using POST method
   if (options.method == "POST") {
     options.headers = {
-      // avoid adding update= in the body
+      // https://jena.apache.org/documentation/fuseki2/fuseki-config-endpoint.html#dispatch
+      // An update is a POST where the body is “application/sparql-update” or an HTML form with field “update=”.
+      // note: avoid adding update= in the body
       "Content-Type": "application/sparql-update"
     };
     options.body = query;
