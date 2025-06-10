@@ -443,7 +443,7 @@ function getTriple(iri, valor, subel, tsubel) { // valores de tsubel => 0: type 
 			if ( isNaN(Date.parse(valor)) )		
 				tripla.o = '"' + valor + '"';
 			else // es una fecha
-				tripla.o = '"' + valor + '"^^xsd:dateTime';
+				tripla.o = '"' + valor + '"^^<http://www.w3.org/2001/XMLSchema#dateTime>';
 		}
 		else
 			tripla.o = valor;
