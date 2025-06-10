@@ -10,6 +10,7 @@ const dataManager = require('./dataManager'); // para los datos
 const dumpManager = require('./dumpManager'); // para los dumps
 const resourceUpdater = require('./resourceUpdater'); // para actualizar los recursos
 const util = require('./util'); // para ficheros
+const jsonldMapping = require('./jsonldMapping');
 
 const dirApiPath = './' + config.apisPath + '/';
 const dirUsersPath = './' + config.dataPath + '/';
@@ -2228,15 +2229,12 @@ async function putResource(req, res, next) {
 	if (mel != undefined) {		
 		// obtengo el objeto del body y lo valido
 		let objr = req.body;
+
     // construction de l’iri pour l’enregistrement des ressources
-    switch (objr.type) {
-      case "Exhibit":
-      case "Space":
-          objr.type = `https://w3id.org/display#${objr.type}`
-        break;
-      default:
-        break;
-    }
+    // car la classe est représentée par une chaîne de caractère provenant
+    // du fichier de contexte (jsonld) et fourni par la BDD.
+    // CRAFTS a besoin de l’IRI complète, donc on reconvertit.
+    objr.type = jsonldMapping.stringToIri(objr.type);
 
 		try {
 			modelValidator.validateResource(iri, objr, mel, apis[apiId].config, "root");
