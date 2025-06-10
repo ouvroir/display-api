@@ -333,6 +333,13 @@
           "endpoint": "/display/sparql"
         },
         {
+          "label": "member_of",
+          "iri": "https://linked.art/ns/terms/member_of",
+          "targetId": "coreProperties",
+          "embed": true,
+          "endpoint": "/display/sparql"
+        },
+        {
           "label": "timespan",
           "targetId": "timeSpan",
           "embed": true,
@@ -546,6 +553,7 @@
         {
           "label": "contains_exhibit",
           "iri": "https://w3id.org/display#hasExhibitionSpace>*/<https://w3id.org/display#containsExhibit",
+          "updateIri": "https://w3id.org/display#containsExhibit",
           "targetId": "coreProperties",
           "embed": true,
           "endpoint": "/display/sparql"
