@@ -1,5 +1,6 @@
 const _ = require('underscore');
 const dataManager = require('./dataManager');
+const jsonldMapping = require('./jsonldMapping');
 
 const testiri = 'http://prueba.es';
 
@@ -344,14 +345,10 @@ function validateResource(iri, objr, mel, apiconfig, source) {
 					throw new Error('Bad format of resource data at ' + source + "." + type.label + '[' + j + ']');
 				// cada valor sólo puede ser una IRI o un objeto si está embebido
 				if (typeof valor !== 'object') {
-          switch (valor) {
-            case "Exhibit":
-            case "Space":
-                valor = `https://w3id.org/display#${valor}`
-              break;
-            default:
-              break;
-          }
+
+          // construction de l’iri pour la validation des ressources
+          valor = jsonldMapping.stringToIri(valor);
+
 					try {
 						new URL(valor);
 					} catch(err) {

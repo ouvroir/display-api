@@ -1,5 +1,6 @@
 const _ = require('underscore');
 const dataManager = require('./dataManager');
+const jsonldMapping = require('./jsonldMapping');
 
 
 // CREACIÓN/REEMPLAZO DE RECURSO
@@ -556,6 +557,11 @@ function getEndpointTriples(insert, iri, objr, mel, api, borrar) {
 	let et = {};
 	for (let i=0; i<api.config.endpoints.length; i++)
 		et[ api.config.endpoints[i].id ] = [];
+
+  // jsonldMapping stringToIri
+  // construction de l’iri pour la suppression des ressources
+  let string = objr.type;
+  objr.type = jsonldMapping.stringToIri(string);
 
 	// analizo los types en mel...
 	for (let i=0; i<mel.types.length; i++) {	
