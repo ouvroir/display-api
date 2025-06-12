@@ -418,12 +418,12 @@
         {
           "label": "_label",
           "iri": "http://www.w3.org/2000/01/rdf-schema#label",
-          "endpoint": "/display/sparql"
+          "endpoint": "/skosmos/sparql"
         },
         {
           "label": "notation",
           "iri": "http://www.w3.org/2004/02/skos/core#notation",
-          "endpoint": "/display/sparql"
+          "endpoint": "/skosmos/sparql"
         }
       ],
       "types":[
@@ -432,7 +432,7 @@
           "restrictions": [
             "FILTER (?type IN ( <http://www.cidoc-crm.org/cidoc-crm/E56_Language> ))"
           ],
-          "endpoint": "/display/sparql"
+          "endpoint": "/skosmos/sparql"
         }
       ]
     },
