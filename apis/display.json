@@ -127,6 +127,13 @@
           "endpoint": "/display/sparql"
         },
         {
+          "label": "referred_to_by",
+          "iri": "http://www.cidoc-crm.org/cidoc-crm/P67i_is_referred_to_by",
+          "targetId": "referred_to_by",
+          "embed": true,
+          "endpoint": "/display/sparql"
+        },
+        {
           "label": "produced_by",
           "iri": "http://www.cidoc-crm.org/cidoc-crm/P108i_was_produced_by",
           "targetId": "produced_by",
