@@ -2130,6 +2130,11 @@ async function getResources(req, res, next) {
   *         required: true
   *         schema:
   *           type: string
+  *           enum:
+  *           - exhibit
+  *           - exhibition
+  *           - set
+  *           - space
   *         description: The id of a model element defined in the API
   *       - name: iri
   *         in: query
