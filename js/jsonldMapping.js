@@ -17,6 +17,8 @@ function stringToIri (string) {
     // prefixes
     const display = "https://w3id.org/display#";
     const crm = "http://www.cidoc-crm.org/cidoc-crm/";
+    const la = "https://linked.art/ns/terms/";
+
 
     switch (string) {
       case "Element":
@@ -38,6 +40,9 @@ function stringToIri (string) {
         break;
       case "Production":
         iri = `${crm}E12_Production`
+        break;
+      case "Set":
+        iri = `${la}Set`
         break;
       case "TimeSpan":
         iri = `${crm}E52_Time-Span`
