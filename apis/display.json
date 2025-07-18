@@ -115,9 +115,9 @@
         {
           "label": "classified_as",
           "iri": "http://www.cidoc-crm.org/cidoc-crm/P2_has_type",
-          "targetId":"classified_as",
-          "embed":true,
-          "endpoint":"/display/sparql"
+          "targetId": "classified_as",
+          "embed": true,
+          "endpoint": "/display/sparql"
         },
         {
           "label": "identified_by",

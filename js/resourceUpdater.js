@@ -43,6 +43,7 @@ async function putResource(iri, objr, mel, api, qinfo) {
 	let esuris = {};
 	
 	// hago las borrados
+  // (epid : endpoint id)
 	for (const epid in edt) {
 		if (edt[epid].length > 0) {
 			// preparo la consulta
@@ -578,7 +579,9 @@ function getEndpointTriples(insert, iri, objr, mel, api, borrar) {
 		et[ api.config.endpoints[i].id ] = [];
 
   // jsonldMapping stringToIri
-  // construction de l’iri pour la suppression des ressources
+  // construction de l’iri
+  // (préalablement converti en string pour mapping JSON-LD)
+  // @todo intégrer totalement dans l’API, sans passer par entrepôt RDF
   let string = objr.type;
   objr.type = jsonldMapping.stringToIri(string);
 
