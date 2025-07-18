@@ -568,6 +568,7 @@
         {
           "label": "adjacent_exhibit",
           "iri": "https://w3id.org/display#hasExhibitionSpace>*/<https://w3id.org/display#adjacentExhibit",
+          "updateIri": "https://w3id.org/display#adjacentExhibit",
           "targetId": "coreProperties",
           "embed": true,
           "endpoint": "/display/sparql"
@@ -575,6 +576,7 @@
         {
           "label": "intersecting_exhibit",
           "iri": "https://w3id.org/display#hasExhibitionSpace>*/<https://w3id.org/display#intersectingExhibit",
+          "updateIri": "https://w3id.org/display#intersectingExhibit",
           "targetId": "coreProperties",
           "embed": true,
           "endpoint": "/display/sparql"
@@ -582,6 +584,7 @@
         {
           "label": "has_exhibition_space",
           "iri": "https://w3id.org/display#hasExhibitionSpace*",
+          "updateIri": "https://w3id.org/display#hasExhibitionSpace",
           "targetId": "coreProperties",
           "embed": true,
           "endpoint": "/display/sparql",

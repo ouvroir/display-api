@@ -1,6 +1,7 @@
 const _ = require('underscore');
 const dataManager = require('./dataManager');
 const jsonldMapping = require('./jsonldMapping');
+const display = require('./displayUtil');
 
 
 // CREACIÓN/REEMPLAZO DE RECURSO
@@ -8,6 +9,9 @@ async function putResource(iri, objr, mel, api, qinfo) {
 	// 2021-mar incluyo datos writeonly en la definición del modelo		
 	// primero borro el recurso de la caché (para pedir de los endpoints todos los datos, incluidos los de solo escritura)
 	delete api.cache[mel.id][iri];
+
+  display.replaceIriByUpdateIri(mel);
+  display.replaceTargetIdByUpdateTargetId(mel);
 
 	// luego pido los datos del recurso en cuestión incluyendo datos de escritura (para poder borrarlos)
 	let obj = {};
@@ -99,7 +103,9 @@ async function deleteResource(iri, mel, api, qinfo) {
 	// 2021-mar incluyo datos writeonly en la definición del modelo		
 	// primero borro el recurso de la caché (para pedir de los endpoints todos los datos, incluidos los de solo escritura)
 	delete api.cache[mel.id][iri];
-	
+
+  display.replaceIriByUpdateIri(mel);
+
 	// luego pido los datos del recurso en cuestión incluyendo datos de escritura (para poder borrarlos)
 	let obj = {};
 	obj.api = api;
@@ -170,6 +176,8 @@ async function patchResource(iri, patch, mel, api, qinfo) {
 	// 2021-mar incluyo datos writeonly en la definición del modelo		
 	// primero borro el recurso de la caché (para pedir de los endpoints todos los datos, incluidos los de solo escritura)
 	delete api.cache[mel.id][iri];
+
+    display.replaceIriByUpdateIri(mel);
 	
 	// luego pido los datos del recurso en cuestión incluyendo datos de escritura (para poder borrarlos)
 	let obj = {};
