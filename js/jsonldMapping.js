@@ -15,15 +15,18 @@ function stringToIri (string) {
     // Donc convertir la chaîne
 
     // prefixes
-    const display = "https://w3id.org/display#";
+    const bot = "https://w3id.org/bot#";
     const crm = "http://www.cidoc-crm.org/cidoc-crm/";
     const la = "https://linked.art/ns/terms/";
 
 
     switch (string) {
+      case "Space":
+        iri = `${bot}${string}`
+        break;
       case "Element":
       case "Exhibit":
-      case "Space":
+      case "ExhibitionSpace":
         iri = `${display}${string}`
         break;
       case "Activity":

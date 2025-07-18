@@ -611,7 +611,8 @@
         {
           "label": "type",
           "restrictions": [
-            "FILTER (?type IN ( <https://w3id.org/display#ExhibitionSpace> ))"
+            "FILTER (?type IN ( <https://w3id.org/display#ExhibitionSpace> , <https://w3id.org/bot#Space> ))",
+            "FILTER NOT EXISTS { ?subclass ^a  ?iri ; <http://www.w3.org/2000/01/rdf-schema#subClassOf> ?type . FILTER (?subclass != ?type)}"
           ],
           "endpoint": "/display/sparql"
         }
