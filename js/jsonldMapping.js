@@ -17,6 +17,7 @@ function stringToIri (string) {
     // prefixes
     const bot = "https://w3id.org/bot#";
     const crm = "http://www.cidoc-crm.org/cidoc-crm/";
+    const display = "https://w3id.org/display#";
     const la = "https://linked.art/ns/terms/";
 
 
@@ -24,6 +25,7 @@ function stringToIri (string) {
       case "Space":
         iri = `${bot}${string}`
         break;
+      case "Display":
       case "Element":
       case "Exhibit":
       case "ExhibitionSpace":
