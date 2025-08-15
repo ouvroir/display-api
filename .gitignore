@@ -4,6 +4,6 @@ node_modules
 
 # files
 .env*
-NOTES.md
+NOTES*
 post-receive
 /*.sh

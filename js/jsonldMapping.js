@@ -34,6 +34,12 @@ function stringToIri (string) {
       case "Activity":
         iri = `${crm}E7_Activity`
         break;
+      case "Dimension":
+        iri = `${crm}E54_Dimension`
+        break;
+      case "Group":
+        iri = `${crm}E74_Group`
+        break;
       case "LinguisticObject":
         iri = `${crm}E33_Linguistic_Object`
         break;

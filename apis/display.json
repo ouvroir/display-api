@@ -32,6 +32,34 @@
   ],
   "model": [
     {
+      "id": "actor",
+      "dprops": [
+        {
+          "label": "_label",
+          "iri": "http://www.w3.org/2000/01/rdf-schema#label",
+          "endpoint": "/display/sparql"
+        }
+      ],
+      "oprops": [
+        {
+          "label": "classified_as",
+          "iri": "http://www.cidoc-crm.org/cidoc-crm/P2_has_type",
+          "targetId": "classified_as",
+          "embed": true,
+          "endpoint": "/display/sparql"
+        }
+      ],
+      "types":[
+        {
+          "label": "type",
+          "restrictions": [
+            "FILTER (?type IN ( <http://www.cidoc-crm.org/cidoc-crm/E21_Person> , <http://www.cidoc-crm.org/cidoc-crm/E74_Group> ))"
+          ],
+          "endpoint": "/display/sparql"
+        }
+      ]
+    },
+    {
       "id": "classified_as",
       "dprops": [
         {
@@ -101,6 +129,46 @@
       ]
     },
     {
+      "id": "dimension",
+      "dprops": [
+        {
+          "label": "_label",
+          "iri": "http://www.w3.org/2000/01/rdf-schema#label",
+          "endpoint": "/display/sparql"
+        },
+        {
+          "label": "value",
+          "iri": "http://www.cidoc-crm.org/cidoc-crm/P90_has_value",
+          "endpoint": "/display/sparql"
+        }
+      ],
+      "oprops": [
+        {
+          "label": "classified_as",
+          "iri": "http://www.cidoc-crm.org/cidoc-crm/P2_has_type",
+          "targetId": "classified_as",
+          "embed": true,
+          "endpoint": "/display/sparql"
+        },
+        {
+          "label": "unit",
+          "iri": "http://www.cidoc-crm.org/cidoc-crm/P91_has_unit",
+          "targetId": "unit",
+          "embed": true,
+          "endpoint": "/display/sparql"
+        }
+      ],
+      "types":[
+        {
+          "label": "type",
+          "restrictions": [
+            "FILTER (?type IN ( <http://www.cidoc-crm.org/cidoc-crm/E54_Dimension> ))"
+          ],
+          "endpoint": "/display/sparql"
+        }
+      ]
+    },
+    {
       "id": "exhibit",
       "context": "https://linked.art/ns/v1/linked-art.json",
       "dprops": [
@@ -140,6 +208,14 @@
           "embed": true,
           "endpoint": "/display/sparql"
         },
+        {
+          "label": "dimension",
+          "iri": "http://www.cidoc-crm.org/cidoc-crm/P43_has_dimension",
+          "targetId": "dimension",
+          "embed": true,
+          "endpoint": "/display/sparql"
+        },
+
         {
           "label": "above",
           "iri": "https://w3id.org/display#above",
@@ -450,7 +526,7 @@
         {
           "label": "carried_out_by",
           "iri": "http://www.cidoc-crm.org/cidoc-crm/P14_carried_out_by",
-          "targetId": "coreProperties",
+          "targetId": "actor",
           "embed": true,
           "endpoint": "/display/sparql"
         },
@@ -645,6 +721,31 @@
             "FILTER (?type IN ( <http://www.cidoc-crm.org/cidoc-crm/E52_Time-Span> ))"
           ],
           "endpoint": "/display/sparql"
+        }
+      ]
+    },
+    {
+      "id": "unit",
+      "oprops": [],
+      "dprops":[
+        {
+          "label": "_label",
+          "iri": "http://www.w3.org/2000/01/rdf-schema#label",
+          "endpoint": "/skosmos/sparql"
+        },
+        {
+          "label": "notation",
+          "iri": "http://www.w3.org/2004/02/skos/core#notation",
+          "endpoint": "/skosmos/sparql"
+        }
+      ],
+      "types":[
+        {
+          "label": "type",
+          "restrictions": [
+            "FILTER (?type IN ( <http://www.cidoc-crm.org/cidoc-crm/E58_Measurement_Unit> ))"
+          ],
+          "endpoint": "/skosmos/sparql"
         }
       ]
     }
