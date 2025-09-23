@@ -33,6 +33,7 @@
   "model": [
     {
       "id": "abstract-work",
+      "context": "https://linked.art/ns/v1/linked-art.json",
       "dprops": [
         {
           "label": "_label",
