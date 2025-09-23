@@ -1758,6 +1758,7 @@ async function deleteApi(req, res, next) {
   *         schema:
   *           type: string
   *           enum:
+  *           - abstract-work
   *           - exhibit
   *           - exhibition
   *           - set
@@ -2124,6 +2125,8 @@ async function getResources(req, res, next) {
   *         required: true
   *         schema:
   *           type: string
+  *           enum:
+  *           - display
   *         description: The id of the API
   *       - name: id
   *         in: query
@@ -2131,6 +2134,7 @@ async function getResources(req, res, next) {
   *         schema:
   *           type: string
   *           enum:
+  *           - abstract-work
   *           - exhibit
   *           - exhibition
   *           - set
@@ -2329,12 +2333,20 @@ async function putResource(req, res, next) {
   *         required: true
   *         schema:
   *           type: string
+  *           enum:
+  *           - display
   *         description: The id of the API
   *       - name: id
   *         in: query
   *         required: true
   *         schema:
   *           type: string
+  *           enum:
+  *           - abstract-work
+  *           - exhibit
+  *           - exhibition
+  *           - set
+  *           - space
   *         description: The id of a model element defined in the API
   *       - name: iri
   *         in: query
@@ -2528,12 +2540,20 @@ async function patchResource(req, res, next) {
   *         required: true
   *         schema:
   *           type: string
+  *           enum:
+  *           - display
   *         description: The id of the API
   *       - name: id
   *         in: query
   *         required: true
   *         schema:
   *           type: string
+  *           enum:
+  *           - abstract-work
+  *           - exhibit
+  *           - exhibition
+  *           - set
+  *           - space
   *         description: The id of a model element defined in the API
   *       - name: iri
   *         in: query

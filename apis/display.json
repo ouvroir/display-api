@@ -32,6 +32,55 @@
   ],
   "model": [
     {
+      "id": "abstract-work",
+      "dprops": [
+        {
+          "label": "_label",
+          "iri": "http://www.w3.org/2000/01/rdf-schema#label",
+          "endpoint": "/display/sparql"
+        }
+      ],
+      "oprops": [
+        {
+          "label": "classified_as",
+          "iri": "http://www.cidoc-crm.org/cidoc-crm/P2_has_type",
+          "targetId": "classified_as",
+          "embed": true,
+          "endpoint": "/display/sparql"
+        },
+        {
+          "label": "identified_by",
+          "iri": "http://www.cidoc-crm.org/cidoc-crm/P1_is_identified_by",
+          "targetId": "identified_by",
+          "embed": true,
+          "endpoint": "/display/sparql"
+        },
+        {
+          "label": "referred_to_by",
+          "iri": "http://www.cidoc-crm.org/cidoc-crm/P67i_is_referred_to_by",
+          "targetId": "referred_to_by",
+          "embed": true,
+          "endpoint": "/display/sparql"
+        },
+        {
+          "label": "about",
+          "iri": "http://www.cidoc-crm.org/cidoc-crm/P129_is_about",
+          "targetId": "coreProperties",
+          "embed": true,
+          "endpoint": "/display/sparql"
+        }
+      ],
+      "types":[
+        {
+          "label": "type",
+          "restrictions": [
+            "FILTER (?type IN ( <http://www.cidoc-crm.org/cidoc-crm/E89_Propositional_Object> ))"
+          ],
+          "endpoint": "/display/sparql"
+        }
+      ]
+    },
+    {
       "id": "actor",
       "dprops": [
         {
@@ -215,7 +264,13 @@
           "embed": true,
           "endpoint": "/display/sparql"
         },
-
+        {
+          "label": "subject_of",
+          "iri": "http://www.cidoc-crm.org/cidoc-crm/P129i_is_subject_of",
+          "targetId": "coreProperties",
+          "embed": true,
+          "endpoint": "/display/sparql"
+        },
         {
           "label": "above",
           "iri": "https://w3id.org/display#above",

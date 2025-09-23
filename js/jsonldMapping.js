@@ -52,6 +52,9 @@ function stringToIri (string) {
       case "Production":
         iri = `${crm}E12_Production`
         break;
+      case "PropositionalObject":
+        iri = `${crm}E89_Propositional_Object`
+        break;
       case "Set":
         iri = `${la}Set`
         break;
