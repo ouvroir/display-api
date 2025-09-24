@@ -5,8 +5,8 @@ function stringToIri (string) {
   try {
     // vérifier si répond à la contrainte de forme d’une URL
     // valide aussi les IRI, donc OK pour URN
-    // invalide : passe au bloc catch
-    // valide : passe directement au bloc finally
+    // si invalide  : passe au bloc catch
+    // si valide    : passe directement au bloc finally
     new URL(iri);
 
   } catch(e) {
@@ -29,6 +29,8 @@ function stringToIri (string) {
       case "Element":
       case "Exhibit":
       case "ExhibitionSpace":
+      case "HangingInterface":
+      case "PathwayInterface":
         iri = `${display}${string}`
         break;
       case "Activity":
@@ -42,6 +44,9 @@ function stringToIri (string) {
         break;
       case "LinguisticObject":
         iri = `${crm}E33_Linguistic_Object`
+        break;
+      case "MeasurementUnit":
+        iri = `${crm}E58_Measurement_Unit`
         break;
       case "Name":
         iri = `${crm}E33_E41_Linguistic_Appellation`

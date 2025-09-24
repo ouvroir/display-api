@@ -273,6 +273,13 @@
           "endpoint": "/display/sparql"
         },
         {
+          "label": "sub_element",
+          "iri": "https://w3id.org/bot#hasSubElement",
+          "targetId": "coreProperties",
+          "embed": true,
+          "endpoint": "/display/sparql"
+        },
+        {
           "label": "above",
           "iri": "https://w3id.org/display#above",
           "targetId": "coreProperties",
@@ -418,6 +425,14 @@
           "targetId": "coreProperties",
           "embed": true,
           "endpoint": "/display/sparql"
+        },
+        {
+          "label": "interface",
+          "iri": "https://w3id.org/display#interfaceOfExhibit",
+          "inv": true,
+          "targetId": "interface",
+          "embed": true,
+          "endpoint": "/display/sparql"
         }
       ],
       "types": [
@@ -550,6 +565,42 @@
         }
       ]
     },
+    {
+      "id": "interface",
+      "dprops": [
+        {
+          "label": "_label",
+          "iri": "http://www.w3.org/2000/01/rdf-schema#label",
+          "endpoint": "/display/sparql"
+        }
+      ],
+      "oprops": [
+        {
+          "label": "interface_of",
+          "iri": "https://w3id.org/bot#interfaceOf",
+          "targetId": "coreProperties",
+          "embed": true,
+          "endpoint": "/display/sparql"
+        },
+        {
+          "label": "provided_by",
+          "iri": "https://w3id.org/display#interfaceProvidedBy",
+          "targetId": "coreProperties",
+          "embed": true,
+          "endpoint": "/display/sparql"
+        }
+      ],
+      "types": [
+        {
+          "label": "type",
+          "restrictions": [
+            "FILTER (?type IN ( <https://w3id.org/display#HangingInterface> , <https://w3id.org/display#PathwayInterface> ))"
+          ],
+          "endpoint": "/display/sparql"
+        }
+      ]
+    },
+
     {
       "id": "language",
       "oprops": [],
@@ -735,6 +786,14 @@
           "label": "intersects_zone",
           "iri": "https://w3id.org/bot#intersectsZone",
           "targetId": "coreProperties",
+          "embed": true,
+          "endpoint": "/display/sparql"
+        },
+        {
+          "label": "interface",
+          "iri": "https://w3id.org/display#interfaceOfSpace",
+          "inv": true,
+          "targetId": "interface",
           "embed": true,
           "endpoint": "/display/sparql"
         }
