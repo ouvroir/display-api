@@ -97,6 +97,12 @@
           "targetId": "classified_as",
           "embed": true,
           "endpoint": "/display/sparql"
+        },
+        {
+          "label": "equivalent",
+          "iri": "https://linked.art/ns/terms/equivalent",
+          "embed": false,
+          "endpoint": "/display/sparql"
         }
       ],
       "types":[
