@@ -231,8 +231,7 @@
         {
           "label": "_label",
           "iri": "http://www.w3.org/2000/01/rdf-schema#label",
-          "endpoint": "/display/sparql",
-          "restrictions": []
+          "endpoint": "/display/sparql"
         }
       ],
       "oprops": [
@@ -459,8 +458,7 @@
         {
           "label": "_label",
           "iri": "http://www.w3.org/2000/01/rdf-schema#label",
-          "endpoint": "/display/sparql",
-          "restrictions": []
+          "endpoint": "/display/sparql"
         }
       ],
       "oprops": [
@@ -634,7 +632,13 @@
     },
     {
       "id": "produced_by",
-      "dprops": [],
+      "dprops": [
+        {
+          "label": "_label",
+          "iri": "http://www.w3.org/2000/01/rdf-schema#label",
+          "endpoint": "/display/sparql"
+        }
+      ],
       "oprops": [
         {
           "label": "carried_out_by",
