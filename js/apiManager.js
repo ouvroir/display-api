@@ -1772,6 +1772,14 @@ async function deleteApi(req, res, next) {
   *           format: uri
   *         allowReserved: true # para que no se queje el validador
   *         description: The IRI of the resource
+  *       - name: graph
+  *         in: query
+  *         required: false
+  *         schema:
+  *           type: string
+  *           format: uri
+  *         allowReserved: true # para que no se queje el validador
+  *         description: The IRI of the graph containing the resource
   *     responses:
   *       '200': 
   *         description: The data about a resource
@@ -1804,6 +1812,7 @@ async function getResource(req, res, next) {
 	const apiId = req.params.apiId;
 	const id = req.query.id;
 	const iri = req.query.iri;
+	const graph = req.query.graph;
 	
 	// pregenero objeto de respuesta
 	let objresp = {};	
@@ -1849,6 +1858,7 @@ async function getResource(req, res, next) {
 		// petición correcta, preparo objeto con la petición
 		let obj = {};
 		obj.api = apis[apiId]; // meto la API completa
+    obj.graph = graph;
 		obj.id = id;
 		obj.iris = [];
 		obj.iris.push(iri);

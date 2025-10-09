@@ -34,8 +34,10 @@ WHERE {\n\
 	{ 
 		id: "types",
 		description: "Obtain the types of a list of iris (\"firis\"). The inferred types can be also obtained by setting \"inferred\" to true. Additional \"restrictions\" can be added, e.g. to filter the types to extract",
-		template: 
+		template:
 'SELECT DISTINCT ?iri ?type ?mapping  \n \
+FROM {{{fromDefault}}} \n\
+{{#union}}FROM {{{.}}} \n{{/union}}\
 WHERE { \n \
 ?iri a{{#inferred}}/<http://www.w3.org/2000/01/rdf-schema#subClassOf>*{{/inferred}} ?type . \n \
 OPTIONAL { \n \
@@ -55,6 +57,8 @@ FILTER (?iri IN ( {{{firis}}} )) }',
 		description: "Obtain the values of a property \"propiri\" of a list of iris (\"firis\"). The property can be inversed by setting  \"inv\" to true. Additional \"restrictions\" can be added, e.g. to filter the values to extract",
 		template: 
 'SELECT DISTINCT ?iri ?value \n\
+FROM {{{fromDefault}}} \n\
+{{#union}}FROM {{{.}}} \n{{/union}}\
 WHERE { \n\
 {{^inv}}?iri <{{{propiri}}}> ?value . \n{{/inv}}\
 {{#inv}}?value <{{{propiri}}}> ?iri . \n{{/inv}}\

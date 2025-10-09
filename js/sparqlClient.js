@@ -4,8 +4,25 @@ const mustache = require('mustache');
 const logger = require('./logger'); // para el logging
 
 
-async function queryEndpoint(endpoint, querytemp, pars, qinfo) {
+async function queryEndpoint(endpoint, querytemp, pars, qinfo, graph) {
 	// preparo consulta
+
+  // switch?
+	if (endpoint.graphURI != undefined) {
+    // pdata["default-graph-uri"] = endpoint.graphURI;
+    pars.fromDefault = `<${endpoint.graphURI}>`;
+  }
+  if (graph != undefined) {
+    // pdata["default-graph-uri"] = graph;
+    pars.fromDefault = `<${graph}>`;
+  } else {
+    pars.union = `<${endpoint.metadataGraphURI}>`;
+  }
+  if (endpoint.checkReasoner) {
+    // pdata["default-graph-uri"] = graph;
+    pars.fromDefault = `<${endpoint.graphURI}>`;
+  } 
+
 	// substitute parameters with mustache	
 	let	query = mustache.render(querytemp, pars);
 	// preparo los prefijos
@@ -13,8 +30,6 @@ async function queryEndpoint(endpoint, querytemp, pars, qinfo) {
 
 	// preparo URL de la consulta
 	let pdata = {};
-	if (endpoint.graphURI != undefined)
-		pdata["default-graph-uri"] = endpoint.graphURI;
 	pdata.query = query;
 	pdata.format = 'application/sparql-results+json';
 	const params = new URLSearchParams(pdata);

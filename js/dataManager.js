@@ -86,13 +86,32 @@ async function getData(obj, qinfo, writeonlytoo) {
 	if (writeonlytoo == undefined)
 		writeonlytoo = false;
 
-	// compruebo si el tipo de datos existe en el modelo
+  // compruebo si el tipo de datos existe en el modelo
 	let mel = _.find(obj.api.config.model, (el) => el.id === obj.id);
 	if (mel == undefined)
 		throw Error("Check your model, incorrect data type => " + obj.id);
+
+  let cachedGraph; // undefined
+
+  // Assumant que l’on ne récupère toujours qu’un seul IRI
+  // Donc pas de liste d’IRI possible (/apis/{apiId}/resources non fonctionnel)
+  // On utilise que le premier de la liste (indice 0)
+  // @todo: Utiliser _.each() pour faire proprement (cohésion du code avec application d’origine)
+  const cachedIri = obj.api.cache[mel.id][obj.iris[0]];
+  // récupérer le graphe en cache s’il existe
+  if (cachedIri != undefined && cachedIri.graph != undefined) {
+    cachedGraph = cachedIri.graph
+  }
+
+  // Si le graphe spécifié est différent du graphe en cache,
+  // alors le cache pour cet élément est invalide
+  if (obj.graph != cachedGraph) {
+    delete obj.api.cache[mel.id][obj.iris[0]];
+  }
 		
+
 	// tipo correcto, pido los datos
-	let salida = await extractResources(obj.iris, mel, obj.api, qinfo, writeonlytoo);
+	let salida = await extractResources(obj.iris, mel, obj.api, qinfo, writeonlytoo, obj.graph);
 		
 	// ahora genero la salida deseada
 	salida.data = await createRepresentations(obj.iris, mel, obj.api, writeonlytoo);
@@ -214,15 +233,16 @@ function formatResource(iri, mel, api, writeonlytoo) {
 
 // FUNCIONES DE EXTRACCIÓN DE DATOS
 // (si no están en la caché de la API se piden al cliente SPARQL)
-async function extractResources(iris, mel, api, qinfo, writeonlytoo) {	
+async function extractResources(iris, mel, api, qinfo, writeonlytoo, graph) {	
 	// creo primero los recursos si no existen en la caché de la api
 	let target = api.cache[mel.id];
 	_.each(iris, function(iri) {
 		if (target[iri] == undefined) {
 			target[iri] = { 
 				"iri" : iri ,
-				"timestampCache" : new Date().getTime() // 01-02-2021 incluido para el control de la caché
-			};
+				"timestampCache" : new Date().getTime(), // 01-02-2021 incluido para el control de la caché
+        "graph" : graph,
+      };
 		}
 	});
 				
@@ -232,17 +252,18 @@ async function extractResources(iris, mel, api, qinfo, writeonlytoo) {
 	// una promesa para cada tipo
 	_.each( mel.types, (ttype) => {
 		// compruebo si debo incluir ttype según writeonlytoo
+    // la condition satisfaite est !ttype.writeonly
 		if (writeonlytoo || ttype.writeonly == undefined || !ttype.writeonly)
-			promesas.push( extractType(iris, mel.id, ttype, api, qinfo) );
+			promesas.push( extractType(iris, mel.id, ttype, api, qinfo, graph) );
 	});
 	// una promesa para la lista de dataprops
 	const dprops = _.filter(mel.dprops, function(el) { return writeonlytoo || el.writeonly == undefined || !el.writeonly; });
-	promesas.push( extractDataProps(iris, mel.id, dprops, api, qinfo) );
+	promesas.push( extractDataProps(iris, mel.id, dprops, api, qinfo, graph) );
 	// una promesa por cada objectprop
 	_.each( mel.oprops, (oprop) => {
 		// compruebo si debo incluir oprop según writeonlytoo
 		if (writeonlytoo || oprop.writeonly == undefined || !oprop.writeonly)
-			promesas.push( extractObjectProp(iris, mel.id, oprop, api, qinfo) );
+			promesas.push( extractObjectProp(iris, mel.id, oprop, api, qinfo, graph) );
 	});
 	
 	// espero a que terminen todas...
@@ -318,7 +339,7 @@ function estimateTotalQueries(iris, mel, api, writeonlytoo) {
 }
 
 
-async function extractType(iris, id, ttype, api, qinfo) {
+async function extractType(iris, id, ttype, api, qinfo, graph) {
 	// recupero el objeto target de la caché de la API
 	let target = api.cache[id];
 	
@@ -355,7 +376,7 @@ async function extractType(iris, id, ttype, api, qinfo) {
 		const endpoint = _.find(api.config.endpoints, el => el.id === ttype.endpoint );
 		
 		// espero a tener los resultados...
-		const datos = await sparqlClient.queryEndpoint(endpoint, qtemp.template, aux, qinfo); //, api.config.prefixes);
+		const datos = await sparqlClient.queryEndpoint(endpoint, qtemp.template, aux, qinfo, graph); //, api.config.prefixes);
 		
 		// 5/3/21 para evitar problemas de concurrencia guardo los resultados en un objeto local y luego actualizo
 		let objaux = {};
@@ -408,7 +429,7 @@ async function extractType(iris, id, ttype, api, qinfo) {
 	return nc; // aquí hemos terminado
 }
 
-async function extractDataProps(iris, id, dprops, api, qinfo) {
+async function extractDataProps(iris, id, dprops, api, qinfo, graph) {
 	// recupero el objeto target de la caché de la API
 	let target = api.cache[id];
 	
@@ -446,7 +467,7 @@ async function extractDataProps(iris, id, dprops, api, qinfo) {
 			const endpoint = _.find(api.config.endpoints, el => el.id === dprop.endpoint );				
 						
 			// espero a tener los resultados...
-			const datos = await sparqlClient.queryEndpoint(endpoint, qtemp.template, aux, qinfo); //, api.config.prefixes);
+			const datos = await sparqlClient.queryEndpoint(endpoint, qtemp.template, aux, qinfo, graph); //, api.config.prefixes);
 			
 			// 5/3/21 para evitar problemas de concurrencia guardo los resultados en un objeto local y luego actualizo
 			let objaux = {};
@@ -489,7 +510,7 @@ async function extractDataProps(iris, id, dprops, api, qinfo) {
 	return nc; // aquí hemos terminado
 }
 
-async function extractObjectProp(iris, id, oprop, api, qinfo) {
+async function extractObjectProp(iris, id, oprop, api, qinfo, graph) {
 	// recupero el objeto target de la caché de la API
 	let target = api.cache[id];
 	
@@ -524,7 +545,7 @@ async function extractObjectProp(iris, id, oprop, api, qinfo) {
 		const endpoint = _.find(api.config.endpoints, el => el.id === oprop.endpoint );	
 		
 		// espero a tener los resultados...
-		let datos = await sparqlClient.queryEndpoint(endpoint, qtemp.template, aux, qinfo); //, api.config.prefixes);
+		let datos = await sparqlClient.queryEndpoint(endpoint, qtemp.template, aux, qinfo, graph); //, api.config.prefixes);
 						
 		// 5/3/21 para evitar problemas de concurrencia guardo los resultados en un objeto local y luego actualizo
 		let objaux = {};
