@@ -19,8 +19,8 @@
       }
     },
     {
-      "id": "/skosmos/sparql",
-      "sparqlURI": "http://localhost:8080/skosmos/sparql",
+      "id": "/skosmos",
+      "sparqlURI": "http://localhost:8080/skosmos",
       "graphURI": "urn:ouvroir:vocab",
       "httpMethod": "GET",
       "authInfo": {
@@ -121,7 +121,7 @@
         {
           "label": "_label",
           "iri": "http://www.w3.org/2000/01/rdf-schema#label",
-          "endpoint": "/skosmos/sparql"
+          "endpoint": "/skosmos"
         }
       ],
       "oprops": [
@@ -130,7 +130,7 @@
           "iri": "http://www.cidoc-crm.org/cidoc-crm/P2_has_type",
           "targetId": "classified_as_meta",
           "embed": true,
-          "endpoint": "/skosmos/sparql"
+          "endpoint": "/skosmos"
         }
       ],
       "types": [
@@ -139,7 +139,7 @@
           "restrictions": [
             "FILTER (?type IN ( <http://www.cidoc-crm.org/cidoc-crm/E55_Type> ))"
           ],
-          "endpoint": "/skosmos/sparql"
+          "endpoint": "/skosmos"
         }
       ]
     },
@@ -149,7 +149,7 @@
         {
           "label": "_label",
           "iri": "http://www.w3.org/2000/01/rdf-schema#label",
-          "endpoint": "/skosmos/sparql"
+          "endpoint": "/skosmos"
         }
       ],
       "oprops": [],
@@ -159,7 +159,7 @@
           "restrictions": [
             "FILTER (?type IN ( <http://www.cidoc-crm.org/cidoc-crm/E55_Type> ))"
           ],
-          "endpoint": "/skosmos/sparql"
+          "endpoint": "/skosmos"
         }
       ]
     },
@@ -612,12 +612,12 @@
         {
           "label": "_label",
           "iri": "http://www.w3.org/2000/01/rdf-schema#label",
-          "endpoint": "/skosmos/sparql"
+          "endpoint": "/skosmos"
         },
         {
           "label": "notation",
           "iri": "http://www.w3.org/2004/02/skos/core#notation",
-          "endpoint": "/skosmos/sparql"
+          "endpoint": "/skosmos"
         }
       ],
       "types":[
@@ -626,7 +626,7 @@
           "restrictions": [
             "FILTER (?type IN ( <http://www.cidoc-crm.org/cidoc-crm/E56_Language> ))"
           ],
-          "endpoint": "/skosmos/sparql"
+          "endpoint": "/skosmos"
         }
       ]
     },
@@ -856,12 +856,12 @@
         {
           "label": "_label",
           "iri": "http://www.w3.org/2000/01/rdf-schema#label",
-          "endpoint": "/skosmos/sparql"
+          "endpoint": "/skosmos"
         },
         {
           "label": "notation",
           "iri": "http://www.w3.org/2004/02/skos/core#notation",
-          "endpoint": "/skosmos/sparql"
+          "endpoint": "/skosmos"
         }
       ],
       "types":[
@@ -870,7 +870,7 @@
           "restrictions": [
             "FILTER (?type IN ( <http://www.cidoc-crm.org/cidoc-crm/E58_Measurement_Unit> ))"
           ],
-          "endpoint": "/skosmos/sparql"
+          "endpoint": "/skosmos"
         }
       ]
     }
