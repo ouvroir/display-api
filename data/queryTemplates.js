@@ -70,6 +70,24 @@ FILTER (?iri IN ( {{{firis}}} )) }',
 			{ label: "inv", type: "boolean", optional: true },
 			{ label: "restrictions", type: "string[]", optional: true }		
 		]
+	},
+  { 
+		id: "ask",
+		description: "Test if a resource exists",
+		template: 
+'ASK \n\
+FROM {{{fromDefault}}} \n\
+{{#union}}FROM {{{.}}} \n{{/union}}\
+{\n\
+?iri ?p ?o . \n\
+FILTER (?iri IN ( {{{firis}}} )) \n\
+}',
+		variables: [ "iri", "p", "o" ],
+		parameters: [
+      { label: "fromDefault", type: "iri", optional: false },
+      { label: "union", type: "iri", optional: true },
+      { label: "firis", type: "firi[]", optional: false }
+    ]
 	}
 ];
 

@@ -108,7 +108,33 @@ async function getData(obj, qinfo, writeonlytoo) {
   if (obj.graph != cachedGraph) {
     delete obj.api.cache[mel.id][obj.iris[0]];
   }
-		
+
+  // Si la ressource n’est pas dans le cache,
+  // existe-t-elle dans l’entrepôt?
+  // à faire avant le loading du infGraph?
+  if (!Object.keys(obj.api.cache[mel.id]).length) {
+
+    //console.log("NOT IN CACHE")
+
+    // Valeurs à insérer dans le query template
+    let aux = {};
+    aux.firis = ["<"+obj.iris[0]+">"]; // pas l’idéal, voir note pour const cachedIri
+
+    // ASK pour 404
+    let qtemp = _.find(queryTemplates.queryTemplates, el => el.id === 'ask' );
+    const endpoint = _.find(obj.api.config.endpoints, el => el.id === mel.types[0].endpoint ); // voir ttype à régler ici (???)
+
+    // ASK à utiliser éventuellement pour conditionner les traitements en écriture
+    // NOTE : bypass le cache de l’API...
+    const ask = await sparqlClient.queryEndpoint(endpoint, qtemp.template, aux, qinfo, obj.graph);
+    if (!ask.boolean) {
+      if (obj.infGraph != undefined) {
+        // CLEAR INFGRAPH (async sans await)
+        console.log(`${obj.infGraph} CLEARED (404)`)
+      }
+      return ask;
+    }
+  }
 
 	// tipo correcto, pido los datos
 	let salida = await extractResources(obj.iris, mel, obj.api, qinfo, writeonlytoo, obj.graph);

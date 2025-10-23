@@ -1865,19 +1865,11 @@ async function getResource(req, res, next) {
 		
 		try {
 
-      // il faut mettre ça dans la dataManager , car ne fonctionnera pas pour liste de ressources,dans la boucle
-      // ASK à utiliser éventuellement pour conditionner les traitements en écriture
-      const askQuery = `ASK{<${obj.iris[0]}> ?p ?o}`;
-      const ask = await fetch("http://localhost:8080/display/query", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/sparql-query",
-        },
-        body: askQuery
-      });
-      const askResponse = await ask.json();
+      // recupero datos
+			let datos = await dataManager.getData(obj, {quuid: req.quuid, apiId: apiId});
+
       try {
-        if (!askResponse.boolean) {
+        if (datos.boolean != undefined && !datos.boolean) {
           throw new Error(`Resource not found`);
         }
       } catch (err) {
@@ -1888,8 +1880,6 @@ async function getResource(req, res, next) {
         return;
       }
 
-      // recupero datos
-			let datos = await dataManager.getData(obj, {quuid: req.quuid, apiId: apiId});
 			// incorporo consultas para el log
 			res.numberOfQueries = datos.numberOfQueries;
 			res.allQueries = datos.allQueries;			
@@ -1907,7 +1897,7 @@ async function getResource(req, res, next) {
           return;
         }
 				res.type('json');
-				res.send( datos.data[0] );
+				res.send( datos.data[0] ); // normal output
 				return;
 			}	
 		} catch(err) {
