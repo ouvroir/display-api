@@ -6,6 +6,11 @@
       "sparqlURI": "http://localhost:8080/display/sparql",
       "graphURI": "urn:x-arq:DefaultGraph",
       "metadataGraphURI": "urn:ouvroir:display:metadata",
+      "infGraphURI": [
+        "urn:ouvroir:display:infGraph0001",
+        "urn:ouvroir:display:infGraph0002",
+        "urn:ouvroir:display:infGraph0003"
+      ],
       "httpMethod": "GET",
       "authInfo": {
         "user": "",

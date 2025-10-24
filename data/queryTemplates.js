@@ -88,7 +88,44 @@ FILTER (?iri IN ( {{{firis}}} )) \n\
       { label: "union", type: "iri", optional: true },
       { label: "firis", type: "firi[]", optional: false }
     ]
-	}
+	},
+  { 
+		id: "testInfGraph",
+		description: "Test if an inference graph is available",
+		template: 
+'ASK \n\
+FROM {{{fromDefault}}} \n\
+{\n\
+{{{iri}}} <https://ntnlv.ca/ns/utils#actived> false  . \n\
+}',
+		variables: [ "p", "o" ],
+		parameters: [
+      { label: "fromDefault", type: "iri", optional: false },
+      { label: "iri", type: "iri", optional: false }
+    ]
+	},{
+		id: "toggleActiveInfGraph",
+		description: "Toggle Active Inference Graph",
+		template: 
+'DELETE WHERE { \n\
+  GRAPH {{{fromDefault}}} { \n\
+    {{{iri}}} ?p ?o . \n\
+  } \n\
+}; \n\
+WITH {{{fromDefault}}} \n\
+INSERT { \n\
+  {{{iri}}} <https://ntnlv.ca/ns/utils#actived> {{{active}}} ; \n\
+  <https://ntnlv.ca/ns/utils#timeActived> ?now . \n\
+  } WHERE { \n\
+  BIND(NOW() AS ?now) \n\
+}',
+		variables: [ "p", "o", "now"],
+		parameters: [
+      { label: "fromDefault", type: "iri", optional: false },
+      { label: "iri", type: "iri", optional: false },
+      { label: "active", type: "boolean", optional: false }
+    ]
+  }
 ];
 
 

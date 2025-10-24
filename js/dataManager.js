@@ -95,50 +95,76 @@ async function getData(obj, qinfo, writeonlytoo) {
 
   // Assumant que l’on ne récupère toujours qu’un seul IRI
   // Donc pas de liste d’IRI possible (/apis/{apiId}/resources non fonctionnel)
-  // On utilise que le premier de la liste (indice 0)
-  // @todo: Utiliser _.each() pour faire proprement (cohésion du code avec application d’origine)
+  // On n’utilise donc que le premier de la liste (indice 0)
+  // @todo: Utiliser _.each() pour faire proprement (cohésion du code)
   const cachedIri = obj.api.cache[mel.id][obj.iris[0]];
+
   // récupérer le graphe en cache s’il existe
   if (cachedIri != undefined && cachedIri.graph != undefined) {
     cachedGraph = cachedIri.graph
   }
 
-  // Si le graphe spécifié est différent du graphe en cache,
+  // Si le graphe demandé est différent du graphe en cache,
   // alors le cache pour cet élément est invalide
+  // et on charge un graphe d’inférence
   if (obj.graph != cachedGraph) {
     delete obj.api.cache[mel.id][obj.iris[0]];
-  }
 
-  // Si la ressource n’est pas dans le cache,
-  // existe-t-elle dans l’entrepôt?
-  // à faire avant le loading du infGraph?
-  if (!Object.keys(obj.api.cache[mel.id]).length) {
+    if (obj.graph != undefined) {
+      let reasonerActivated = false;
+      let endpoint = _.find(obj.api.config.endpoints, el => el.id === mel.types[0].endpoint );
 
-    //console.log("NOT IN CACHE")
+      for (const infGraph of endpoint.infGraphURI) {
 
-    // Valeurs à insérer dans le query template
-    let aux = {};
-    aux.firis = ["<"+obj.iris[0]+">"]; // pas l’idéal, voir note pour const cachedIri
+        // Valeurs à insérer dans le query template
+        let aux = {};
+        aux.iri = "<" + infGraph + ">";
 
-    // ASK pour 404
-    let qtemp = _.find(queryTemplates.queryTemplates, el => el.id === 'ask' );
-    const endpoint = _.find(obj.api.config.endpoints, el => el.id === mel.types[0].endpoint ); // voir ttype à régler ici (???)
+        let qtemp = _.find(queryTemplates.queryTemplates, el => el.id === 'testInfGraph' );
 
-    // ASK à utiliser éventuellement pour conditionner les traitements en écriture
-    // NOTE : bypass le cache de l’API...
-    const ask = await sparqlClient.queryEndpoint(endpoint, qtemp.template, aux, qinfo, obj.graph);
-    if (!ask.boolean) {
-      if (obj.infGraph != undefined) {
-        // CLEAR INFGRAPH (async sans await)
-        console.log(`${obj.infGraph} CLEARED (404)`)
+        // pour sélectionner le bon graphe dans sparqlClient
+        endpoint.checkReasoner = true;
+
+        const ask = await sparqlClient.queryEndpoint(endpoint, qtemp.template, aux, qinfo, obj.graph);
+        if (ask.boolean) { // ask {infGraph activated false}
+          reasonerActivated = true;
+          endpoint.checkReasoner = false;
+          obj.infGraph = infGraph;
+          break;
+        }
       }
-      return ask;
+      if (!reasonerActivated) {
+        throw Error("No inference graph available");
+      } else { // toggle!
+        let aux = {};
+        aux.iri = "<" + obj.infGraph + ">";
+        aux.active = "true";
+        let updateParams = endpoint.sparqlUpdate;
+        let qtemp = _.find(queryTemplates.queryTemplates, el => el.id === 'toggleActiveInfGraph' );
+        const toggleActiveInfGraph = await sparqlClient.queryEndpoint(updateParams, qtemp.template, aux, qinfo);
+
+        // LOAD INFGRAPH
+      }
     }
   }
 
 	// tipo correcto, pido los datos
 	let salida = await extractResources(obj.iris, mel, obj.api, qinfo, writeonlytoo, obj.graph);
-		
+
+  if (obj.infGraph != undefined) {
+
+    // CLEAR INFGRAPH (async sans await): hypothèse de positionnement no. 2
+    // reasonerActivated = false;???
+
+    let endpoint = _.find(obj.api.config.endpoints, el => el.id === mel.types[0].endpoint );
+    let aux = {};
+    aux.iri = "<" + obj.infGraph + ">";
+    aux.active = "false";
+    let updateParams = endpoint.sparqlUpdate;
+    let qtemp = _.find(queryTemplates.queryTemplates, el => el.id === 'toggleActiveInfGraph' );
+    const toggleActiveInfGraph = await sparqlClient.queryEndpoint(updateParams, qtemp.template, aux, qinfo);
+  }
+
 	// ahora genero la salida deseada
 	salida.data = await createRepresentations(obj.iris, mel, obj.api, writeonlytoo);
 	
