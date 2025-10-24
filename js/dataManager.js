@@ -91,6 +91,27 @@ async function getData(obj, qinfo, writeonlytoo) {
 	if (mel == undefined)
 		throw Error("Check your model, incorrect data type => " + obj.id);
 
+  // Si le cache est vide 
+  // Ou si la ressource demandée n’est pas dans le cache
+  // existe-t-elle dans l’entrepôt? (requete ASK)
+  if (!obj.api.cache[mel.id].length || !(obj.iris[0] in obj.api.cache[mel.id])) {
+
+    // Valeurs à insérer dans le query template
+    let aux = {};
+
+    // pas l’idéal, voir commentaire pour const cachedIri
+    aux.firis = ["<"+obj.iris[0]+">"];
+
+    // ASK pour 404
+    let qtemp = _.find(queryTemplates.queryTemplates, el => el.id === 'ask' );
+    const endpoint = _.find(obj.api.config.endpoints, el => el.id === mel.types[0].endpoint ); // voir ttype à régler ici (???)
+    const ask = await sparqlClient.queryEndpoint(endpoint, qtemp.template, aux, qinfo, obj.graph);
+
+    if (!ask.boolean) {
+      return ask;
+    }
+  }
+
   let cachedGraph; // undefined
 
   // Assumant que l’on ne récupère toujours qu’un seul IRI
