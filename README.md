@@ -1,5 +1,27 @@
-CRAFTS: Configurable REST APIs For Triple Stores
-==========
+# Branching
+
+Lignes directrices :
+
+- https://nvie.com/posts/a-successful-git-branching-model/
+
+## Remarques
+
+Les fusions sont effectuées avec `--no-ff` pour conserver la topographie du projet.
+Attention de nommer les branches de façon significative afin que les messages de fusion soient explicite.
+Penser également à complémenter le message de validation pour les fusions de branche, si nécessaire.
+Exemple : `Merge branch 'display-dev' into dev: traitement mappings JSON-LD`
+
+Des exceptions subsistent : certaines branches sont utilisées pour effectuer des `rebase`.
+Dans ce cas, les validations (commits) effectuées sur ces branches doivent porter un préfixe exactement équivalent (`===`) au nom de la branche.
+
+Ces branches sont les suivantes :
+
+- `doc`
+
+# Original CRAFTS README
+
+## CRAFTS: Configurable REST APIs For Triple Stores
+
 CRAFTS (Configurable REST APIs For Triple Stores) is a configurable generator of REST APIs to simplify access to triple stores.
 CRAFTS allows knowledge engineers to configure REST APIs over multiple triple stores. 
 Web developers can then use a CRAFTS API to read and write Linked Open Data. 
@@ -13,14 +35,14 @@ Please cite CRAFTS as:
 
 [Get the publication PDF](https://ieeexplore.ieee.org/document/9737489)
 
-Target audience
-==========
+### Target audience
+
 * Web developers struggling with Linked Open Data
 * Semantic Web practitioners
 
 
-Key features
-==========
+### Key features
+
 * Generic approach for creating REST APIs over Linked Open Data
 * Expose RDF resources through a CRAFTS API
 * Read and write operations over RDF resources
@@ -28,8 +50,8 @@ Key features
 * Access to multiple triple stores
 
 
-Installation
-==========
+### Installation
+
 CRAFTS is a Node.js web application. Edit the `data/config.js` file to parametrize your deployment (parameters are auto-descriptive).
 
 Assuming `npm` is installed, launching CRAFTS just requires the following two commands:
@@ -42,13 +64,13 @@ $ node app.js
 Alternatively, you can just try a live version of CRAFTS on [https://crafts.gsic.uva.es](https://crafts.gsic.uva.es)
 
 
-Training
-==========
+### Training
+
 * [A quick introduction to CRAFTS](https://crafts.gsic.uva.es/CRAFTSslides.pdf)
 * [A guide for using an API CRAFTS](https://crafts.gsic.uva.es/CRAFTSaccess101.pdf)
 * [A guide for configuring an API CRAFTS](https://crafts.gsic.uva.es/CRAFTSconfig101.html)
 
 
-Help us to improve
-==========
+### Help us to improve
+
 CRAFTS is available under an Apache 2.0 license. Please send us an email to [guiveg@tel.uva.es](mailto:guiveg@tel.uva.es) if you use or plan to use CRAFTS. Drop us also a message if you have comments or suggestions for improvement.
