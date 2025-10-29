@@ -60,25 +60,16 @@ async function queryEndpoint(endpoint, querytemp, pars, qinfo) {
     let json, text;
 
     if (options.method == "POST") {
-      // POST with Fuseki doesn't return JSON so we build it
-      // Preserve the sparql binding for now
-      // (in case it is needed elsewhere... but there is no binding )
-      json = {
-        "head": {
-          "vars": [ 'iri', 'value' ]
-        },
-        "results": {
-          "bindings": []
-        }
-      };
-      text = await response.text();
+      // POST with Fuseki doesn't return JSON so we define it
+      json = {};
+      text = await response.text(); // nothing here (empty string: ???)
     } else {
       // get the response body and return it
       json = await response.json();
     }
 		// incluyo la consulta
 		json.query = query;
-    json.text = text;
+    json.text = text; // undefined (GET) ou empty string (POST)
 
 		return Promise.resolve(json);			
 	} else {
