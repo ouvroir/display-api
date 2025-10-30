@@ -25,6 +25,23 @@
       }
     },
     {
+      "id": "/display-reasoner",
+      "sparqlURI": "http://localhost:8080/display-reasoner/query",
+      "graphURI": "urn:x-arq:DefaultGraph",
+      "httpMethod": "GET",
+      "authInfo": {
+        "user": "",
+        "password": "",
+        "type": "basic"
+      },
+      "sparqlUpdate": {
+        "id":	"/display-reasoner/update",
+        "sparqlURI": "http://localhost:8080/display-reasoner/update",
+        "graphURI":	"urn:x-arq:DefaultGraph",
+        "httpMethod":	"POST"
+      }
+    },
+    {
       "id": "/skosmos/sparql",
       "sparqlURI": "http://localhost:8080/skosmos/sparql",
       "graphURI": "urn:ouvroir:vocab",

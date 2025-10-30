@@ -96,7 +96,7 @@ FILTER (?iri IN ( {{{firis}}} )) \n\
 'ASK \n\
 FROM {{{fromDefault}}} \n\
 {\n\
-{{{iri}}} <https://ntnlv.ca/ns/utils#actived> false  . \n\
+{{{iri}}} <https://ntnlv.ca/ns/utils#activated> false  . \n\
 }',
 		variables: [ "p", "o" ],
 		parameters: [
@@ -114,8 +114,8 @@ FROM {{{fromDefault}}} \n\
 }; \n\
 WITH {{{fromDefault}}} \n\
 INSERT { \n\
-  {{{iri}}} <https://ntnlv.ca/ns/utils#actived> {{{active}}} ; \n\
-  <https://ntnlv.ca/ns/utils#timeActived> ?now . \n\
+  {{{iri}}} <https://ntnlv.ca/ns/utils#activated> {{{active}}} ; \n\
+  <https://ntnlv.ca/ns/utils#timeActivated> ?now . \n\
   } WHERE { \n\
   BIND(NOW() AS ?now) \n\
 }',
@@ -124,6 +124,60 @@ INSERT { \n\
       { label: "fromDefault", type: "iri", optional: false },
       { label: "iri", type: "iri", optional: false },
       { label: "active", type: "boolean", optional: false }
+    ]
+  },{
+		id: "loadDataInInfGraph",
+		description: "Load data in the selected inference graph",
+		template: 
+'WITH {{{inferenceGraphIri}}} \n\
+INSERT { ?s ?p ?o } WHERE { \n\
+  SERVICE {{{serviceIri}}} { \n\
+    GRAPH {{{graph}}} { ?s ?p ?o } \n\
+  } \n\
+}; \n\
+WITH {{{inferenceGraphIri}}} \n\
+INSERT { \n\
+  ?s1 ?p1 ?o1 . \n\
+  ?o1 ?p2 ?o2 . \n\
+  ?o2 ?p3 ?o3 . \n\
+} WHERE { \n\
+  SERVICE {{{serviceIri}}} { \n\
+    { \n\
+      SELECT DISTINCT ?s1 { \n\
+        GRAPH {{{graph}}} { \n\
+          { ?s1 ?p ?o } UNION { ?o2 ?p2 ?s1 } \n\
+          FILTER EXISTS { ?o2 ?p2 ?s1 } \n\
+        } \n\
+      } \n\
+    } \n\
+    GRAPH {{{metadataGraphURI}}} { \n\
+      { ?s1 ?p1 ?o1 } \n\
+      OPTIONAL { \n\
+        ?o1 ?p2 ?o2 . \n\
+        OPTIONAL { \n\
+          ?o2 ?p3 ?o3 . \n\
+        } \n\
+      } \n\
+    } \n\
+  } \n\
+};',
+		variables: [],
+		parameters: [
+      { label: "inferenceGraphIri", type: "iri", optional: false },
+      { label: "serviceIri", type: "iri", optional: false },
+      { label: "graph", type: "iri", optional: false },
+      { label: "metadataGraphURI", type: "iri", optional: false },
+    ]
+  },{
+		id: "clearInfGraph",
+		description: "Clear inference graph",
+		template: 
+'CLEAR GRAPH {{{inferenceGraphIri}}}; \n\
+ADD <urn:ouvroir:display:models> TO {{{inferenceGraphIri}}}; \n\
+',
+		variables: [],
+		parameters: [
+      { label: "inferenceGraphIri", type: "iri", optional: false }
     ]
   }
 ];
