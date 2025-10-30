@@ -125,6 +125,8 @@ async function getData(obj, qinfo, writeonlytoo) {
     cachedGraph = cachedIri.graph
   }
 
+  let inferenceEndpoint = _.find(obj.api.config.endpoints, el => el.id === '/display-reasoner' );
+
   // Si le graphe demandé est différent du graphe en cache,
   // alors le cache pour cet élément est invalide
   // et on charge un graphe d’inférence
@@ -156,26 +158,39 @@ async function getData(obj, qinfo, writeonlytoo) {
       }
       if (!reasonerActivated) {
         throw Error("No inference graph available");
-      } else { // toggle!
+      } else {
+        // toggle (indiquer l’activation)
         let aux = {};
         aux.iri = "<" + obj.infGraph + ">";
         aux.active = "true";
         let updateParams = endpoint.sparqlUpdate;
         let qtemp = _.find(queryTemplates.queryTemplates, el => el.id === 'toggleActiveInfGraph' );
-        const toggleActiveInfGraph = await sparqlClient.queryEndpoint(updateParams, qtemp.template, aux, qinfo);
+        // no await
+        sparqlClient.queryEndpoint(updateParams, qtemp.template, aux, qinfo);
 
-        // LOAD INFGRAPH
+        // Load data in infGraph
+        updateParams = inferenceEndpoint.sparqlUpdate;
+
+        // SPARQL query params
+        aux.inferenceGraphIri = "<" + obj.infGraph + ">";
+        aux.serviceIri = "<" + endpoint.sparqlURI  + ">";
+        aux.graph = "<" + obj.graph  + ">";
+        aux.metadataGraphURI = "<" + endpoint.metadataGraphURI  + ">";
+
+        qtemp = _.find(queryTemplates.queryTemplates, el => el.id === 'loadDataInInfGraph' );
+        await sparqlClient.queryEndpoint(updateParams, qtemp.template, aux, qinfo);
       }
     }
   }
 
 	// tipo correcto, pido los datos
-	let salida = await extractResources(obj.iris, mel, obj.api, qinfo, writeonlytoo, obj.graph);
+	let salida = await extractResources(obj.iris, mel, obj.api, qinfo, writeonlytoo, obj.infGraph);
 
   if (obj.infGraph != undefined) {
 
     // CLEAR INFGRAPH (async sans await): hypothèse de positionnement no. 2
     // reasonerActivated = false;???
+    // @todo : à faire aussi lorsqu’une erreur est levée!!! Sinon l’état des données n’est plus correct lors de la prochaine requête
 
     let endpoint = _.find(obj.api.config.endpoints, el => el.id === mel.types[0].endpoint );
     let aux = {};
@@ -183,7 +198,14 @@ async function getData(obj, qinfo, writeonlytoo) {
     aux.active = "false";
     let updateParams = endpoint.sparqlUpdate;
     let qtemp = _.find(queryTemplates.queryTemplates, el => el.id === 'toggleActiveInfGraph' );
-    const toggleActiveInfGraph = await sparqlClient.queryEndpoint(updateParams, qtemp.template, aux, qinfo);
+    // no await
+    sparqlClient.queryEndpoint(updateParams, qtemp.template, aux, qinfo);
+
+    aux.inferenceGraphIri = "<" + obj.infGraph + ">";
+    updateParams = inferenceEndpoint.sparqlUpdate;
+    qtemp = _.find(queryTemplates.queryTemplates, el => el.id === 'clearInfGraph' );
+    // no await
+    sparqlClient.queryEndpoint(updateParams, qtemp.template, aux, qinfo);
   }
 
 	// ahora genero la salida deseada
