@@ -94,7 +94,7 @@ async function getData(obj, qinfo, writeonlytoo) {
   // Si le cache est vide 
   // Ou si la ressource demandée n’est pas dans le cache
   // existe-t-elle dans l’entrepôt? (requete ASK)
-  if (!obj.api.cache[mel.id].length || !(obj.iris[0] in obj.api.cache[mel.id])) {
+  if (Object.keys(obj.api.cache[mel.id]).length === 0 || !(obj.iris[0] in obj.api.cache[mel.id])) {
 
     // Valeurs à insérer dans le query template
     let aux = {};
