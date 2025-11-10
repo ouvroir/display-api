@@ -112,27 +112,20 @@ async function getData(obj, qinfo, writeonlytoo) {
     }
   }
 
-  let cachedGraph; // undefined
-
   // Assumant que l’on ne récupère toujours qu’un seul IRI
   // Donc pas de liste d’IRI possible (/apis/{apiId}/resources non fonctionnel)
   // On n’utilise donc que le premier de la liste (indice 0)
   // @todo: Utiliser _.each() pour faire proprement (cohésion du code)
   const cachedIri = obj.api.cache[mel.id][obj.iris[0]];
-
-  // récupérer le graphe en cache s’il existe
-  if (cachedIri != undefined && cachedIri.graph != undefined) {
-    cachedGraph = cachedIri.graph
-  }
-
   let inferenceEndpoint = _.find(obj.api.config.endpoints, el => el.id === '/display-reasoner' );
 
-  // Si le graphe demandé est différent du graphe en cache,
+  // Si le graphe demandé est différent du graphe de la ressource en cache,
   // alors le cache pour cet élément est invalide
-  // et on charge un graphe d’inférence
-  if (obj.graph != cachedGraph) {
+  if (cachedIri?.graph != obj.graph) {
     delete obj.api.cache[mel.id][obj.iris[0]];
 
+    // Si on demande effectivement un graphe,
+    // alors on charge un graphe d’inférence
     if (obj.graph != undefined) {
       let reasonerActivated = false;
       let endpoint = _.find(obj.api.config.endpoints, el => el.id === mel.types[0].endpoint );
