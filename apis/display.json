@@ -69,6 +69,20 @@
           "targetId": "coreProperties",
           "embed": true,
           "endpoint": "/display/sparql"
+        },
+        {
+          "label": "influenced",
+          "iri": "http://www.cidoc-crm.org/cidoc-crm/P15i_influenced",
+          "targetId": "coreProperties",
+          "embed": true,
+          "endpoint": "/display/sparql"
+        },
+        {
+          "label": "created_by",
+          "iri": "http://www.cidoc-crm.org/cidoc-crm/P94i_was_created_by",
+          "targetId": "produced_by",
+          "embed": true,
+          "endpoint": "/display/sparql"
         }
       ],
       "types":[
@@ -267,6 +281,13 @@
           "label": "dimension",
           "iri": "http://www.cidoc-crm.org/cidoc-crm/P43_has_dimension",
           "targetId": "dimension",
+          "embed": true,
+          "endpoint": "/display/sparql"
+        },
+        {
+          "label": "member_of",
+          "iri": "https://linked.art/ns/terms/member_of",
+          "targetId": "coreProperties",
           "embed": true,
           "endpoint": "/display/sparql"
         },
@@ -480,6 +501,13 @@
           "label": "referred_to_by",
           "iri": "http://www.cidoc-crm.org/cidoc-crm/P67i_is_referred_to_by",
           "targetId": "referred_to_by",
+          "embed": true,
+          "endpoint": "/display/sparql"
+        },
+        {
+          "label": "influenced_by",
+          "iri": "http://www.cidoc-crm.org/cidoc-crm/P15_was_influenced_by",
+          "targetId": "coreProperties",
           "embed": true,
           "endpoint": "/display/sparql"
         },
@@ -714,6 +742,35 @@
         }
       ],
       "oprops": [
+        {
+          "label": "classified_as",
+          "iri": "http://www.cidoc-crm.org/cidoc-crm/P2_has_type",
+          "targetId": "classified_as",
+          "embed": true,
+          "endpoint": "/display/sparql"
+        },
+        {
+          "label": "identified_by",
+          "iri": "http://www.cidoc-crm.org/cidoc-crm/P1_is_identified_by",
+          "targetId": "identified_by",
+          "embed": true,
+          "endpoint": "/display/sparql"
+        },
+        {
+          "label": "referred_to_by",
+          "iri": "http://www.cidoc-crm.org/cidoc-crm/P67i_is_referred_to_by",
+          "targetId": "referred_to_by",
+          "embed": true,
+          "endpoint": "/display/sparql"
+        },
+        {
+          "label": "used_for",
+          "iri": "http://www.cidoc-crm.org/cidoc-crm/P16i_was_used_for",
+          "targetId": "coreProperties",
+          "embed": true,
+          "endpoint": "/display/sparql",
+          "record": "global"
+        },
         {
           "label": "member",
           "iri": "https://linked.art/ns/terms/has_member",
