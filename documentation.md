@@ -284,9 +284,9 @@ Exemple :
 
 ## Créer
 
-Mise à jour de l’API, 2025-06-05
+*Glossaire*
 
-N.B. : on utilise "ressource" au sens RDF du terme, c’est-à-dire une entité décrite par les modèles que nous utilisons; principalement : les nœuds d’un graphe de données RDF.
+- ressource : le terme « ressource » est utilisé au sens RDF du terme, c’est-à-dire, dans notre contexte, une entité dont la description est structurée par les modèles que nous utilisons; autrement dit : les nœuds d’un graphe de données RDF.
 
 ### Introduction
 
@@ -304,12 +304,12 @@ C’est PUT qui doit permettre cela (par contrainte sémantique normative).
 
 La méthode **PUT est utilisé pour créer ou remplacer** une ressource.
 
-On insère des graphes de données RDF formatés en JSON-LD, conforme au modèle Linked Art, auxquels on ajoute les spécificités de Display.
+On insère des graphes de données RDF formatés en JSON-LD, conforme au modèle Linked Art, auxquels on ajoute les spécificités de Display. Un graphe est transmis dans le corps de la requête.
 
 Le format à insérer est une version allégée du format renvoyé par la méthode GET :
 
 - le champ `@context` **doit obligatoirement** être omis
-- champs où un IRI est attendu : pour une seule valeur, celle-ci n’a pas besoin d’être mise dans une liste, mais elle peut aussi se trouver dans une liste d’une seule valeur
+- champs où un IRI est attendu : pour une seule valeur, celle-ci n’a pas besoin d’être incluse dans une liste, mais elle peut aussi se trouver dans une liste d’une seule valeur
 - il n’est pas nécessaire de décrire certains types de ressources référencées dans le graphe, par exemple un terme de vocabulaire contrôlé ou les valeurs énumérées présentes dans la base de données;
   - seulement l’IRI suffit
 
