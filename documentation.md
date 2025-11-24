@@ -273,13 +273,11 @@ Statut : unstable
 
 Note :
 
-- Pour lister toutes les expositions disponibles, on utilise le @queryparam `id=set` avec une ressource spéciale : https://ouvroir.umontreal.ca/data/exhibition
+- Pour lister toutes les expositions disponibles, on utilise le @queryparam `id=set` avec une ressource spéciale : https://ouvroir.umontreal.ca/data/exhibitions
 
 Exemple :
 
-- https://crafts.ntnlv.ca:450/apis/display/resource?id=set&iri=https://ouvroir.umontreal.ca/data/exhibition
-- **@todo** **404 ?! à investiguer. déployé?**
-
+- https://crafts.ntnlv.ca:450/apis/display/resource?id=set&iri=https://ouvroir.umontreal.ca/data/exhibitions
 
 
 ## Créer
@@ -427,7 +425,7 @@ L’API implémente une version limitée du standard RFC 6902 (JSON Patch) :
 
 ### Format
 
-Une liste d’opération à effectuer :
+Une liste d’opérations à effectuer (chaque opération est un objet json) :
 
 ```json
 [
@@ -455,7 +453,7 @@ On peut accéder à l’item d’une liste en utilisant son indice (`/baz/0`), o
 N.B. : l’API implémente un maximum de deux token dans le chemin ; le deuxième token peut être :
 
 - un indice numérique ou générique
-- ou le nom d’un champ de deuxième niveau (peu fréquent  puisque la plupart des valeurs sont dans des listes)
+- ou le nom d’un champ de deuxième niveau; peu fréquent (mais possible) puisque la plupart des valeurs sont dans des listes
 
 **Champ `value` :** valeur à ajouter ou valeur de remplacement
 
