@@ -37,7 +37,7 @@ WHERE {\n\
 		template:
 'SELECT DISTINCT ?iri ?type ?mapping  \n \
 FROM {{{fromDefault}}} \n\
-{{#union}}FROM {{{.}}} \n{{/union}}\
+{{#union}}FROM <{{{.}}}> \n{{/union}}\
 WHERE { \n \
 ?iri a{{#inferred}}/<http://www.w3.org/2000/01/rdf-schema#subClassOf>*{{/inferred}} ?type . \n \
 OPTIONAL { \n \
@@ -58,7 +58,7 @@ FILTER (?iri IN ( {{{firis}}} )) }',
 		template: 
 'SELECT DISTINCT ?iri ?value \n\
 FROM {{{fromDefault}}} \n\
-{{#union}}FROM {{{.}}} \n{{/union}}\
+{{#union}}FROM <{{{.}}}> \n{{/union}}\
 WHERE { \n\
 {{^inv}}?iri <{{{propiri}}}> ?value . \n{{/inv}}\
 {{#inv}}?value <{{{propiri}}}> ?iri . \n{{/inv}}\
@@ -77,7 +77,7 @@ FILTER (?iri IN ( {{{firis}}} )) }',
 		template: 
 'ASK \n\
 FROM {{{fromDefault}}} \n\
-{{#union}}FROM {{{.}}} \n{{/union}}\
+{{#union}}FROM <{{{.}}}> \n{{/union}}\
 {\n\
 ?iri ?p ?o . \n\
 FILTER (?iri IN ( {{{firis}}} )) \n\
@@ -103,7 +103,8 @@ FROM {{{fromDefault}}} \n\
       { label: "fromDefault", type: "iri", optional: false },
       { label: "iri", type: "iri", optional: false }
     ]
-	},{
+	},
+  {
 		id: "toggleActiveInfGraph",
 		description: "Toggle Active Inference Graph",
 		template: 
@@ -125,7 +126,8 @@ INSERT { \n\
       { label: "iri", type: "iri", optional: false },
       { label: "active", type: "boolean", optional: false }
     ]
-  },{
+  },
+  {
 		id: "loadDataInInfGraph",
 		description: "Load data in the selected inference graph",
 		template: 
@@ -146,7 +148,7 @@ INSERT { \n\
       SELECT DISTINCT ?s1 { \n\
         GRAPH {{{graph}}} { \n\
           { ?s1 ?p ?o } UNION { ?o2 ?p2 ?s1 } \n\
-          FILTER EXISTS { ?o2 ?p2 ?s1 } \n\
+          #FILTER EXISTS { ?o2 ?p2 ?s1 } \n\
         } \n\
       } \n\
     } \n\
@@ -168,7 +170,8 @@ INSERT { \n\
       { label: "graph", type: "iri", optional: false },
       { label: "metadataGraphURI", type: "iri", optional: false },
     ]
-  },{
+  },
+  {
 		id: "clearInfGraph",
 		description: "Clear inference graph",
 		template: 

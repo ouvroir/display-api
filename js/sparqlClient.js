@@ -7,21 +7,51 @@ const logger = require('./logger'); // para el logging
 async function queryEndpoint(endpoint, querytemp, pars, qinfo, graph) {
 	// preparo consulta
 
-  // switch?
-	if (endpoint.graphURI != undefined) {
-    // pdata["default-graph-uri"] = endpoint.graphURI;
-    pars.fromDefault = `<${endpoint.graphURI}>`;
+  // if (endpoint.graphURI != undefined) {
+  //   // pdata["default-graph-uri"] = endpoint.graphURI;
+  //   pars.fromDefault = `<${endpoint.graphURI}>`;
+  // }
+  // if (graph != undefined && endpoint.id == '/display-reasoner') {
+  //   // pdata["default-graph-uri"] = graph;
+  //   pars.fromDefault = `<${graph}>`;
+  // } else if (graph != undefined && endpoint.id != '/display-reasoner') {
+  //   pars.fromDefault = `<${graph}>`;
+  //   pars.union = `<${endpoint.metadataGraphURI}>`;
+  // } else {
+  //   pars.union = `<${endpoint.metadataGraphURI}>`;
+  // }
+  // if (endpoint.checkReasoner) {
+  //   // pdata["default-graph-uri"] = graph;
+  //   pars.fromDefault = `<${endpoint.graphURI}>`;
+  // } 
+
+let from;
+let union = endpoint.metadataGraphURI;
+
+if (endpoint.checkReasoner) {
+
+  // TODO mettre les <> dans le template pour éviter de traiter des chaînes ici
+  from = `<${endpoint.graphURI}>`;
+
+} else if (graph !== undefined) {
+
+  from = (endpoint.id === '/skosmos/sparql')
+    ? `<${endpoint.graphURI}>`
+    : `<${graph}>`;
+
+  if (endpoint.id === '/display-reasoner') {
+    union = undefined;
   }
-  if (graph != undefined) {
-    // pdata["default-graph-uri"] = graph;
-    pars.fromDefault = `<${graph}>`;
-  } else {
-    pars.union = `<${endpoint.metadataGraphURI}>`;
-  }
-  if (endpoint.checkReasoner) {
-    // pdata["default-graph-uri"] = graph;
-    pars.fromDefault = `<${endpoint.graphURI}>`;
-  } 
+
+} else if (endpoint.graphURI !== undefined) {
+
+  from = `<${endpoint.graphURI}>`;
+
+}
+
+// error handling if from === undefined 400 ou 500
+pars.fromDefault = from;
+if (union) pars.union = union;
 
 	// substitute parameters with mustache	
 	let	query = mustache.render(querytemp, pars);
