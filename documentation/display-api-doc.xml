@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="xsl" href="./display-api-doc.xsl"?>
+
+<!DOCTYPE documentation [
+  <!ELEMENT documentation (api)>
+    <!ATTLIST documentation config-source CDATA #REQUIRED>
+  <!ELEMENT api ANY>
+    <!ATTLIST api base-url CDATA #REQUIRED>
+  <!ELEMENT entities ANY>
+  <!ELEMENT entity (description?, mappings, excludeProperties?)>
+    <!ATTLIST entity id NMTOKEN #REQUIRED>
+    <!ATTLIST entity endpoint NMTOKEN #IMPLIED>
+    <!ATTLIST entity range NMTOKEN #IMPLIED>
+  <!ELEMENT description ANY>
+    <!ATTLIST description about NMTOKEN #IMPLIED>
+    <!ATTLIST description type NMTOKEN #IMPLIED>
+  <!ELEMENT en ANY>  
+  <!ELEMENT mappings (mapping)+>
+  <!ELEMENT mapping ANY>
+    <!ATTLIST mapping string NMTOKEN #REQUIRED>
+
+    <!ATTLIST mapping subclassOf NMTOKEN #IMPLIED>
+  <!ELEMENT propDescriptions ANY>
+  <!ELEMENT excludeProperties ANY>
+]>
+
+<documentation config-source="../apis/display.json">
+  <api base-url="https://crafts.ntnlv.ca:450/apis/display/resource">
+
+    <!-- Un schéma OpenAPI est associé à chaque ressource listée dans cet élément -->
+    <!-- doc: @id doit obligatoirement correspondre à une propriété configurée dans l’API. -->
+    <!-- doc: @id peut être une entité accessible par endpoint ou non, ou une propriété. -->
+    <!-- doc: Pour être documentée, l’entité doit être consignée ici. -->
+    <entities>
+      <entity id="abstract-work" endpoint="true">
+        <description>
+          <en>The idea (or abstract work) for an entity that is an `Event`, `Activity` or `Exhbit`. Physical objets (such as Exhibits) can be subject of the abstract work. Activities (such as Exhibitions) can be influenced by the abstract work.</en>
+        </description>
+        <!-- doc: Authorized class mapping for JSON-LD -->
+        <mappings>
+          <mapping string="PropositionalObject">
+            <!-- doc: Classification terms -->
+            <types>
+              <type iri="urn:foobar:1" required="true"/>
+              <type iri="urn:foobar:2"/>
+              <type iri="urn:foobar:3"/>
+            </types>
+          </mapping>
+        </mappings>
+      </entity>
+
+      <entity id="exhibit" endpoint="true">
+        <description>
+          <en>Any exhibition entity, such as a work of art, artifact, device, building element, or furniture, with a characteristic artistic, aesthetic or technical function, with form or position that might be described by the means of topological relationship within an exhibition space, optionally constituent of a display entity.</en>
+        </description>
+        <mappings>
+          <mapping string="Display" subclassOf="Exhibit"/>
+          <mapping string="Element" subclassOf="Exhibit"/>
+          <mapping string="Exhibit"/>
+        </mappings>
+      </entity>
+      <entity id="exhibition" endpoint="true">
+        <mappings>
+          <mapping string="Activity"/>
+        </mappings>
+        <excludeProperties>
+          <space/>
+          <foo/>
+        </excludeProperties>
+      </entity>
+      <entity id="set" endpoint="true">
+        <mappings>
+          <mapping string="Set"/>
+        </mappings>
+      </entity>
+      <entity id="space" endpoint="true">
+        <mappings>
+          <mapping string="ExibitionSpace"/>
+          <mapping string="Space"/>
+        </mappings>
+      </entity>
+      <entity id="actor">
+        <description>
+          <en format="md">'A json object representing the actor. The `id` of an actor entity is the concatenation of the string `https://ouvroir.umontreal.ca/data/actor/` and the slugified value of the `_label` field. **Note:** this identification pattern is not consitent with the standard identification method used elsewhere in the data model; the preferred approach would be to use the `identified_by` property'</en>
+        </description>
+        <mappings>
+          <mapping string="Group"/>
+          <mapping string="Person"/>
+        </mappings>
+        <excludeProperties>
+          <classified_as/>
+        </excludeProperties>
+      </entity>
+      <entity id="carried_out_by" range="actor">
+        <excludeProperties>
+          <classified_as/>
+        </excludeProperties>
+      </entity>
+      <entity id="created_by" range="creation">
+        <description>
+          <en>A json object representing the creation of the work</en>
+        </description>
+        <mappings>
+          <mapping string="Creation"/>
+        </mappings>        
+      </entity>
+      <entity id="dimension" range="dimension">
+        <description>
+          <en>A json object representing the dimension of the object</en>
+        </description>
+        <mappings>
+          <mapping string="Dimension"/>
+        </mappings>        
+      </entity>
+      <entity id="identified_by" range="linguistic_appellation">
+        <description>
+          <en>Names are used to provide an identifying label to the entity via identified_by</en></description>
+        <mappings>
+          <mapping string="Identifier"/>
+          <mapping string="Name"/>
+        </mappings>
+      </entity>
+      <entity id="interface" range="interface">
+        <description>
+          <en format="md">'**Pathway interface** is a relation describing the way of circulating between spaces. It allows qualifying the relationship of two or more exhibition spaces, indicating that these spaces are connected together so that one can go from one space to another. Pathway interface can be the `interface of` an exhibition space and may be `provided_by` an exhibition element. **Hanging interface** is a relation describing the hanging of an exhibit using an element. It allows qualifying the relationship of two or more things, where at least one is an exhibit and at least one is an exhibition element, indicating that this element is used for the hanging of the exhibit. Hanging interface can be the `interface_of` an exhibit and may be `provided_by` an exhibition element.'</en>
+        </description>
+        <mappings>
+          <mapping string="HangingInterface"/>
+          <mapping string="PathwayInterface"/>
+        </mappings>
+        <excludeProperties>
+          <interface_of/>
+        </excludeProperties>
+      </entity>
+      <entity id="referred_to_by" range="linguistic_object">
+        <mappings>
+          <mapping string="LinguisticeObject"/>
+        </mappings>        
+      </entity>
+      <entity id="produced_by" range="production">
+        <description>
+          <en>The beginning of a physical thing</en>
+        </description>
+        <mappings>
+          <mapping string="Production"/>
+        </mappings>
+      </entity>
+      <entity id="timeSpan">
+        <description>
+          <en>The range of time for an activity</en>
+        </description>
+        <mappings>
+          <mapping string="TimeSpan"/>
+        </mappings>
+      </entity>
+    </entities>
+
+    <propDescriptions>
+      <description about="adjacent_zone" type="array-uri">
+        <en>An array of string values, each of which MUST be the HTTPS URI of another space adjacent to the current space, or sharing a common PathwayInterface with the current space, but do not intersect</en>
+      </description>
+      <description about="about" type="array-uri">
+        <en>An array of string values, each of which MUST be the HTTPS URI of another entity of any type, that this work is primarily about</en>
+      </description>
+      <description about="carried_out_by">
+        <en>An array of json objects, each of which is a reference to a Person or Group that carried out the activity</en>
+      </description>
+      <description about="content-name">
+        <en>The string form of the Name</en>
+      </description>
+      <description about="classified_as" type="array-uri">
+        <en>An array of string values, each of which MUST be the HTTPS URI of a classification term</en>
+      </description>
+      <description about="dimension">
+        <en>An array of json objects, each of which is a Dimension, such as height or width, of the current object</en>
+      </description>
+      <description about="equivalent" type="array-uri">
+        <en>An array of string values, each of which MUST be the HTTPS URI of an external identity and description of the current entity</en>
+      </description>
+      <description about="has_exhibition_space" type="array-uri">
+        <en>An array of string values, each of which MUST be the HTTPS URI of another space contained in the current space</en>
+      </description>
+      <description about="id">
+        <en>The value MUST be the HTTPS URI of the resource</en>
+      </description>
+      <description about="identified_by">
+        <en>An array of json objects, each of which is a name/title for the resource, or an identifier for the ressource</en>
+      </description>
+      <description about="included_in" type="array-uri">
+        <en format="md">'An array of string values, each of which MUST be the HTTPS URI of a Display that includes the Exhibit. **Not to be confused with `contained_in`**'</en>
+      </description>
+      <description about="includes" type="array-uri">
+        <en format="md">'An array of string values, each of which MUST be the HTTPS URI of an Exhibit. **Only usable when the `type` is `Display`**'</en>
+      </description>
+      <description about="influenced" type="array-uri">
+        <en>An array of string values, each of which MUST be the HTTPS URI of an activity influenced by the entity. Note: usage in Display API to be confirmed.</en>
+      </description>
+      <description about="interface">
+        <en>An array of json objects, each of which is an interface that the entity is linked to.</en>
+      </description>
+      <description about="intersects_zone" type="array-uri">
+        <en>An array of string values, each of which MUST be the HTTPS URI of another space whose spatial extent intersect with the current space</en>
+      </description>
+      <description about="label">
+        <en>Gives a human readable label as a string, intended only for developers or other people reading the data to understand what they are looking at (Linked Art requirement)</en>
+      </description>
+      <description about="language" type="array-uri">
+        <en>An array of string values, each of which MUST be the HTTPS URI of a language</en>
+      </description>
+      <description about="member_of" type="array-uri">
+        <en>An array of string values, each of which MUST be the HTTPS URI of a Set that the current object is a member</en>
+      </description>
+      <description about="provided_by" type="array-uri">
+        <en>An array of string values, each of which MUST be the HTTPS URI of an Element that provides the interface</en>
+      </description>
+      <description about="referred_to_by">
+        <en>An array of json objects, each of which is a human readable statement about the resource</en>
+      </description>
+      <description about="timespan">
+        <en>A json object recording when the event occured</en></description>
+      <description about="type">
+        <en>The class for the resource</en>
+      </description>
+      <description about="type-of-exhibit">
+        <en>The class for the resource; Element and Display are subclasses of Exhibit, so they have additionnal properties documented in their respective fields</en>
+      </description>
+      <description about="value">
+        <en>The numeric value of the dimension</en>
+      </description>
+      <description about="sub_element" type="array-uri">
+        <en format="md">'An array of string values, each of which MUST be the HTTPS URI of an Element that the current Element is hosting (e.g. a wall hosts a door or window). **Only usable when the `type` is `Element`**'</en>
+      </description>
+      <description about="subject_of" type="array-uri">
+        <en format="md">'An array of string values, each of which MUST be the HTTPS URI of an Abstract Work. **Note**: This field is used to link the exhibits and the abstract work when the work is composed of more than one exhibit; Not to be confused with the `part_of` property that links only physical objects'</en>
+      </description>
+      <description about="exhibit_in_range" type="array-uri">
+        <en>An array of string values, each of which MUST be the HTTPS URI of an Exhibit that the current Exhibit is linked to by the means of topological relationship</en>
+      </description>
+      <description about="unit" type="array-uri">
+        <en format="md">'An array containing only one string value, which MUST be the HTTPS URI of the dimension unit. **Note**: This field aslo accepts a single string value (parsed as an array of one string value)'</en>
+      </description>
+      <description about="used_specific_object" type="array-uri">
+        <en format="md">An array of string values, each of which MUST be the HTTPS URI of a Set entity that was instrumental in the carrying out of the activity.</en>
+      </description>
+    </propDescriptions>
+
+  </api>
+</documentation>
