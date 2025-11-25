@@ -36,7 +36,10 @@ function stringToIri (string) {
       case "Activity":
         iri = `${crm}E7_Activity`
         break;
-      case "Dimension":
+      case "Creation":
+        iri = `${crm}E65_Creation`
+        break;
+        case "Dimension":
         iri = `${crm}E54_Dimension`
         break;
       case "Group":
