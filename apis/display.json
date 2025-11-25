@@ -53,6 +53,7 @@
       }
     }
   ],
+  "comment": "Nouveau champ 'record' des propriétés (dprops, oprops, types) : global = enregistrement dans les deux graphes (metadata et hypothèse); display = enresgistrement dans le grpahe d’hypothèse seulement; meta = enresgistrement dans le graphe d’hypothèse seulement; défaut (record is undefined) = metadata seulement",
   "model": [
     {
       "id": "abstract-work",
@@ -61,7 +62,8 @@
         {
           "label": "_label",
           "iri": "http://www.w3.org/2000/01/rdf-schema#label",
-          "endpoint": "/display/sparql"
+          "endpoint": "/display/sparql",
+          "record": "global"
         }
       ],
       "oprops": [
@@ -92,6 +94,21 @@
           "targetId": "coreProperties",
           "embed": true,
           "endpoint": "/display/sparql"
+        },
+        {
+          "label": "influenced",
+          "iri": "http://www.cidoc-crm.org/cidoc-crm/P15i_influenced",
+          "targetId": "coreProperties",
+          "embed": true,
+          "endpoint": "/display/sparql",
+          "record": "global"
+        },
+        {
+          "label": "created_by",
+          "iri": "http://www.cidoc-crm.org/cidoc-crm/P94i_was_created_by",
+          "targetId": "produced_by",
+          "embed": true,
+          "endpoint": "/display/sparql"
         }
       ],
       "types":[
@@ -100,7 +117,8 @@
           "restrictions": [
             "FILTER (?type IN ( <http://www.cidoc-crm.org/cidoc-crm/E89_Propositional_Object> ))"
           ],
-          "endpoint": "/display/sparql"
+          "endpoint": "/display/sparql",
+          "record": "global"
         }
       ]
     },
@@ -192,7 +210,8 @@
         {
           "label": "_label",
           "iri": "http://www.w3.org/2000/01/rdf-schema#label",
-          "endpoint": "/display/sparql"
+          "endpoint": "/display/sparql",
+          "record": "global"
         }
       ],
       "oprops": [],
@@ -203,7 +222,8 @@
             "FILTER (?type NOT IN ( <http://www.w3.org/2002/07/owl#Thing>, <http://www.w3.org/2000/01/rdf-schema#Resource>, <https://w3id.org/bot#Zone>, <http://www.cidoc-crm.org/cidoc-crm/E22_Human-Made_Object> ))",
             "FILTER NOT EXISTS { ?subclass ^a  ?iri ; <http://www.w3.org/2000/01/rdf-schema#subClassOf> ?type . FILTER (?subclass != ?type) FILTER (?subclass != <https://w3id.org/bot#Element>)}"
           ],
-          "endpoint": "/display/sparql"
+          "endpoint": "/display/sparql",
+          "record": "global"
         }
       ]
     },
@@ -254,7 +274,8 @@
         {
           "label": "_label",
           "iri": "http://www.w3.org/2000/01/rdf-schema#label",
-          "endpoint": "/display/sparql"
+          "endpoint": "/display/sparql",
+          "record": "global"
         }
       ],
       "oprops": [
@@ -294,6 +315,14 @@
           "endpoint": "/display/sparql"
         },
         {
+          "label": "member_of",
+          "iri": "https://linked.art/ns/terms/member_of",
+          "targetId": "coreProperties",
+          "embed": true,
+          "endpoint": "/display/sparql",
+          "record": "display"
+        },
+        {
           "label": "subject_of",
           "iri": "http://www.cidoc-crm.org/cidoc-crm/P129i_is_subject_of",
           "targetId": "coreProperties",
@@ -305,154 +334,176 @@
           "iri": "https://w3id.org/bot#hasSubElement",
           "targetId": "coreProperties",
           "embed": true,
-          "endpoint": "/display/sparql"
+          "endpoint": "/display/sparql",
+          "record": "display"
         },
         {
           "label": "above",
           "iri": "https://w3id.org/display#above",
           "targetId": "coreProperties",
           "embed": true,
-          "endpoint": "/display/sparql"
+          "endpoint": "/display/sparql",
+          "record": "display"
         },
         {
           "label": "back_to_back",
           "iri": "https://w3id.org/display#backToBack",
           "targetId": "coreProperties",
           "embed": true,
-          "endpoint": "/display/sparql"
+          "endpoint": "/display/sparql",
+          "record": "display"
         },
         {
           "label": "behind",
           "iri": "https://w3id.org/display#behind",
           "targetId": "coreProperties",
           "embed": true,
-          "endpoint": "/display/sparql"
+          "endpoint": "/display/sparql",
+          "record": "display"
         },
         {
           "label": "below",
           "iri": "https://w3id.org/display#below",
           "targetId": "coreProperties",
           "embed": true,
-          "endpoint": "/display/sparql"
+          "endpoint": "/display/sparql",
+          "record": "display"
         },
         {
           "label": "contained_in",
           "iri": "https://w3id.org/display#containedIn",
           "targetId": "coreProperties",
           "embed": true,
-          "endpoint": "/display/sparql"
+          "endpoint": "/display/sparql",
+          "record": "display"
         },
         {
           "label": "contains",
           "iri": "https://w3id.org/display#contains",
           "targetId": "coreProperties",
           "embed": true,
-          "endpoint": "/display/sparql"
+          "endpoint": "/display/sparql",
+          "record": "display"
         },
         {
           "label": "covered_by",
           "iri": "https://w3id.org/display#coveredBy",
           "targetId": "coreProperties",
           "embed": true,
-          "endpoint": "/display/sparql"
+          "endpoint": "/display/sparql",
+          "record": "display"
         },
         {
           "label": "covers",
           "iri": "https://w3id.org/display#covers",
           "targetId": "coreProperties",
           "embed": true,
-          "endpoint": "/display/sparql"
+          "endpoint": "/display/sparql",
+          "record": "display"
         },
         {
           "label": "faces",
           "iri": "https://w3id.org/display#faces",
           "targetId": "coreProperties",
           "embed": true,
-          "endpoint": "/display/sparql"
+          "endpoint": "/display/sparql",
+          "record": "display"
         },
         {
           "label": "in_front_of",
           "iri": "https://w3id.org/display#inFrontOf",
           "targetId": "coreProperties",
           "embed": true,
-          "endpoint": "/display/sparql"
+          "endpoint": "/display/sparql",
+          "record": "display"
         },
         {
           "label": "included_in",
           "iri": "https://w3id.org/display#includedIn",
           "targetId": "coreProperties",
           "embed": true,
-          "endpoint": "/display/sparql"
+          "endpoint": "/display/sparql",
+          "record": "display"
         },
         {
           "label": "includes",
           "iri": "https://w3id.org/display#includes",
           "targetId": "coreProperties",
           "embed": true,
-          "endpoint": "/display/sparql"
+          "endpoint": "/display/sparql",
+          "record": "display"
         },
         {
           "label": "left_of",
           "iri": "https://w3id.org/display#leftOf",
           "targetId": "coreProperties",
           "embed": true,
-          "endpoint": "/display/sparql"
+          "endpoint": "/display/sparql",
+          "record": "display"
         },
         {
           "label": "lies_against",
           "iri": "https://w3id.org/display#liesAgainst",
           "targetId": "coreProperties",
           "embed": true,
-          "endpoint": "/display/sparql"
+          "endpoint": "/display/sparql",
+          "record": "display"
         },
         {
           "label": "lies_on",
           "iri": "https://w3id.org/display#liesOn",
           "targetId": "coreProperties",
           "embed": true,
-          "endpoint": "/display/sparql"
+          "endpoint": "/display/sparql",
+          "record": "display"
         },
         {
           "label": "next_to",
           "iri": "https://w3id.org/display#nextTo",
           "targetId": "coreProperties",
           "embed": true,
-          "endpoint": "/display/sparql"
+          "endpoint": "/display/sparql",
+          "record": "display"
         },
         {
           "label": "over",
           "iri": "https://w3id.org/display#over",
           "targetId": "coreProperties",
           "embed": true,
-          "endpoint": "/display/sparql"
+          "endpoint": "/display/sparql",
+          "record": "display"
         },
         {
           "label": "overlaps",
           "iri": "https://w3id.org/display#overlaps",
           "targetId": "coreProperties",
           "embed": true,
-          "endpoint": "/display/sparql"
+          "endpoint": "/display/sparql",
+          "record": "display"
         },
         {
           "label": "right_of",
           "iri": "https://w3id.org/display#rightOf",
           "targetId": "coreProperties",
           "embed": true,
-          "endpoint": "/display/sparql"
+          "endpoint": "/display/sparql",
+          "record": "display"
         },
         {
           "label": "touches",
           "iri": "https://w3id.org/display#touches",
           "targetId": "coreProperties",
           "embed": true,
-          "endpoint": "/display/sparql"
+          "endpoint": "/display/sparql",
+          "record": "display"
         },
         {
           "label": "under",
           "iri": "https://w3id.org/display#under",
           "targetId": "coreProperties",
           "embed": true,
-          "endpoint": "/display/sparql"
+          "endpoint": "/display/sparql",
+          "record": "display"
         },
         {
           "label": "interface",
@@ -460,7 +511,8 @@
           "inv": true,
           "targetId": "interface",
           "embed": true,
-          "endpoint": "/display/sparql"
+          "endpoint": "/display/sparql",
+          "record": "display"
         }
       ],
       "types": [
@@ -470,7 +522,8 @@
             "FILTER (?type IN ( <https://w3id.org/display#Exhibit>, <https://w3id.org/display#Element>, <https://w3id.org/display#Display> ))",
             "FILTER NOT EXISTS { ?subclass ^a  ?iri ; <http://www.w3.org/2000/01/rdf-schema#subClassOf> ?type . FILTER (?subclass != ?type) FILTER (?subclass != <https://w3id.org/bot#Element>)}"
           ],
-          "endpoint": "/display/sparql"
+          "endpoint": "/display/sparql",
+          "record": "global"
         }
       ]
     },
@@ -481,7 +534,8 @@
         {
           "label": "_label",
           "iri": "http://www.w3.org/2000/01/rdf-schema#label",
-          "endpoint": "/display/sparql"
+          "endpoint": "/display/sparql",
+          "record": "global"
         }
       ],
       "oprops": [
@@ -505,6 +559,14 @@
           "targetId": "referred_to_by",
           "embed": true,
           "endpoint": "/display/sparql"
+        },
+        {
+          "label": "influenced_by",
+          "iri": "http://www.cidoc-crm.org/cidoc-crm/P15_was_influenced_by",
+          "targetId": "coreProperties",
+          "embed": true,
+          "endpoint": "/display/sparql",
+          "record": "global"
         },
         {
           "label": "carried_out_by",
@@ -548,7 +610,8 @@
           "restrictions": [
             "FILTER (?type IN ( <http://www.cidoc-crm.org/cidoc-crm/E7_Activity> ))"
           ],
-          "endpoint": "/display/sparql"
+          "endpoint": "/display/sparql",
+          "record": "global"
         }
       ]
     },
@@ -598,7 +661,8 @@
         {
           "label": "_label",
           "iri": "http://www.w3.org/2000/01/rdf-schema#label",
-          "endpoint": "/display/sparql"
+          "endpoint": "/display/sparql",
+          "record": "global"
         }
       ],
       "oprops": [
@@ -607,14 +671,16 @@
           "iri": "https://w3id.org/bot#interfaceOf",
           "targetId": "coreProperties",
           "embed": true,
-          "endpoint": "/display/sparql"
+          "endpoint": "/display/sparql",
+          "record": "display"
         },
         {
           "label": "provided_by",
           "iri": "https://w3id.org/display#interfaceProvidedBy",
           "targetId": "coreProperties",
           "embed": true,
-          "endpoint": "/display/sparql"
+          "endpoint": "/display/sparql",
+          "record": "display"
         }
       ],
       "types": [
@@ -623,11 +689,11 @@
           "restrictions": [
             "FILTER (?type IN ( <https://w3id.org/display#HangingInterface> , <https://w3id.org/display#PathwayInterface> ))"
           ],
-          "endpoint": "/display/sparql"
+          "endpoint": "/display/sparql",
+          "record": "global"
         }
       ]
     },
-
     {
       "id": "language",
       "oprops": [],
@@ -680,6 +746,7 @@
       ],
       "types": [
         {
+          "comment": "There is always only one type, so no filter needed.",
           "label": "type",
           "restrictions": [],
           "endpoint": "/display/sparql"
@@ -733,7 +800,8 @@
         {
           "label": "_label",
           "iri": "http://www.w3.org/2000/01/rdf-schema#label",
-          "endpoint": "/display/sparql"
+          "endpoint": "/display/sparql",
+          "record": "global"
         }
       ],
       "oprops": [
@@ -751,7 +819,8 @@
           "restrictions": [
             "FILTER (?type IN ( <https://linked.art/ns/terms/Set> ))"
           ],
-          "endpoint": "/display/sparql"
+          "endpoint": "/display/sparql",
+          "record": "global"
         }
       ]
     },
@@ -762,7 +831,8 @@
         {
           "label": "_label",
           "iri": "http://www.w3.org/2000/01/rdf-schema#label",
-          "endpoint": "/display/sparql"
+          "endpoint": "/display/sparql",
+          "record": "global"
         }
       ],
       "oprops": [
@@ -779,7 +849,8 @@
           "updateIri": "https://w3id.org/display#containsExhibit",
           "targetId": "coreProperties",
           "embed": true,
-          "endpoint": "/display/sparql"
+          "endpoint": "/display/sparql",
+          "record": "display"
         },
         {
           "label": "adjacent_exhibit",
@@ -787,7 +858,8 @@
           "updateIri": "https://w3id.org/display#adjacentExhibit",
           "targetId": "coreProperties",
           "embed": true,
-          "endpoint": "/display/sparql"
+          "endpoint": "/display/sparql",
+          "record": "display"
         },
         {
           "label": "intersecting_exhibit",
@@ -795,7 +867,8 @@
           "updateIri": "https://w3id.org/display#intersectingExhibit",
           "targetId": "coreProperties",
           "embed": true,
-          "endpoint": "/display/sparql"
+          "endpoint": "/display/sparql",
+          "record": "display"
         },
         {
           "label": "has_exhibition_space",
@@ -804,6 +877,7 @@
           "targetId": "coreProperties",
           "embed": true,
           "endpoint": "/display/sparql",
+          "record": "display",
           "restrictions": [
             "FILTER(?iri != ?value)"
           ]
@@ -813,14 +887,16 @@
           "iri": "https://w3id.org/bot#adjacentZone",
           "targetId": "coreProperties",
           "embed": true,
-          "endpoint": "/display/sparql"
+          "endpoint": "/display/sparql",
+          "record": "display"
         },
         {
           "label": "intersects_zone",
           "iri": "https://w3id.org/bot#intersectsZone",
           "targetId": "coreProperties",
           "embed": true,
-          "endpoint": "/display/sparql"
+          "endpoint": "/display/sparql",
+          "record": "display"
         },
         {
           "label": "interface",
@@ -828,7 +904,8 @@
           "inv": true,
           "targetId": "interface",
           "embed": true,
-          "endpoint": "/display/sparql"
+          "endpoint": "/display/sparql",
+          "record": "display"
         }
       ],
       "types": [
@@ -838,7 +915,8 @@
             "FILTER (?type IN ( <https://w3id.org/display#ExhibitionSpace> , <https://w3id.org/bot#Space> ))",
             "FILTER NOT EXISTS { ?subclass ^a  ?iri ; <http://www.w3.org/2000/01/rdf-schema#subClassOf> ?type . FILTER (?subclass != ?type)}"
           ],
-          "endpoint": "/display/sparql"
+          "endpoint": "/display/sparql",
+          "record": "global"
         }
       ]
     },
@@ -898,35 +976,5 @@
       ]
     }
   ],
-  "queryTemplates": [
-    {
-      "id": "exhibitions",
-      "description": "Get all instances of exhibition.",
-      "template": "SELECT DISTINCT ?exhibition ?label WHERE {?exhibition a <http://www.cidoc-crm.org/cidoc-crm/E7_Activity>;<http://www.cidoc-crm.org/cidoc-crm/P2_has_type> <http://vocab.getty.edu/aat/300054766>;<http://www.w3.org/2000/01/rdf-schema#label> ?label}",
-      "variables": [
-        "exhibition",
-        "label"
-      ],
-      "parameters": [],
-      "endpoint": "/display/sparql"
-    },
-    {
-      "id": "exhibitWithSpecificRelations",
-      "endpoint": "/display/sparql",
-      "description": "Get an exhibit with its specific topological relationships.",
-      "template": "SELECT ?exhibit ?relation ?object WHERE {BIND(<{{{iri}}}> AS ?exhibit) ?exhibit ?relation ?object. ?relation <http://www.w3.org/2000/01/rdf-schema#subPropertyOf>+ <https://w3id.org/display#hasTopologicalRelationWith>. FILTER (?relation != <https://w3id.org/display#hasTopologicalRelationWith>) FILTER (?relation != <https://w3id.org/display#spatialRelationship>) FILTER (?relation != <https://w3id.org/display#proximalRelationship>)}",
-      "variables": [
-        "exhibit",
-        "relation",
-        "object"
-      ],
-      "parameters": [
-        {
-          "label": "iri",
-          "type": "iri",
-          "optional": false
-        }
-      ]
-    }
-  ]
+  "queryTemplates": []
 }

@@ -428,11 +428,20 @@ function applyPatch(iri, objr, pe, mel, api, borrar) {
 
 function getUpdateOperation(esInsert, triples, graph) {
 
+  // TODO une fonction
 	let prevtriple = null;
 	let request = esInsert? "INSERT DATA {\n" : "DELETE DATA {\n";
+  request += "GRAPH <urn:ouvroir:display:metadata> {\n";
 	for (let i=0; i<triples.length; i++) {
-		let triple = triples[i];
-		if (prevtriple == null)
+
+    let triple;
+    if (triples[i].r == "global" || triples[i].r == "meta") {
+      triple = triples[i];
+    } else {
+      continue;
+    }
+
+    if (prevtriple == null)
 			request += triple.s + " " + triple.p + " " + triple.o;
 		else {
 			if (triple.s !== prevtriple.s) // si no comparten sujeto
@@ -444,7 +453,37 @@ function getUpdateOperation(esInsert, triples, graph) {
 		}
 		prevtriple = triple;
 	}
-	request += " .\n}";
+	request += " .\n}\n";
+	request += "}";
+  request += ";\n"; // nouvelle requête
+
+  prevtriple = null;
+	request += esInsert? "INSERT DATA {\n" : "DELETE DATA {\n";
+  request += `GRAPH <${graph}> {\n`;
+	for (let i=0; i<triples.length; i++) {
+
+    let triple;
+    if (triples[i].r == "global" || triples[i].r == "display") {
+      triple = triples[i];
+    } else {
+      continue;
+    }
+
+    if (prevtriple == null)
+			request += triple.s + " " + triple.p + " " + triple.o;
+		else {
+			if (triple.s !== prevtriple.s) // si no comparten sujeto
+				request += " .\n" + triple.s + " " + triple.p + " " + triple.o;
+			else if (triple.p === prevtriple.p) // comparten sujeto y predicado
+				request += " ,\n    " + triple.o;
+			else // comparten sujeto
+				request += " ;\n  " + triple.p + " " + triple.o;				
+		}
+		prevtriple = triple;
+	}
+	request += " .\n}\n";
+	request += "}";
+
 	return request;
 }
 
@@ -487,7 +526,10 @@ function getTriple(iri, valor, subel, tsubel) { // valores de tsubel => 0: type 
 			tripla.s = tripla.o;
 			tripla.o = oaux;
 		}	
-	}	
+	}
+
+  tripla.r = (subel.record !== undefined) ? subel.record : "meta";
+
 	// devuelvo la tripla
 	return tripla;
 }
