@@ -2148,6 +2148,14 @@ async function getResources(req, res, next) {
   *           format: uri
   *         allowReserved: true # para que no se queje el validador
   *         description: The IRI of the resource
+  *       - name: graph
+  *         in: query
+  *         required: true
+  *         schema:
+  *           type: string
+  *           format: uri
+  *         allowReserved: true # para que no se queje el validador
+  *         description: The IRI of the graph where the resource is to be stored
   *     requestBody:
   *       description: The data about the resource
   *       required: true
@@ -2199,6 +2207,8 @@ async function putResource(req, res, next) {
 	const apiId = req.params.apiId;
 	const id = req.query.id;
 	const iri = req.query.iri;
+  const graph = req.query.graph;
+
 	
 	// pregenero objeto de respuesta
 	let objresp = {};
@@ -2258,7 +2268,7 @@ async function putResource(req, res, next) {
 		// ha pasado el validador, la actualización debería poder hacerse		
 		try {
 			// pido la actualización
-			let datos = await resourceUpdater.putResource(iri, objr, mel, apis[apiId], {quuid: req.quuid, apiId: apiId});
+			let datos = await resourceUpdater.putResource(iri, objr, mel, apis[apiId], {quuid: req.quuid, apiId: apiId}, graph);
 			// meto info de las triplas borradas/creadas y consultas
 			res.numberOfQueries = datos.numberOfQueries;
 			res.deletedTriples = datos.deletedTriples;
@@ -2563,6 +2573,14 @@ async function patchResource(req, res, next) {
   *           format: uri
   *         allowReserved: true # para que no se queje el validador
   *         description: The IRI of the resource
+  *       - name: graph
+  *         in: query
+  *         required: true
+  *         schema:
+  *           type: string
+  *           format: uri
+  *         allowReserved: true # para que no se queje el validador
+  *         description: The IRI of the graph where the resource is to be stored
   *     responses:
   *       '200': 
   *         description: Resource deleted
@@ -2600,6 +2618,7 @@ async function deleteResource(req, res, next) {
 	const apiId = req.params.apiId;
 	const id = req.query.id;
 	const iri = req.query.iri;
+  const graph = req.query.graph;
 	
 	// pregenero objeto de respuesta
 	let objresp = {};
@@ -2651,7 +2670,7 @@ async function deleteResource(req, res, next) {
 		
 		// pido el borrado
 		try {
-			let datos = await resourceUpdater.deleteResource(iri, mel, apis[apiId], {quuid: req.quuid, apiId: apiId});
+			let datos = await resourceUpdater.deleteResource(iri, mel, apis[apiId], {quuid: req.quuid, apiId: apiId}, graph);
 			res.numberOfQueries = datos.numberOfQueries;
 			res.deletedTriples = datos.deletedTriples;
 			objresp.status = 200;
