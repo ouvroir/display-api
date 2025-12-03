@@ -181,7 +181,7 @@ async function deleteResource(iri, mel, api, qinfo, graph) {
 
 
 // ACTUALIZACIÓN DE RECURSO
-async function patchResource(iri, patch, mel, api, qinfo) {
+async function patchResource(iri, patch, mel, api, qinfo, graph) {
 	// 2021-mar incluyo datos writeonly en la definición del modelo		
 	// primero borro el recurso de la caché (para pedir de los endpoints todos los datos, incluidos los de solo escritura)
 	delete api.cache[mel.id][iri];
@@ -191,6 +191,7 @@ async function patchResource(iri, patch, mel, api, qinfo) {
 	// luego pido los datos del recurso en cuestión incluyendo datos de escritura (para poder borrarlos)
 	let obj = {};
 	obj.api = api;
+  obj.graph = graph;
 	obj.id = mel.id;
 	obj.iris = [ iri ];
 	// recupero datos,  incluyendo datos de escritura (la caché de la API se actualizará automáticamente)
@@ -242,7 +243,7 @@ async function patchResource(iri, patch, mel, api, qinfo) {
 			if (request.edt[epid].length > 0) {
 				// preparo la consulta
 				let qt = {};			
-				qt.template = getUpdateOperation(false, request.edt[epid]);
+				qt.template = getUpdateOperation(false, request.edt[epid], graph);
 				// pido el borrado
 				const ep = _.find(api.config.endpoints, el => el.id === epid);
 				await dataManager.answerQuery(ep.sparqlUpdate, qt, {}, qinfo); //, api.config.prefixes);
@@ -260,7 +261,7 @@ async function patchResource(iri, patch, mel, api, qinfo) {
 			if (request.eit[epid].length > 0) {
 				// preparo la consulta
 				let qt = {};			
-				qt.template = getUpdateOperation(true, request.eit[epid]);
+				qt.template = getUpdateOperation(true, request.eit[epid], graph);
 				// pido la inserción
 				const ep = _.find(api.config.endpoints, el => el.id === epid);
 				await dataManager.answerQuery(ep.sparqlUpdate, qt, {}, qinfo); //, api.config.prefixes);
@@ -453,7 +454,7 @@ function getUpdateOperation(esInsert, triples, graph) {
 		}
 		prevtriple = triple;
 	}
-	request += " .\n}\n";
+  request += "\n}\n";
 	request += "}";
   request += ";\n"; // nouvelle requête
 
@@ -481,7 +482,7 @@ function getUpdateOperation(esInsert, triples, graph) {
 		}
 		prevtriple = triple;
 	}
-	request += " .\n}\n";
+  request += "\n}\n";
 	request += "}";
 
 	return request;

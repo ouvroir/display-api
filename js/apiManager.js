@@ -2366,6 +2366,14 @@ async function putResource(req, res, next) {
   *           format: uri
   *         allowReserved: true # para que no se queje el validador
   *         description: The IRI of the resource
+  *       - name: graph
+  *         in: query
+  *         required: true
+  *         schema:
+  *           type: string
+  *           format: uri
+  *         allowReserved: true # para que no se queje el validador
+  *         description: The IRI of the graph where the resource is to be stored
   *     requestBody:
   *       description: The data about the resource to be patched
   *       required: true
@@ -2424,7 +2432,8 @@ async function patchResource(req, res, next) {
 	const apiId = req.params.apiId;
 	const id = req.query.id;
 	const iri = req.query.iri;
-	
+  const graph = req.query.graph;
+
 	// pregenero objeto de respuesta
 	let objresp = {};
 	
@@ -2474,7 +2483,7 @@ async function patchResource(req, res, next) {
 		}
 		
 		// obtengo el patch del body
-		const patch = req.body;		
+		const patch = req.body;
 		try {
 			// pido la validación del patch
 			modelValidator.validatePatch(patch, mel, apis[apiId].config);
@@ -2489,7 +2498,7 @@ async function patchResource(req, res, next) {
 		// ha pasado el validador, la actualización debería poder hacerse		
 		try {
 			// pido la actualización (puede fallar dependiendo de los valores de la representación)
-			let datos = await resourceUpdater.patchResource(iri, patch, mel, apis[apiId], {quuid: req.quuid, apiId: apiId});
+			let datos = await resourceUpdater.patchResource(iri, patch, mel, apis[apiId], {quuid: req.quuid, apiId: apiId}, graph);
 			// meto info de las triplas borradas/creadas y consultas
 			res.numberOfQueries = datos.numberOfQueries;
 			res.deletedTriples = datos.deletedTriples;
