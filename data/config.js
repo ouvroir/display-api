@@ -1,3 +1,6 @@
+const dev = process.env.NODE_ENV === "development";
+console.log("dev:", dev);
+
 const config = {
 	// node server
 	port: 8888,
@@ -9,8 +12,8 @@ const config = {
 	dataPath: "data",
 	
 	// web server
-	scheme: "http",
-	authority: "localhost:8888",
+	scheme: dev ? "http" : "https",
+	authority:  dev ? "localhost:8888" : "crafts.ntnlv.ca:450",
 	prepath: "", 
 	
 	// users, api and dump lists
@@ -18,20 +21,20 @@ const config = {
 	listDumpFileEnding: "_dumpIndex.json",
 	
 	// lang
-	nolang: "nolang",
+	nolang: "en",
 	
 	// root
-	root: 'changeme',
-	rootEmail: 'changeme@email.com',	
+	root: "root",
+	rootEmail: process.env.SMTP_USER,	
 	
 	// SMTP server
 	smtpServer: {
-		host: "YOURSMTPSERVER",
-		port: 465,
+		host: "ntnlv.ca",
+		port: process.env.SMTP_SERVER_PORT,
 		secure: true,
 		auth: {
-			user: 'USER',
-			pass: 'PASS'
+			user: process.env.SMTP_USER,
+			pass: process.env.SMTP_PASS
 		}
  	},
  	
@@ -40,7 +43,7 @@ const config = {
  	millisecsCleanCache: 60*60*1000, // every hour
  	
  	// google analytics
- 	gaTrackId: 'YOURID'
+ 	gaTrackId: ""
 }
 
 module.exports = config

@@ -1,5 +1,7 @@
 const _ = require('underscore');
 const dataManager = require('./dataManager');
+const jsonldMapping = require('./jsonldMapping');
+const display = require('./displayUtil');
 
 
 // CREACIÓN/REEMPLAZO DE RECURSO
@@ -8,12 +10,17 @@ async function putResource(iri, objr, mel, api, qinfo) {
 	// primero borro el recurso de la caché (para pedir de los endpoints todos los datos, incluidos los de solo escritura)
 	delete api.cache[mel.id][iri];
 
+  display.replaceIriByUpdateIri(mel);
+  display.replaceTargetIdByUpdateTargetId(mel);
+
 	// luego pido los datos del recurso en cuestión incluyendo datos de escritura (para poder borrarlos)
 	let obj = {};
 	obj.api = api;
 	obj.id = mel.id;
 	obj.iris = [ iri ];
-	// recupero datos,  incluyendo datos de escritura (la caché de la API se actualizará automáticamente)
+
+  // recupero datos,  incluyendo datos de escritura (la caché de la API se actualizará automáticamente)
+  // DV dans getData() le format JSON-LD est construit, mais aussi utilisé pour la lecture (méthode get), donc la conversion stringToIri doit se faire ailleurs
 	let datos = await dataManager.getData(obj, qinfo, true); // en datos.data[0] habrá una representación del recurso
 	
 	// objeto donde guardo los recursos a borrar de la caché
@@ -36,6 +43,7 @@ async function putResource(iri, objr, mel, api, qinfo) {
 	let esuris = {};
 	
 	// hago las borrados
+  // (epid : endpoint id)
 	for (const epid in edt) {
 		if (edt[epid].length > 0) {
 			// preparo la consulta
@@ -96,7 +104,9 @@ async function deleteResource(iri, mel, api, qinfo) {
 	// 2021-mar incluyo datos writeonly en la definición del modelo		
 	// primero borro el recurso de la caché (para pedir de los endpoints todos los datos, incluidos los de solo escritura)
 	delete api.cache[mel.id][iri];
-	
+
+  display.replaceIriByUpdateIri(mel);
+
 	// luego pido los datos del recurso en cuestión incluyendo datos de escritura (para poder borrarlos)
 	let obj = {};
 	obj.api = api;
@@ -104,7 +114,12 @@ async function deleteResource(iri, mel, api, qinfo) {
 	obj.iris = [ iri ];
 	// recupero datos,  incluyendo datos de escritura (la caché de la API se actualizará automáticamente)
 	let datos = await dataManager.getData(obj, qinfo, true); // en datos.data[0] habrá una representación del recurso
-		
+
+  // jsonldMapping stringToIri
+  // construction de l’iri pour la suppression des ressources
+  // let string = datos.data[0].type;
+  // datos.data[0].type = jsonldMapping.stringToIri(string);
+
 	// objeto donde guardo los recursos a borrar de la caché
 	let borrar = {};
 	
@@ -162,6 +177,8 @@ async function patchResource(iri, patch, mel, api, qinfo) {
 	// 2021-mar incluyo datos writeonly en la definición del modelo		
 	// primero borro el recurso de la caché (para pedir de los endpoints todos los datos, incluidos los de solo escritura)
 	delete api.cache[mel.id][iri];
+
+    display.replaceIriByUpdateIri(mel);
 	
 	// luego pido los datos del recurso en cuestión incluyendo datos de escritura (para poder borrarlos)
 	let obj = {};
@@ -442,12 +459,16 @@ function getTriple(iri, valor, subel, tsubel) { // valores de tsubel => 0: type 
 			if ( isNaN(Date.parse(valor)) )		
 				tripla.o = '"' + valor + '"';
 			else // es una fecha
-				tripla.o = '"' + valor + '"^^xsd:dateTime';
+				tripla.o = '"' + valor + '"^^<http://www.w3.org/2001/XMLSchema#dateTime>';
 		}
 		else
 			tripla.o = valor;
 	} else { // type o oprop
 		// obtengo la iri objeto de manera diferente si hay algo embebido o no
+
+    if (typeof valor === "object")
+      valor.iri = valor.id;
+
 		const oiri = typeof valor === "object"? valor.iri : valor;
 		tripla.o = '<' + oiri + '>';
 	
@@ -556,6 +577,13 @@ function getEndpointTriples(insert, iri, objr, mel, api, borrar) {
 	let et = {};
 	for (let i=0; i<api.config.endpoints.length; i++)
 		et[ api.config.endpoints[i].id ] = [];
+
+  // jsonldMapping stringToIri
+  // construction de l’iri
+  // (préalablement converti en string pour mapping JSON-LD)
+  // @todo intégrer totalement dans l’API, sans passer par entrepôt RDF
+  let string = objr.type;
+  objr.type = jsonldMapping.stringToIri(string);
 
 	// analizo los types en mel...
 	for (let i=0; i<mel.types.length; i++) {	

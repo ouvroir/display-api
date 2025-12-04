@@ -10,6 +10,7 @@ const dataManager = require('./dataManager'); // para los datos
 const dumpManager = require('./dumpManager'); // para los dumps
 const resourceUpdater = require('./resourceUpdater'); // para actualizar los recursos
 const util = require('./util'); // para ficheros
+const jsonldMapping = require('./jsonldMapping');
 
 const dirApiPath = './' + config.apisPath + '/';
 const dirUsersPath = './' + config.dataPath + '/';
@@ -394,6 +395,73 @@ var apis = {};
  *         The `id` corresponds to a previous step in the `DumpConfig` object.
  *         Steps of types `resource` or `resource` need a `key` to extract the values of the step results (check the corresponding model element of the API).
  *         Steps of type `query` need a `variable` to extract the values of the step results (check the corresponding query template of the API).
+ *
+ *     exhibit:
+ *       type: object
+ *       properties:
+ *         iri:
+ *           type: string
+ *           format: uri
+ *           description: |
+ *             `IRI` de la ressource décrite.
+ *         type:
+ *           type: array
+ *           items:
+ *             type: string
+ *             format: uri
+ *           description: |
+ *             Classes auxquelles appartient la ressource.
+ *         _label:
+ *           type: object
+ *           description: |
+ *             Étiquette interne sans sémantique associée (`rdfs:label`). Renvoie un objet ou une liste d’objet s’il y plus d’une valeur.
+ *         title:
+ *           type: string
+ *           description: |
+ *             Titre de la ressource décrite.
+ *         creator:
+ *           type: string
+ *           format: uri
+ *           description: |
+ *             Créateur de la ressource décrite.
+ *         has_topological_relation_with:
+ *           type: array
+ *           items:
+ *             type: string
+ *             format: uri
+ *           description: |
+ *             Relations topologiques génériques entre l’exhibit décrit et tous les autres exhibits avec lesquels il est lié topologiquement. Note : renvoie les relations topologiques génériques (shallow relationships); pour les relations spécifiques, voir `/apis/display/query`.
+ *       required: [iri]
+ *       description: |
+ *         Description d’une ressource de la classe `display:Exhibit`.
+ *
+ *     space:
+ *       type: object
+ *       properties:
+ *         iri: 
+ *           type: string
+ *           format: uri
+ *           description: |
+ *             `IRI` de la ressource décrite.
+ *         type: 
+ *           type: string
+ *           format: uri
+ *     #     description: |
+ *     #        Classes auxquelles appartient la ressource.
+ *         #_label:
+ *         #  type: string
+ *         #  description: |
+ *         #    Étiquette interne sans sémantique associée (`rdfs:label`).
+ *         #has_exhibit:
+ *         #  type: array
+ *         #  items:
+ *         #    type: string
+ *         #    format: uri
+ *         #  description: |
+ *         #    Exhibits topologiquement liés à la ressource décrite.
+ *       required: [iri]
+ *       description: |
+ *         Description d’une ressource de la classe `display:ExhibitionSpace`.
  * 
  *   securitySchemes:
  *     BasicAuth:
@@ -1681,12 +1749,20 @@ async function deleteApi(req, res, next) {
   *         required: true
   *         schema:
   *           type: string
+  *           enum:
+  *           - display
   *         description: The id of the API
   *       - name: id
   *         in: query
   *         required: true
   *         schema:
   *           type: string
+  *           enum:
+  *           - abstract-work
+  *           - exhibit
+  *           - exhibition
+  *           - set
+  *           - space
   *         description: The id of a model element defined in the API
   *       - name: iri
   *         in: query
@@ -1700,11 +1776,11 @@ async function deleteApi(req, res, next) {
   *       '200': 
   *         description: The data about a resource
   *         content:
-  *           application/json:
-  *             schema: 
+  *           application/ld+json:
+  *             schema:
   *               type: object
-  *               description: The object schema is defined in the corresponding model element of the API  
-  *       '400': 
+  *               description: The object schema is defined in the corresponding model element of the API
+  *       '400':
   *         description: Invalid request
   *         content:
   *           application/json:
@@ -1778,13 +1854,48 @@ async function getResource(req, res, next) {
 		obj.iris.push(iri);
 		
 		try {
-			// recupero datos
+
+      // il faut mettre ça dans la dataManager , car ne fonctionnera pas pour liste de ressources,dans la boucle
+      // ASK à utiliser éventuellement pour conditionner les traitements en écriture
+      const askQuery = `ASK{<${obj.iris[0]}> ?p ?o}`;
+      const ask = await fetch("http://localhost:8080/display/query", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/sparql-query",
+        },
+        body: askQuery
+      });
+      const askResponse = await ask.json();
+      try {
+        if (!askResponse.boolean) {
+          throw new Error(`Resource not found`);
+        }
+      } catch (err) {
+        objresp.status = 404;
+        objresp.message = "Resource not found";
+        res.errorMessage = objresp.message;
+        res.status(objresp.status).send(objresp);
+        return;
+      }
+
+      // recupero datos
 			let datos = await dataManager.getData(obj, {quuid: req.quuid, apiId: apiId});
 			// incorporo consultas para el log
 			res.numberOfQueries = datos.numberOfQueries;
 			res.allQueries = datos.allQueries;			
 			// si hay salida la devuelvo
 			if (datos.data != undefined && datos.data.length == 1) {
+        try {
+          if (!datos.data[0].type) {
+            throw new Error(`the provided iri does not match the expected type for this resource.`);
+          };
+        } catch(err) {
+          objresp.status = 400;
+          objresp.message = 'Invalid request: '+ err.message;
+          res.errorMessage = objresp.message;
+          res.status(objresp.status).send(objresp);
+          return;
+        }
 				res.type('json');
 				res.send( datos.data[0] );
 				return;
@@ -2014,12 +2125,20 @@ async function getResources(req, res, next) {
   *         required: true
   *         schema:
   *           type: string
+  *           enum:
+  *           - display
   *         description: The id of the API
   *       - name: id
   *         in: query
   *         required: true
   *         schema:
   *           type: string
+  *           enum:
+  *           - abstract-work
+  *           - exhibit
+  *           - exhibition
+  *           - set
+  *           - space
   *         description: The id of a model element defined in the API
   *       - name: iri
   *         in: query
@@ -2118,7 +2237,14 @@ async function putResource(req, res, next) {
 	const mel = _.find(apis[apiId].config.model, (el) => el.id === id);
 	if (mel != undefined) {		
 		// obtengo el objeto del body y lo valido
-		const objr = req.body;		
+		let objr = req.body;
+
+    // construction de l’iri pour l’enregistrement des ressources
+    // car la classe est représentée par une chaîne de caractère provenant
+    // du fichier de contexte (jsonld) et fourni par la BDD.
+    // CRAFTS a besoin de l’IRI complète, donc on reconvertit.
+    objr.type = jsonldMapping.stringToIri(objr.type);
+
 		try {
 			modelValidator.validateResource(iri, objr, mel, apis[apiId].config, "root");
 		} catch(error) {
@@ -2207,12 +2333,20 @@ async function putResource(req, res, next) {
   *         required: true
   *         schema:
   *           type: string
+  *           enum:
+  *           - display
   *         description: The id of the API
   *       - name: id
   *         in: query
   *         required: true
   *         schema:
   *           type: string
+  *           enum:
+  *           - abstract-work
+  *           - exhibit
+  *           - exhibition
+  *           - set
+  *           - space
   *         description: The id of a model element defined in the API
   *       - name: iri
   *         in: query
@@ -2406,12 +2540,20 @@ async function patchResource(req, res, next) {
   *         required: true
   *         schema:
   *           type: string
+  *           enum:
+  *           - display
   *         description: The id of the API
   *       - name: id
   *         in: query
   *         required: true
   *         schema:
   *           type: string
+  *           enum:
+  *           - abstract-work
+  *           - exhibit
+  *           - exhibition
+  *           - set
+  *           - space
   *         description: The id of a model element defined in the API
   *       - name: iri
   *         in: query
@@ -2569,6 +2711,8 @@ async function deleteResource(req, res, next) {
   *         required: true
   *         schema:
   *           type: string
+  *           enum:
+  *           - display
   *         description: The id of the API
   *       - name: id
   *         in: query

@@ -350,6 +350,7 @@ function startServer() {
     //  Start the app on the specific interface (and port).
 	app.listen(config.port, function() {        	
 		logger.info('CRAFTS server started on port ' + config.port);
+		logger.info('CRAFTS server docs URL: http://127.0.0.1:8888/docs/');
     });
 }
 

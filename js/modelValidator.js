@@ -1,5 +1,6 @@
 const _ = require('underscore');
 const dataManager = require('./dataManager');
+const jsonldMapping = require('./jsonldMapping');
 
 const testiri = 'http://prueba.es';
 
@@ -259,7 +260,12 @@ function checkCycles(apiconfig, mel) {
 
 // VALIDACIÓN DE RECURSO
 function validateResource(iri, objr, mel, apiconfig, source) {
-	// validación de la iri del recurso
+
+  // map id vers iri pour le traitement par CRAFTS
+  objr.iri = objr.id;
+  objr = _.omit(objr, 'id');
+
+  // validación de la iri del recurso
 	if (objr.iri == undefined)
 		throw new Error("Resource data has NO iri at " + source);
 	if (objr.iri !== iri)
@@ -334,11 +340,15 @@ function validateResource(iri, objr, mel, apiconfig, source) {
 			}
 			// comprobación de cada uno de los valores
 			for (let j=0; j<valores.length; j++) {
-				const valor = valores[j];
+				let valor = valores[j];
 				if (Array.isArray(valor))
 					throw new Error('Bad format of resource data at ' + source + "." + type.label + '[' + j + ']');
 				// cada valor sólo puede ser una IRI o un objeto si está embebido
 				if (typeof valor !== 'object') {
+
+          // construction de l’iri pour la validation des ressources
+          valor = jsonldMapping.stringToIri(valor);
+
 					try {
 						new URL(valor);
 					} catch(err) {
@@ -380,7 +390,8 @@ function validateResource(iri, objr, mel, apiconfig, source) {
 			}
 			// comprobación de cada uno de los valores
 			for (let j=0; j<valores.length; j++) {
-				const valor = valores[j];
+				let valor = valores[j];
+        valor.iri = valor.id;
 				if (Array.isArray(valor))
 					throw new Error('Bad format of resource data at ' + source + "." + oprop.label + '[' + j + ']');
 				// cada valor sólo puede ser una IRI o un objeto si está embebido
@@ -528,6 +539,8 @@ function validatePatch(patch, mel, apiconfig) {
 						if (evmel == undefined)
 							throw new Error('Bad format of value[' + j + '] at patch[' + i +']. Cannot embed an object for this API model element');
 						let newsource = "value[" + j + "]";
+            // map id vers iri pour le traitement par CRAFTS
+            valor.iri = valor.id;
 						try {
 							validateResource(valor.iri, valor, evmel, apiconfig, newsource);
 						} catch(err) {
