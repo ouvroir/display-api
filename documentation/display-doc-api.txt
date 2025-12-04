@@ -1,0 +1,670 @@
+
+ *     abstract-work:
+ *       type: object
+ *       description: The idea (or abstract work) for an entity that is an `Event`, `Activity` or `Exhbit`. Physical objets (such as Exhibits) can be subject of the abstract work. Activities (such as Exhibitions) can be influenced by the abstract work.
+ *       required: [id, type, _label]
+ *       properties:
+ *         id:
+ *           type: string
+ *           format: uri
+ *           description: |
+ *             The value MUST be the HTTPS URI of the resource
+ *         type:
+ *           type: string
+ *           enum: [PropositionalObject]
+ *           description: |
+ *             The class for the resource
+ *         _label:
+ *           type: string
+ *           description: |
+ *             Gives a human readable label as a string, intended only for developers or other people reading the data to understand what they are looking at (Linked Art requirement)
+ *         classified_as:
+ *           type: array
+ *           description: |
+ *             An array of string values, each of which MUST be the HTTPS URI of a classification term
+ *           items:
+ *             type: string
+ *             format: uri
+ *         identified_by:
+ *           type: array
+ *           description: An array of json objects, each of which is a name/title for the resource, or an identifier for the ressource
+ *           items:
+ *             $ref: '#/components/schemas/linguistic_appellation'
+ *         referred_to_by:
+ *           type: array
+ *           description: An array of json objects, each of which is a human readable statement about the resource
+ *           items:
+ *             $ref: '#/components/schemas/linguistic_object'
+ *         about:
+ *           type: array
+ *           description: |
+ *             An array of string values, each of which MUST be the HTTPS URI of another entity of any type, that this work is primarily about
+ *           items:
+ *             type: string
+ *             format: uri
+ *         influenced:
+ *           type: array
+ *           description: |
+ *             An array of string values, each of which MUST be the HTTPS URI of an activity influenced by the entity. Note: usage in Display API to be confirmed.
+ *           items:
+ *             type: string
+ *             format: uri
+ *         created_by:
+ *           $ref: '#/components/schemas/creation'
+ *     exhibit:
+ *       type: object
+ *       description: Any exhibition entity, such as a work of art, artifact, device, building element, or furniture, with a characteristic artistic, aesthetic or technical function, with form or position that might be described by the means of topological relationship within an exhibition space, optionally constituent of a display entity.
+ *       required: [id, type, _label]
+ *       properties:
+ *         id:
+ *           type: string
+ *           format: uri
+ *           description: |
+ *             The value MUST be the HTTPS URI of the resource
+ *         type:
+ *           type: string
+ *           enum: [Display, Element, Exhibit]
+ *           description: |
+ *             The class for the resource; Element and Display are subclasses of Exhibit, so they have additionnal properties documented in their respective fields
+ *         _label:
+ *           type: string
+ *           description: |
+ *             Gives a human readable label as a string, intended only for developers or other people reading the data to understand what they are looking at (Linked Art requirement)
+ *         classified_as:
+ *           type: array
+ *           description: |
+ *             An array of string values, each of which MUST be the HTTPS URI of a classification term
+ *           items:
+ *             type: string
+ *             format: uri
+ *         identified_by:
+ *           type: array
+ *           description: An array of json objects, each of which is a name/title for the resource, or an identifier for the ressource
+ *           items:
+ *             $ref: '#/components/schemas/linguistic_appellation'
+ *         referred_to_by:
+ *           type: array
+ *           description: An array of json objects, each of which is a human readable statement about the resource
+ *           items:
+ *             $ref: '#/components/schemas/linguistic_object'
+ *         produced_by:
+ *           $ref: '#/components/schemas/production'
+ *         dimension:
+ *           type: array
+ *           description: An array of json objects, each of which is a Dimension, such as height or width, of the current object
+ *           items:
+ *             $ref: '#/components/schemas/dimension'
+ *         member_of:
+ *           type: array
+ *           description: |
+ *             An array of string values, each of which MUST be the HTTPS URI of a Set that the current object is a member
+ *           items:
+ *             type: string
+ *             format: uri
+ *         subject_of:
+ *           type: array
+ *           description: |
+ *             'An array of string values, each of which MUST be the HTTPS URI of an Abstract Work. **Note**: This field is used to link the exhibits and the abstract work when the work is composed of more than one exhibit; Not to be confused with the `part_of` property that links only physical objects'
+ *           items:
+ *             type: string
+ *             format: uri
+ *         sub_element:
+ *           type: array
+ *           description: |
+ *             'An array of string values, each of which MUST be the HTTPS URI of an Element that the current Element is hosting (e.g. a wall hosts a door or window). **Only usable when the `type` is `Element`**'
+ *           items:
+ *             type: string
+ *             format: uri
+ *         above:
+ *           type: array
+ *           description: An array of string values, each of which MUST be the HTTPS URI of an Exhibit that the current Exhibit is linked to by the means of topological relationship
+ *           items:
+ *             type: string
+ *             format: uri
+ *         back_to_back:
+ *           type: array
+ *           description: An array of string values, each of which MUST be the HTTPS URI of an Exhibit that the current Exhibit is linked to by the means of topological relationship
+ *           items:
+ *             type: string
+ *             format: uri
+ *         behind:
+ *           type: array
+ *           description: An array of string values, each of which MUST be the HTTPS URI of an Exhibit that the current Exhibit is linked to by the means of topological relationship
+ *           items:
+ *             type: string
+ *             format: uri
+ *         below:
+ *           type: array
+ *           description: An array of string values, each of which MUST be the HTTPS URI of an Exhibit that the current Exhibit is linked to by the means of topological relationship
+ *           items:
+ *             type: string
+ *             format: uri
+ *         contained_in:
+ *           type: array
+ *           description: An array of string values, each of which MUST be the HTTPS URI of an Exhibit that the current Exhibit is linked to by the means of topological relationship
+ *           items:
+ *             type: string
+ *             format: uri
+ *         contains:
+ *           type: array
+ *           description: An array of string values, each of which MUST be the HTTPS URI of an Exhibit that the current Exhibit is linked to by the means of topological relationship
+ *           items:
+ *             type: string
+ *             format: uri
+ *         covered_by:
+ *           type: array
+ *           description: An array of string values, each of which MUST be the HTTPS URI of an Exhibit that the current Exhibit is linked to by the means of topological relationship
+ *           items:
+ *             type: string
+ *             format: uri
+ *         covers:
+ *           type: array
+ *           description: An array of string values, each of which MUST be the HTTPS URI of an Exhibit that the current Exhibit is linked to by the means of topological relationship
+ *           items:
+ *             type: string
+ *             format: uri
+ *         faces:
+ *           type: array
+ *           description: An array of string values, each of which MUST be the HTTPS URI of an Exhibit that the current Exhibit is linked to by the means of topological relationship
+ *           items:
+ *             type: string
+ *             format: uri
+ *         in_front_of:
+ *           type: array
+ *           description: An array of string values, each of which MUST be the HTTPS URI of an Exhibit that the current Exhibit is linked to by the means of topological relationship
+ *           items:
+ *             type: string
+ *             format: uri
+ *         included_in:
+ *           type: array
+ *           description: |
+ *             'An array of string values, each of which MUST be the HTTPS URI of a Display that includes the Exhibit. **Not to be confused with `contained_in`**'
+ *           items:
+ *             type: string
+ *             format: uri
+ *         includes:
+ *           type: array
+ *           description: |
+ *             'An array of string values, each of which MUST be the HTTPS URI of an Exhibit. **Only usable when the `type` is `Display`**'
+ *           items:
+ *             type: string
+ *             format: uri
+ *         left_of:
+ *           type: array
+ *           description: An array of string values, each of which MUST be the HTTPS URI of an Exhibit that the current Exhibit is linked to by the means of topological relationship
+ *           items:
+ *             type: string
+ *             format: uri
+ *         lies_against:
+ *           type: array
+ *           description: An array of string values, each of which MUST be the HTTPS URI of an Exhibit that the current Exhibit is linked to by the means of topological relationship
+ *           items:
+ *             type: string
+ *             format: uri
+ *         lies_on:
+ *           type: array
+ *           description: An array of string values, each of which MUST be the HTTPS URI of an Exhibit that the current Exhibit is linked to by the means of topological relationship
+ *           items:
+ *             type: string
+ *             format: uri
+ *         next_to:
+ *           type: array
+ *           description: An array of string values, each of which MUST be the HTTPS URI of an Exhibit that the current Exhibit is linked to by the means of topological relationship
+ *           items:
+ *             type: string
+ *             format: uri
+ *         over:
+ *           type: array
+ *           description: An array of string values, each of which MUST be the HTTPS URI of an Exhibit that the current Exhibit is linked to by the means of topological relationship
+ *           items:
+ *             type: string
+ *             format: uri
+ *         overlaps:
+ *           type: array
+ *           description: An array of string values, each of which MUST be the HTTPS URI of an Exhibit that the current Exhibit is linked to by the means of topological relationship
+ *           items:
+ *             type: string
+ *             format: uri
+ *         right_of:
+ *           type: array
+ *           description: An array of string values, each of which MUST be the HTTPS URI of an Exhibit that the current Exhibit is linked to by the means of topological relationship
+ *           items:
+ *             type: string
+ *             format: uri
+ *         touches:
+ *           type: array
+ *           description: An array of string values, each of which MUST be the HTTPS URI of an Exhibit that the current Exhibit is linked to by the means of topological relationship
+ *           items:
+ *             type: string
+ *             format: uri
+ *         under:
+ *           type: array
+ *           description: An array of string values, each of which MUST be the HTTPS URI of an Exhibit that the current Exhibit is linked to by the means of topological relationship
+ *           items:
+ *             type: string
+ *             format: uri
+ *         interface:
+ *           type: array
+ *           description: An array of json objects, each of which is an interface that the entity is linked to.
+ *           items:
+ *             $ref: '#/components/schemas/interface'
+ *     exhibition:
+ *       type: object
+ *       required: [id, type, _label]
+ *       properties:
+ *         id:
+ *           type: string
+ *           format: uri
+ *           description: |
+ *             The value MUST be the HTTPS URI of the resource
+ *         type:
+ *           type: string
+ *           enum: [Activity]
+ *           description: |
+ *             The class for the resource
+ *         _label:
+ *           type: string
+ *           description: |
+ *             Gives a human readable label as a string, intended only for developers or other people reading the data to understand what they are looking at (Linked Art requirement)
+ *         classified_as:
+ *           type: array
+ *           description: |
+ *             An array of string values, each of which MUST be the HTTPS URI of a classification term
+ *           items:
+ *             type: string
+ *             format: uri
+ *         identified_by:
+ *           type: array
+ *           description: An array of json objects, each of which is a name/title for the resource, or an identifier for the ressource
+ *           items:
+ *             $ref: '#/components/schemas/linguistic_appellation'
+ *         referred_to_by:
+ *           type: array
+ *           description: An array of json objects, each of which is a human readable statement about the resource
+ *           items:
+ *             $ref: '#/components/schemas/linguistic_object'
+ *         influenced_by:
+ *           type: array
+ *           description: An array of string values, each of which MUST be the HTTPS URI of an Exhibit that the current Exhibit is linked to by the means of topological relationship
+ *           items:
+ *             type: string
+ *             format: uri
+ *         carried_out_by:
+ *           type: array
+ *           description: An array of json objects, each of which is a reference to a Person or Group that carried out the activity
+ *           items:
+ *             $ref: '#/components/schemas/actor'
+ *         member_of:
+ *           type: array
+ *           description: |
+ *             An array of string values, each of which MUST be the HTTPS URI of a Set that the current object is a member
+ *           items:
+ *             type: string
+ *             format: uri
+ *         timespan:
+ *           $ref: '#/components/schemas/timeSpan'
+ *         used_specific_object:
+ *           type: array
+ *           description: |
+ *             An array of string values, each of which MUST be the HTTPS URI of a Set entity that was instrumental in the carrying out of the activity.
+ *           items:
+ *             type: string
+ *             format: uri
+ *     set:
+ *       type: object
+ *       required: [id, type, _label]
+ *       properties:
+ *         id:
+ *           type: string
+ *           format: uri
+ *           description: |
+ *             The value MUST be the HTTPS URI of the resource
+ *         type:
+ *           type: string
+ *           enum: [Set]
+ *           description: |
+ *             The class for the resource
+ *         _label:
+ *           type: string
+ *           description: |
+ *             Gives a human readable label as a string, intended only for developers or other people reading the data to understand what they are looking at (Linked Art requirement)
+ *         classified_as:
+ *           type: array
+ *           description: |
+ *             An array of string values, each of which MUST be the HTTPS URI of a classification term
+ *           items:
+ *             type: string
+ *             format: uri
+ *         identified_by:
+ *           type: array
+ *           description: An array of json objects, each of which is a name/title for the resource, or an identifier for the ressource
+ *           items:
+ *             $ref: '#/components/schemas/linguistic_appellation'
+ *         referred_to_by:
+ *           type: array
+ *           description: An array of json objects, each of which is a human readable statement about the resource
+ *           items:
+ *             $ref: '#/components/schemas/linguistic_object'
+ *         used_for:
+ *           type: array
+ *           description: An array of string values, each of which MUST be the HTTPS URI of an Exhibit that the current Exhibit is linked to by the means of topological relationship
+ *           items:
+ *             type: string
+ *             format: uri
+ *         member:
+ *           type: array
+ *           description: An array of string values, each of which MUST be the HTTPS URI of an Exhibit that the current Exhibit is linked to by the means of topological relationship
+ *           items:
+ *             type: string
+ *             format: uri
+ *     space:
+ *       type: object
+ *       required: [id, type, _label]
+ *       properties:
+ *         id:
+ *           type: string
+ *           format: uri
+ *           description: |
+ *             The value MUST be the HTTPS URI of the resource
+ *         type:
+ *           type: string
+ *           enum: [ExibitionSpace, Space]
+ *           description: |
+ *             The class for the resource
+ *         _label:
+ *           type: string
+ *           description: |
+ *             Gives a human readable label as a string, intended only for developers or other people reading the data to understand what they are looking at (Linked Art requirement)
+ *         referred_to_by:
+ *           type: array
+ *           description: An array of json objects, each of which is a human readable statement about the resource
+ *           items:
+ *             $ref: '#/components/schemas/linguistic_object'
+ *         contains_exhibit:
+ *           type: array
+ *           description: An array of string values, each of which MUST be the HTTPS URI of an Exhibit that the current Exhibit is linked to by the means of topological relationship
+ *           items:
+ *             type: string
+ *             format: uri
+ *         adjacent_exhibit:
+ *           type: array
+ *           description: An array of string values, each of which MUST be the HTTPS URI of an Exhibit that the current Exhibit is linked to by the means of topological relationship
+ *           items:
+ *             type: string
+ *             format: uri
+ *         intersecting_exhibit:
+ *           type: array
+ *           description: An array of string values, each of which MUST be the HTTPS URI of an Exhibit that the current Exhibit is linked to by the means of topological relationship
+ *           items:
+ *             type: string
+ *             format: uri
+ *         has_exhibition_space:
+ *           type: array
+ *           description: |
+ *             An array of string values, each of which MUST be the HTTPS URI of another space contained in the current space
+ *           items:
+ *             type: string
+ *             format: uri
+ *         adjacent_zone:
+ *           type: array
+ *           description: |
+ *             An array of string values, each of which MUST be the HTTPS URI of another space adjacent to the current space, or sharing a common PathwayInterface with the current space, but do not intersect
+ *           items:
+ *             type: string
+ *             format: uri
+ *         intersects_zone:
+ *           type: array
+ *           description: |
+ *             An array of string values, each of which MUST be the HTTPS URI of another space whose spatial extent intersect with the current space
+ *           items:
+ *             type: string
+ *             format: uri
+ *         interface:
+ *           type: array
+ *           description: An array of json objects, each of which is an interface that the entity is linked to.
+ *           items:
+ *             $ref: '#/components/schemas/interface'
+ *     actor:
+ *       type: object
+ *       description: 'A json object representing the actor. The `id` of an actor entity is the concatenation of the string `https://ouvroir.umontreal.ca/data/actor/` and the slugified value of the `_label` field. **Note:** this identification pattern is not consitent with the standard identification method used elsewhere in the data model; the preferred approach would be to use the `identified_by` property'
+ *       required: [id, type, _label]
+ *       properties:
+ *         id:
+ *           type: string
+ *           format: uri
+ *           description: |
+ *             The value MUST be the HTTPS URI of the resource
+ *         type:
+ *           type: string
+ *           enum: [Group, Person]
+ *           description: |
+ *             The class for the resource
+ *         _label:
+ *           type: string
+ *           description: |
+ *             Gives a human readable label as a string, intended only for developers or other people reading the data to understand what they are looking at (Linked Art requirement)
+ *         identified_by:
+ *           type: array
+ *           description: An array of json objects, each of which is a name/title for the resource, or an identifier for the ressource
+ *           items:
+ *             $ref: '#/components/schemas/linguistic_appellation'
+ *         equivalent:
+ *           type: array
+ *           description: |
+ *             An array of string values, each of which MUST be the HTTPS URI of an external identity and description of the current entity
+ *           items:
+ *             type: string
+ *             format: uri
+ *     creation:
+ *       type: object
+ *       description: A json object representing the creation of the work
+ *       required: [id, type, _label]
+ *       properties:
+ *         id:
+ *           type: string
+ *           format: uri
+ *           description: |
+ *             The value MUST be the HTTPS URI of the resource
+ *         type:
+ *           type: string
+ *           enum: [Creation]
+ *           description: |
+ *             The class for the resource
+ *         _label:
+ *           type: string
+ *           description: |
+ *             Gives a human readable label as a string, intended only for developers or other people reading the data to understand what they are looking at (Linked Art requirement)
+ *         carried_out_by:
+ *           type: array
+ *           description: An array of json objects, each of which is a reference to a Person or Group that carried out the activity
+ *           items:
+ *             $ref: '#/components/schemas/actor'
+ *         timespan:
+ *           $ref: '#/components/schemas/timeSpan'
+ *     dimension:
+ *       type: object
+ *       description: A json object representing the dimension of the object
+ *       required: [id, type, _label]
+ *       properties:
+ *         id:
+ *           type: string
+ *           format: uri
+ *           description: |
+ *             The value MUST be the HTTPS URI of the resource
+ *         type:
+ *           type: string
+ *           enum: [Dimension]
+ *           description: |
+ *             The class for the resource
+ *         _label:
+ *           type: string
+ *           description: |
+ *             Gives a human readable label as a string, intended only for developers or other people reading the data to understand what they are looking at (Linked Art requirement)
+ *         value:
+ *           type: string
+ *           description: |
+ *             The numeric value of the dimension
+ *         classified_as:
+ *           type: array
+ *           description: |
+ *             An array of string values, each of which MUST be the HTTPS URI of a classification term
+ *           items:
+ *             type: string
+ *             format: uri
+ *         unit:
+ *           type: array
+ *           description: |
+ *             'An array containing only one string value, which MUST be the HTTPS URI of the dimension unit. **Note**: This field aslo accepts a single string value (parsed as an array of one string value)'
+ *           items:
+ *             type: string
+ *             format: uri
+ *     linguistic_appellation:
+ *       type: object
+ *       description: Names are used to provide an identifying label to the entity via identified_by
+ *       required: [id, type, _label]
+ *       properties:
+ *         id:
+ *           type: string
+ *           format: uri
+ *           description: |
+ *             The value MUST be the HTTPS URI of the resource
+ *         type:
+ *           type: string
+ *           enum: [Identifier, Name]
+ *           description: |
+ *             The class for the resource
+ *         _label:
+ *           type: string
+ *           description: |
+ *             Gives a human readable label as a string, intended only for developers or other people reading the data to understand what they are looking at (Linked Art requirement)
+ *         content:
+ *           type: string
+ *           description: |
+ *             The string form of the Name
+ *         classified_as:
+ *           type: array
+ *           description: |
+ *             An array of string values, each of which MUST be the HTTPS URI of a classification term
+ *           items:
+ *             type: string
+ *             format: uri
+ *         language:
+ *           type: array
+ *           description: |
+ *             An array of string values, each of which MUST be the HTTPS URI of a language
+ *           items:
+ *             type: string
+ *             format: uri
+ *     interface:
+ *       type: object
+ *       description: '**Pathway interface** is a relation describing the way of circulating between spaces. It allows qualifying the relationship of two or more exhibition spaces, indicating that these spaces are connected together so that one can go from one space to another. Pathway interface can be the `interface of` an exhibition space and may be `provided_by` an exhibition element. **Hanging interface** is a relation describing the hanging of an exhibit using an element. It allows qualifying the relationship of two or more things, where at least one is an exhibit and at least one is an exhibition element, indicating that this element is used for the hanging of the exhibit. Hanging interface can be the `interface_of` an exhibit and may be `provided_by` an exhibition element.'
+ *       required: [id, type, _label]
+ *       properties:
+ *         id:
+ *           type: string
+ *           format: uri
+ *           description: |
+ *             The value MUST be the HTTPS URI of the resource
+ *         type:
+ *           type: string
+ *           enum: [HangingInterface, PathwayInterface]
+ *           description: |
+ *             The class for the resource
+ *         _label:
+ *           type: string
+ *           description: |
+ *             Gives a human readable label as a string, intended only for developers or other people reading the data to understand what they are looking at (Linked Art requirement)
+ *         provided_by:
+ *           type: array
+ *           description: |
+ *             An array of string values, each of which MUST be the HTTPS URI of an Element that provides the interface
+ *           items:
+ *             type: string
+ *             format: uri
+ *     linguistic_object:
+ *       type: object
+ *       required: [id, type, _label]
+ *       properties:
+ *         id:
+ *           type: string
+ *           format: uri
+ *           description: |
+ *             The value MUST be the HTTPS URI of the resource
+ *         type:
+ *           type: string
+ *           enum: [LinguisticeObject]
+ *           description: |
+ *             The class for the resource
+ *         _label:
+ *           type: string
+ *           description: |
+ *             Gives a human readable label as a string, intended only for developers or other people reading the data to understand what they are looking at (Linked Art requirement)
+ *         content:
+ *           type: string
+ *           description: |
+ *             The string form of the Name
+ *         classified_as:
+ *           type: array
+ *           description: |
+ *             An array of string values, each of which MUST be the HTTPS URI of a classification term
+ *           items:
+ *             type: string
+ *             format: uri
+ *         language:
+ *           type: array
+ *           description: |
+ *             An array of string values, each of which MUST be the HTTPS URI of a language
+ *           items:
+ *             type: string
+ *             format: uri
+ *     production:
+ *       type: object
+ *       description: The beginning of a physical thing
+ *       required: [id, type, _label]
+ *       properties:
+ *         id:
+ *           type: string
+ *           format: uri
+ *           description: |
+ *             The value MUST be the HTTPS URI of the resource
+ *         type:
+ *           type: string
+ *           enum: [Production]
+ *           description: |
+ *             The class for the resource
+ *         _label:
+ *           type: string
+ *           description: |
+ *             Gives a human readable label as a string, intended only for developers or other people reading the data to understand what they are looking at (Linked Art requirement)
+ *         carried_out_by:
+ *           type: array
+ *           description: An array of json objects, each of which is a reference to a Person or Group that carried out the activity
+ *           items:
+ *             $ref: '#/components/schemas/actor'
+ *         timespan:
+ *           $ref: '#/components/schemas/timeSpan'
+ *     timeSpan:
+ *       type: object
+ *       description: The range of time for an activity
+ *       required: [id, type, _label]
+ *       properties:
+ *         id:
+ *           type: string
+ *           format: uri
+ *           description: |
+ *             The value MUST be the HTTPS URI of the resource
+ *         type:
+ *           type: string
+ *           enum: [TimeSpan]
+ *           description: |
+ *             The class for the resource
+ *         _label:
+ *           type: string
+ *           description: |
+ *             Gives a human readable label as a string, intended only for developers or other people reading the data to understand what they are looking at (Linked Art requirement)
+ *         begin_of_the_begin:
+ *           type: string
+ *           description: A string containing an ISO8601 formatted date-time, representing the earliest possible date at which the timespan could have started
+ *         end_of_the_end:
+ *           type: string
+ *           description: A string containing an ISO8601 formatted date-time, representing the latest possible date at which the timespan could have ended

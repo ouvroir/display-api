@@ -19,8 +19,8 @@
       }
     },
     {
-      "id": "/skosmos/sparql",
-      "sparqlURI": "http://localhost:8080/skosmos/sparql",
+      "id": "/skosmos",
+      "sparqlURI": "http://localhost:8080/skosmos",
       "graphURI": "urn:ouvroir:vocab",
       "httpMethod": "GET",
       "authInfo": {
@@ -69,6 +69,20 @@
           "targetId": "coreProperties",
           "embed": true,
           "endpoint": "/display/sparql"
+        },
+        {
+          "label": "influenced",
+          "iri": "http://www.cidoc-crm.org/cidoc-crm/P15i_influenced",
+          "targetId": "coreProperties",
+          "embed": true,
+          "endpoint": "/display/sparql"
+        },
+        {
+          "label": "created_by",
+          "iri": "http://www.cidoc-crm.org/cidoc-crm/P94i_was_created_by",
+          "targetId": "produced_by",
+          "embed": true,
+          "endpoint": "/display/sparql"
         }
       ],
       "types":[
@@ -99,6 +113,13 @@
           "endpoint": "/display/sparql"
         },
         {
+          "label": "identified_by",
+          "iri": "http://www.cidoc-crm.org/cidoc-crm/P1_is_identified_by",
+          "targetId": "identified_by",
+          "embed": true,
+          "endpoint": "/display/sparql"
+        },
+        {
           "label": "equivalent",
           "iri": "https://linked.art/ns/terms/equivalent",
           "embed": false,
@@ -121,7 +142,7 @@
         {
           "label": "_label",
           "iri": "http://www.w3.org/2000/01/rdf-schema#label",
-          "endpoint": "/skosmos/sparql"
+          "endpoint": "/skosmos"
         }
       ],
       "oprops": [
@@ -130,7 +151,7 @@
           "iri": "http://www.cidoc-crm.org/cidoc-crm/P2_has_type",
           "targetId": "classified_as_meta",
           "embed": true,
-          "endpoint": "/skosmos/sparql"
+          "endpoint": "/skosmos"
         }
       ],
       "types": [
@@ -139,7 +160,7 @@
           "restrictions": [
             "FILTER (?type IN ( <http://www.cidoc-crm.org/cidoc-crm/E55_Type> ))"
           ],
-          "endpoint": "/skosmos/sparql"
+          "endpoint": "/skosmos"
         }
       ]
     },
@@ -149,7 +170,7 @@
         {
           "label": "_label",
           "iri": "http://www.w3.org/2000/01/rdf-schema#label",
-          "endpoint": "/skosmos/sparql"
+          "endpoint": "/skosmos"
         }
       ],
       "oprops": [],
@@ -159,7 +180,7 @@
           "restrictions": [
             "FILTER (?type IN ( <http://www.cidoc-crm.org/cidoc-crm/E55_Type> ))"
           ],
-          "endpoint": "/skosmos/sparql"
+          "endpoint": "/skosmos"
         }
       ]
     },
@@ -180,6 +201,39 @@
             "FILTER (?type NOT IN ( <http://www.w3.org/2002/07/owl#Thing>, <http://www.w3.org/2000/01/rdf-schema#Resource>, <https://w3id.org/bot#Zone>, <http://www.cidoc-crm.org/cidoc-crm/E22_Human-Made_Object> ))",
             "FILTER NOT EXISTS { ?subclass ^a  ?iri ; <http://www.w3.org/2000/01/rdf-schema#subClassOf> ?type . FILTER (?subclass != ?type) FILTER (?subclass != <https://w3id.org/bot#Element>)}"
           ],
+          "endpoint": "/display/sparql"
+        }
+      ]
+    },
+    {
+      "id": "created_by",
+      "dprops": [
+        {
+          "label": "_label",
+          "iri": "http://www.w3.org/2000/01/rdf-schema#label",
+          "endpoint": "/display/sparql"
+        }
+      ],
+      "oprops": [
+        {
+          "label": "carried_out_by",
+          "iri": "http://www.cidoc-crm.org/cidoc-crm/P14_carried_out_by",
+          "targetId": "actor",
+          "embed": true,
+          "endpoint": "/display/sparql"
+        },
+        {
+          "label": "timespan",
+          "iri": "http://www.cidoc-crm.org/cidoc-crm/P4_has_time-span",
+          "targetId": "timeSpan",
+          "embed": true,
+          "endpoint": "/display/sparql"
+        }
+      ],
+      "types": [
+        {
+          "label": "type",
+          "restrictions": [],
           "endpoint": "/display/sparql"
         }
       ]
@@ -267,6 +321,13 @@
           "label": "dimension",
           "iri": "http://www.cidoc-crm.org/cidoc-crm/P43_has_dimension",
           "targetId": "dimension",
+          "embed": true,
+          "endpoint": "/display/sparql"
+        },
+        {
+          "label": "member_of",
+          "iri": "https://linked.art/ns/terms/member_of",
+          "targetId": "coreProperties",
           "embed": true,
           "endpoint": "/display/sparql"
         },
@@ -484,6 +545,13 @@
           "endpoint": "/display/sparql"
         },
         {
+          "label": "influenced_by",
+          "iri": "http://www.cidoc-crm.org/cidoc-crm/P15_was_influenced_by",
+          "targetId": "coreProperties",
+          "embed": true,
+          "endpoint": "/display/sparql"
+        },
+        {
           "label": "carried_out_by",
           "iri": "http://www.cidoc-crm.org/cidoc-crm/P14_carried_out_by",
           "targetId": "actor",
@@ -612,12 +680,12 @@
         {
           "label": "_label",
           "iri": "http://www.w3.org/2000/01/rdf-schema#label",
-          "endpoint": "/skosmos/sparql"
+          "endpoint": "/skosmos"
         },
         {
           "label": "notation",
           "iri": "http://www.w3.org/2004/02/skos/core#notation",
-          "endpoint": "/skosmos/sparql"
+          "endpoint": "/skosmos"
         }
       ],
       "types":[
@@ -626,7 +694,7 @@
           "restrictions": [
             "FILTER (?type IN ( <http://www.cidoc-crm.org/cidoc-crm/E56_Language> ))"
           ],
-          "endpoint": "/skosmos/sparql"
+          "endpoint": "/skosmos"
         }
       ]
     },
@@ -714,6 +782,35 @@
         }
       ],
       "oprops": [
+        {
+          "label": "classified_as",
+          "iri": "http://www.cidoc-crm.org/cidoc-crm/P2_has_type",
+          "targetId": "classified_as",
+          "embed": true,
+          "endpoint": "/display/sparql"
+        },
+        {
+          "label": "identified_by",
+          "iri": "http://www.cidoc-crm.org/cidoc-crm/P1_is_identified_by",
+          "targetId": "identified_by",
+          "embed": true,
+          "endpoint": "/display/sparql"
+        },
+        {
+          "label": "referred_to_by",
+          "iri": "http://www.cidoc-crm.org/cidoc-crm/P67i_is_referred_to_by",
+          "targetId": "referred_to_by",
+          "embed": true,
+          "endpoint": "/display/sparql"
+        },
+        {
+          "label": "used_for",
+          "iri": "http://www.cidoc-crm.org/cidoc-crm/P16i_was_used_for",
+          "targetId": "coreProperties",
+          "embed": true,
+          "endpoint": "/display/sparql",
+          "record": "global"
+        },
         {
           "label": "member",
           "iri": "https://linked.art/ns/terms/has_member",
@@ -856,12 +953,12 @@
         {
           "label": "_label",
           "iri": "http://www.w3.org/2000/01/rdf-schema#label",
-          "endpoint": "/skosmos/sparql"
+          "endpoint": "/skosmos"
         },
         {
           "label": "notation",
           "iri": "http://www.w3.org/2004/02/skos/core#notation",
-          "endpoint": "/skosmos/sparql"
+          "endpoint": "/skosmos"
         }
       ],
       "types":[
@@ -870,7 +967,7 @@
           "restrictions": [
             "FILTER (?type IN ( <http://www.cidoc-crm.org/cidoc-crm/E58_Measurement_Unit> ))"
           ],
-          "endpoint": "/skosmos/sparql"
+          "endpoint": "/skosmos"
         }
       ]
     }
