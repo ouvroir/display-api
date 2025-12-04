@@ -83,17 +83,132 @@ function cleanCachedQueriesEndpoint(esuri) {
 // se utiliza el modelo de la caché para ver qué datos extraer
 async function getData(obj, qinfo, writeonlytoo) {
 	// 2021-mar modificación para tipos de elementos writeonly
+  // DV: writeonlytoo est donné par resourceUpdater
 	if (writeonlytoo == undefined)
 		writeonlytoo = false;
 
-	// compruebo si el tipo de datos existe en el modelo
+  // compruebo si el tipo de datos existe en el modelo
 	let mel = _.find(obj.api.config.model, (el) => el.id === obj.id);
 	if (mel == undefined)
 		throw Error("Check your model, incorrect data type => " + obj.id);
-		
-	// tipo correcto, pido los datos
-	let salida = await extractResources(obj.iris, mel, obj.api, qinfo, writeonlytoo);
-		
+
+  let inferenceEndpoint;
+
+  if (!writeonlytoo) {
+
+    if (Object.keys(obj.api.cache[mel.id]).length === 0 || !(obj.iris[0] in obj.api.cache[mel.id])) {
+
+      // Si le cache est vide 
+      // Ou si la ressource demandée n’est pas dans le cache
+      // existe-t-elle dans l’entrepôt? (requete ASK)
+
+      // Valeurs à insérer dans le query template
+      let aux = {};
+
+      // pas l’idéal, voir commentaire pour const cachedIri
+      aux.firis = ["<"+obj.iris[0]+">"];
+
+      // ASK pour 404
+      let qtemp = _.find(queryTemplates.queryTemplates, el => el.id === 'ask' );
+      const endpoint = _.find(obj.api.config.endpoints, el => el.id === mel.types[0].endpoint ); // voir ttype à régler ici (???)
+      const ask = await sparqlClient.queryEndpoint(endpoint, qtemp.template, aux, qinfo, obj.graph);
+
+      if (!ask.boolean) {
+        return ask;
+      }
+    }
+
+    // Assumant que l’on ne récupère toujours qu’un seul IRI
+    // Donc pas de liste d’IRI possible (/apis/{apiId}/resources non fonctionnel)
+    // On n’utilise donc que le premier de la liste (indice 0)
+    // @todo: Utiliser _.each() pour faire proprement (cohésion du code)
+    const cachedIri = obj.api.cache[mel.id][obj.iris[0]];
+    inferenceEndpoint = _.find(obj.api.config.endpoints, el => el.id === '/display-reasoner' );
+
+    if (cachedIri?.graph != obj.graph) {
+
+      // Si le graphe demandé est différent du graphe de la ressource en cache,
+      // alors le cache pour cet élément est invalide
+      delete obj.api.cache[mel.id][obj.iris[0]];
+
+      // Si on demande effectivement un graphe,
+      // alors on charge un graphe d’inférence
+      if (obj.graph != undefined) {
+        let reasonerActivated = false;
+        let endpoint = _.find(obj.api.config.endpoints, el => el.id === mel.types[0].endpoint );
+
+        for (const infGraph of endpoint.infGraphURI) {
+
+          // Valeurs à insérer dans le query template
+          let aux = {};
+          aux.iri = "<" + infGraph + ">";
+
+          let qtemp = _.find(queryTemplates.queryTemplates, el => el.id === 'testInfGraph' );
+
+          // pour sélectionner le bon graphe dans sparqlClient
+          endpoint.checkReasoner = true;
+
+          const ask = await sparqlClient.queryEndpoint(endpoint, qtemp.template, aux, qinfo, obj.graph);
+          if (ask.boolean) { // ask {infGraph activated false}
+            reasonerActivated = true;
+            endpoint.checkReasoner = false;
+            obj.infGraph = infGraph;
+            break;
+          }
+        }
+        if (!reasonerActivated) {
+          throw Error("No inference graph available");
+        } else {
+          // toggle (indiquer l’activation)
+          let aux = {};
+          aux.iri = "<" + obj.infGraph + ">";
+          aux.active = "true";
+          let updateParams = endpoint.sparqlUpdate;
+          let qtemp = _.find(queryTemplates.queryTemplates, el => el.id === 'toggleActiveInfGraph' );
+          // no await
+          sparqlClient.queryEndpoint(updateParams, qtemp.template, aux, qinfo);
+
+          // Load data in infGraph
+          updateParams = inferenceEndpoint.sparqlUpdate;
+
+          // SPARQL query params
+          aux.inferenceGraphIri = "<" + obj.infGraph + ">";
+          aux.serviceIri = "<" + endpoint.sparqlURI  + ">";
+          aux.graph = "<" + obj.graph  + ">";
+          aux.metadataGraphURI = "<" + endpoint.metadataGraphURI  + ">";
+
+          qtemp = _.find(queryTemplates.queryTemplates, el => el.id === 'loadDataInInfGraph' );
+          await sparqlClient.queryEndpoint(updateParams, qtemp.template, aux, qinfo);
+        }
+      }
+    }
+  }
+
+  // tipo correcto, pido los datos
+	let salida = await extractResources(obj.iris, mel, obj.api, qinfo, writeonlytoo, obj.infGraph, obj.graph);
+
+  if (obj.infGraph != undefined) {
+
+    // CLEAR INFGRAPH (async sans await): hypothèse de positionnement no. 2
+    // reasonerActivated = false;???
+    // @todo : à faire aussi lorsqu’une erreur est levée!!! Sinon l’état des données n’est plus correct lors de la prochaine requête
+
+    let endpoint = _.find(obj.api.config.endpoints, el => el.id === mel.types[0].endpoint );
+    let aux = {};
+    aux.iri = "<" + obj.infGraph + ">";
+    aux.active = "false";
+    let updateParams = endpoint.sparqlUpdate;
+    let qtemp = _.find(queryTemplates.queryTemplates, el => el.id === 'toggleActiveInfGraph' );
+    // no await
+    sparqlClient.queryEndpoint(updateParams, qtemp.template, aux, qinfo);
+
+    aux.inferenceGraphIri = "<" + obj.infGraph + ">";
+    updateParams = inferenceEndpoint.sparqlUpdate;
+    qtemp = _.find(queryTemplates.queryTemplates, el => el.id === 'clearInfGraph' );
+    // no await
+    sparqlClient.queryEndpoint(updateParams, qtemp.template, aux, qinfo);
+  }
+
 	// ahora genero la salida deseada
 	salida.data = await createRepresentations(obj.iris, mel, obj.api, writeonlytoo);
 	
@@ -214,35 +329,42 @@ function formatResource(iri, mel, api, writeonlytoo) {
 
 // FUNCIONES DE EXTRACCIÓN DE DATOS
 // (si no están en la caché de la API se piden al cliente SPARQL)
-async function extractResources(iris, mel, api, qinfo, writeonlytoo) {	
+async function extractResources(iris, mel, api, qinfo, writeonlytoo, infGraph, graph) {	
 	// creo primero los recursos si no existen en la caché de la api
 	let target = api.cache[mel.id];
 	_.each(iris, function(iri) {
 		if (target[iri] == undefined) {
 			target[iri] = { 
 				"iri" : iri ,
-				"timestampCache" : new Date().getTime() // 01-02-2021 incluido para el control de la caché
-			};
+				"timestampCache" : new Date().getTime(), // 01-02-2021 incluido para el control de la caché
+        "graph" : graph,
+      };
 		}
 	});
-				
+
+  const queryGraph = (writeonlytoo) ? graph : infGraph ;
+
 	// array de promesas para obtener los datos (en cascada)
 	let promesas = [];
 	
 	// una promesa para cada tipo
 	_.each( mel.types, (ttype) => {
 		// compruebo si debo incluir ttype según writeonlytoo
-		if (writeonlytoo || ttype.writeonly == undefined || !ttype.writeonly)
-			promesas.push( extractType(iris, mel.id, ttype, api, qinfo) );
+    // GET: la condition satisfaite est ttype.writeonly == undefined
+    // PUT: la condition satisfaite est writeonlytoo
+    if (writeonlytoo || ttype.writeonly == undefined || !ttype.writeonly)
+			promesas.push( extractType(iris, mel.id, ttype, api, qinfo, queryGraph, writeonlytoo) );
 	});
-	// una promesa para la lista de dataprops
+
+  // una promesa para la lista de dataprops
 	const dprops = _.filter(mel.dprops, function(el) { return writeonlytoo || el.writeonly == undefined || !el.writeonly; });
-	promesas.push( extractDataProps(iris, mel.id, dprops, api, qinfo) );
-	// una promesa por cada objectprop
+	promesas.push( extractDataProps(iris, mel.id, dprops, api, qinfo, queryGraph, writeonlytoo) );
+
+  // una promesa por cada objectprop
 	_.each( mel.oprops, (oprop) => {
 		// compruebo si debo incluir oprop según writeonlytoo
 		if (writeonlytoo || oprop.writeonly == undefined || !oprop.writeonly)
-			promesas.push( extractObjectProp(iris, mel.id, oprop, api, qinfo) );
+			promesas.push( extractObjectProp(iris, mel.id, oprop, api, qinfo, queryGraph, writeonlytoo) );
 	});
 	
 	// espero a que terminen todas...
@@ -318,8 +440,12 @@ function estimateTotalQueries(iris, mel, api, writeonlytoo) {
 }
 
 
-async function extractType(iris, id, ttype, api, qinfo) {
+async function extractType(iris, id, ttype, api, qinfo, graph, writeonlytoo) {
 	// recupero el objeto target de la caché de la API
+  // assigne à target un objet qui représente la ressource en cache
+  // cet objet contient des arrays, donc target crée des **références** à ces arrays
+  // qui sont ainsi modifiés directement, en manipulant target
+  // donc les trois fonctions d’extraction modifient les ressource en cache
 	let target = api.cache[id];
 	
 	// número de consultas
@@ -352,10 +478,14 @@ async function extractType(iris, id, ttype, api, qinfo) {
 		});
 		// preparo resto de parámetros para hacer la consulta
 		let qtemp = _.find(queryTemplates.queryTemplates, el => el.id === 'types' ); // consulta tipo types
-		const endpoint = _.find(api.config.endpoints, el => el.id === ttype.endpoint );
-		
+    let endpoint = _.find(api.config.endpoints, el => el.id === ttype.endpoint );
+
+    if (!writeonlytoo && graph !== undefined && endpoint.id !== '/skosmos/sparql') {
+      endpoint = _.find(api.config.endpoints, el => el.id === '/display-reasoner')
+    }
+
 		// espero a tener los resultados...
-		const datos = await sparqlClient.queryEndpoint(endpoint, qtemp.template, aux, qinfo); //, api.config.prefixes);
+		const datos = await sparqlClient.queryEndpoint(endpoint, qtemp.template, aux, qinfo, graph); //, api.config.prefixes);
 		
 		// 5/3/21 para evitar problemas de concurrencia guardo los resultados en un objeto local y luego actualizo
 		let objaux = {};
@@ -373,6 +503,7 @@ async function extractType(iris, id, ttype, api, qinfo) {
 		});
 		// y ahora guardo en el sitio adecuado de la caché
 		_.each(aux.iris, function(iri) {
+      // target modifie le cache
 			target[iri][ttype.label] = objaux[iri];
 		});
 		
@@ -401,14 +532,14 @@ async function extractType(iris, id, ttype, api, qinfo) {
 		//console.log("Procesando retargets " + oprop.targetId + " - total: " + retargets.length);
 		
 		// extraigo (recursivo) y agrego consultas
-		let resp = await extractResources(retargets, mel, api, qinfo);
+		let resp = await extractResources(retargets, mel, api, qinfo, writeonlytoo, graph);
 		nc += resp.numberOfQueries;
 	}
 	
 	return nc; // aquí hemos terminado
 }
 
-async function extractDataProps(iris, id, dprops, api, qinfo) {
+async function extractDataProps(iris, id, dprops, api, qinfo, graph, writeonlytoo) {
 	// recupero el objeto target de la caché de la API
 	let target = api.cache[id];
 	
@@ -443,10 +574,14 @@ async function extractDataProps(iris, id, dprops, api, qinfo) {
 			});
 			// preparo resto de parámetros para hacer la consulta
 			let qtemp = _.find(queryTemplates.queryTemplates, el => el.id === 'propvalues' ); // consulta tipo propvalues
-			const endpoint = _.find(api.config.endpoints, el => el.id === dprop.endpoint );				
-						
-			// espero a tener los resultados...
-			const datos = await sparqlClient.queryEndpoint(endpoint, qtemp.template, aux, qinfo); //, api.config.prefixes);
+			let endpoint = _.find(api.config.endpoints, el => el.id === dprop.endpoint );				
+
+      if (!writeonlytoo && graph !== undefined && endpoint.id !== '/skosmos/sparql') {
+        endpoint = _.find(api.config.endpoints, el => el.id === '/display-reasoner')
+      }
+
+      // espero a tener los resultados...
+			const datos = await sparqlClient.queryEndpoint(endpoint, qtemp.template, aux, qinfo, graph); //, api.config.prefixes);
 			
 			// 5/3/21 para evitar problemas de concurrencia guardo los resultados en un objeto local y luego actualizo
 			let objaux = {};
@@ -489,7 +624,7 @@ async function extractDataProps(iris, id, dprops, api, qinfo) {
 	return nc; // aquí hemos terminado
 }
 
-async function extractObjectProp(iris, id, oprop, api, qinfo) {
+async function extractObjectProp(iris, id, oprop, api, qinfo, graph, writeonlytoo) {
 	// recupero el objeto target de la caché de la API
 	let target = api.cache[id];
 	
@@ -521,10 +656,14 @@ async function extractObjectProp(iris, id, oprop, api, qinfo) {
 		});
 		// preparo resto de parámetros para hacer la consulta
 		let qtemp = _.find(queryTemplates.queryTemplates, el => el.id === 'propvalues' ); // consulta tipo propvalues
-		const endpoint = _.find(api.config.endpoints, el => el.id === oprop.endpoint );	
-		
+		let endpoint = _.find(api.config.endpoints, el => el.id === oprop.endpoint );	
+
+    if (!writeonlytoo && graph !== undefined && endpoint.id !== '/skosmos/sparql') {
+      endpoint = _.find(api.config.endpoints, el => el.id === '/display-reasoner')
+    }
+
 		// espero a tener los resultados...
-		let datos = await sparqlClient.queryEndpoint(endpoint, qtemp.template, aux, qinfo); //, api.config.prefixes);
+		let datos = await sparqlClient.queryEndpoint(endpoint, qtemp.template, aux, qinfo, graph); //, api.config.prefixes);
 						
 		// 5/3/21 para evitar problemas de concurrencia guardo los resultados en un objeto local y luego actualizo
 		let objaux = {};
@@ -572,7 +711,7 @@ async function extractObjectProp(iris, id, oprop, api, qinfo) {
 		//console.log("Procesando retargets " + oprop.targetId + " - total: " + retargets.length);
 		
 		// extraigo (recursivo) y agrego consultas
-		let resp = await extractResources(retargets, mel, api, qinfo);
+		let resp = await extractResources(retargets, mel, api, qinfo, writeonlytoo, graph);
 		nc += resp.numberOfQueries;
 	}
 	
