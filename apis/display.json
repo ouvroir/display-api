@@ -169,7 +169,7 @@
         {
           "label": "_label",
           "iri": "http://www.w3.org/2000/01/rdf-schema#label",
-          "endpoint": "/skosmos"
+          "endpoint": "/skosmos/sparql"
         }
       ],
       "oprops": [
@@ -178,7 +178,7 @@
           "iri": "http://www.cidoc-crm.org/cidoc-crm/P2_has_type",
           "targetId": "classified_as_meta",
           "embed": true,
-          "endpoint": "/skosmos"
+          "endpoint": "/skosmos/sparql"
         }
       ],
       "types": [
@@ -187,7 +187,7 @@
           "restrictions": [
             "FILTER (?type IN ( <http://www.cidoc-crm.org/cidoc-crm/E55_Type> ))"
           ],
-          "endpoint": "/skosmos"
+          "endpoint": "/skosmos/sparql"
         }
       ]
     },
@@ -197,7 +197,7 @@
         {
           "label": "_label",
           "iri": "http://www.w3.org/2000/01/rdf-schema#label",
-          "endpoint": "/skosmos"
+          "endpoint": "/skosmos/sparql"
         }
       ],
       "oprops": [],
@@ -207,7 +207,7 @@
           "restrictions": [
             "FILTER (?type IN ( <http://www.cidoc-crm.org/cidoc-crm/E55_Type> ))"
           ],
-          "endpoint": "/skosmos"
+          "endpoint": "/skosmos/sparql"
         }
       ]
     },
@@ -741,12 +741,12 @@
         {
           "label": "_label",
           "iri": "http://www.w3.org/2000/01/rdf-schema#label",
-          "endpoint": "/skosmos"
+          "endpoint": "/skosmos/sparql"
         },
         {
           "label": "notation",
           "iri": "http://www.w3.org/2004/02/skos/core#notation",
-          "endpoint": "/skosmos"
+          "endpoint": "/skosmos/sparql"
         }
       ],
       "types":[
@@ -755,7 +755,7 @@
           "restrictions": [
             "FILTER (?type IN ( <http://www.cidoc-crm.org/cidoc-crm/E56_Language> ))"
           ],
-          "endpoint": "/skosmos"
+          "endpoint": "/skosmos/sparql"
         }
       ]
     },
@@ -1026,12 +1026,12 @@
         {
           "label": "_label",
           "iri": "http://www.w3.org/2000/01/rdf-schema#label",
-          "endpoint": "/skosmos"
+          "endpoint": "/skosmos/sparql"
         },
         {
           "label": "notation",
           "iri": "http://www.w3.org/2004/02/skos/core#notation",
-          "endpoint": "/skosmos"
+          "endpoint": "/skosmos/sparql"
         }
       ],
       "types":[
@@ -1040,7 +1040,7 @@
           "restrictions": [
             "FILTER (?type IN ( <http://www.cidoc-crm.org/cidoc-crm/E58_Measurement_Unit> ))"
           ],
-          "endpoint": "/skosmos"
+          "endpoint": "/skosmos/sparql"
         }
       ]
     }
