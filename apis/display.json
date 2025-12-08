@@ -96,6 +96,14 @@
           "endpoint": "/display/sparql"
         },
         {
+          "label": "digitally_carried_by",
+          "iri": "https://linked.art/ns/terms/digitally_carried_by",
+          "targetId": "coreProperties",
+          "embed": true,
+          "endpoint": "/display/sparql",
+          "record": "global"
+        },
+        {
           "label": "influenced",
           "iri": "http://www.cidoc-crm.org/cidoc-crm/P15i_influenced",
           "targetId": "coreProperties",
@@ -115,7 +123,7 @@
         {
           "label": "type",
           "restrictions": [
-            "FILTER (?type IN ( <http://www.cidoc-crm.org/cidoc-crm/E89_Propositional_Object> ))"
+            "FILTER (?type IN ( <http://www.cidoc-crm.org/cidoc-crm/E89_Propositional_Object> , <http://www.ics.forth.gr/isl/CRMdig/D1_Digital_Object> , <http://www.cidoc-crm.org/cidoc-crm/E73_Information_Object> ))"
           ],
           "endpoint": "/display/sparql",
           "record": "global"
