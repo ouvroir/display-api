@@ -1026,6 +1026,46 @@ La description des entités s’exprime selon deux conceptualisations (cidoc, Di
 
 # Notes obsolètes
 
+## Doc legacy
+
+### Configuration
+
+Dans l’application CRAFTS, les API sont configurées avec des documents structurés au format JSON.
+
+Le schéma de configuration est dispobible ici : <https://crafts.ntnlv.ca:450/docs/#/api/getApi>.
+
+En particulier, les deux champs suivants contiennent des `array` d’objets JSON permettant de configurer des opérations sur les ressources RDF :
+
+- `model` : contient les `model element` pour les opérations sur une ressource RDF
+    - chemin `/apis/{apiId}/resource`
+    - réponse : format JSON (configurable)
+    - possibilité d’imbriquer des descriptions (autrement dit, on peut suivre des chemins de propriété et se balader dans le graphe à partir de la ressource d’entrée)
+- `queryTemplate` : contient les `query template element` (gabarits de requête SPARQL sur mesure avec la clause `SELECT`), avec toute la complexité nécessaire et la possibilité de faire du templating pour injecter dans les requêtes SPARQL des valeurs passées par `get`
+    - chemin `/apis/{apiId}/query`
+    - réponse : format JSON SPARQL 1.1 Query Results conforme au standard, auquel s’ajoute la requête SPARQL
+    - possibilité de faire du templating pour injecter dans les requêtes SPARQL des valeurs passées par `get` (obligatoires ou facultatives) à partir de l’API
+
+### Documentation
+
+La documentation pour le seveur CRAFTS est pricipalement basée sur un article et sur des exemples :
+
+- Article : G. Vega-Gorgojo, "CRAFTS: Configurable REST APIs for Triple Stores," in IEEE Access, vol. 10, pp. 32426-32441, 2022, doi: 10.1109/ACCESS.2022.3160610.
+- Exemples de configuration :
+    - <https://crafts.gsic.uva.es/CRAFTSconfig101.html> (il est possible de se créer un compte pour tester les exemples)
+    - https://crafts.gsic.uva.es/CRAFTSaccess101.pdf
+
+Beaucoup de commentaires dans le code source.
+
+Info : CRAFTS is available under an Apache 2.0 license. Please send us an email to [guiveg@tel.uva.es](mailto:guiveg@tel.uva.es) if you use or plan to use CRAFTS. Drop us also a message if you have comments or suggestions for improvement.
+
+### Point d’accès
+
+Note interne : pour définir les endpoints côté SPARQL (sur lesquels CRAFTS lui-même effectue les requêtses), la spécification d’un graphe est obligatoire, même pour le graphe par défaut. Le graphe par défaut dans Fuseki est `urn:x-arq:DefaultGraph`.
+
+```json
+{"endpoints":[{"graphURI": "urn:x-arq:DefaultGraph"}]}
+```
+
 ## Décrire
 
 ### Tous les exhibits
