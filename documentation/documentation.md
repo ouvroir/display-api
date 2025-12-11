@@ -31,6 +31,125 @@ URL de l’interface Swagger :
 - <https://crafts.ntnlv.ca:450/docs>
 
 # Initialisation
+
+Cette section formule des recommandations sur les entités et les propriété qu’il est nécessaires de créer lors de l’intialisation d’un projet.
+
+## Préambule
+
+L’interprétation topologique d’une exposition prend la forme d’un ensemble de triplets stocké dans un graphe nommé ([*named graph*](https://www.w3.org/TR/rdf11-concepts/#dfn-named-graph)) à l’intérieur de notre jeu de données RDF. Chaque graphe nommé est associé formellement à une version d’exposition.
+
+Une version d’exposition est une entité permettant
+
+- l’identification et la description d’une interprétation topologique ;
+- l’identification de l’activité d’exposition sur laquelle porte ladite version.
+
+## Technicalités
+
+Afin de lire ou d’écrire des informations spécifiques à une version, il faut transmettre avec la requête HTTP un IRI qui est le nom du graphe qui stocke les triplets associés.
+
+REST : l’échange d’information sur les expositions est en mode stateless, il faut donc transmettre cet IRI avec chaque requête (on introduit un nouveau queryparam plus bas).
+
+La version est toujours associée à un seul graphe nommé (1-1) et une seule activité d’exposition (1-1). À titre informatif : une activité d’expostion peut être associée théoriquement à un nombre indéterminé de version (N-1), mais la relation va dans l’autre sens.
+
+Le lien entre les versions dans notre jeu de données et les projets dans l’application est laissé à l’entière discrétion du client.
+
+## Formalisation
+
+Les schémas présentés ci-dessous sont des exemples fonctionnels minimaux des entités à créer lors de l’initialisation d’un projet.
+
+L’ordre dans lequel sont créées les entités n’a pas d’importance.
+
+### Version
+
+Les versions sont des entités instanciées comme membre de la classe `crm:E73_Information_Object` (aligné sur la chaîne `InformationObject`). Comme `InformationObject` est une sous-classe de `PropositionalObject`, ils utilisent le même point d’accès (voir [remarque sur la sémantique de abstract-work](#remarquesur-la-sémantique-de-abstract-work)).
+
+#### Schema
+
+```js
+/**
+ * @type {Object}
+ * @property {URL} id - IRI de la version
+ * @property {string} type - chaine "InformationObject"
+ * @property {string} _label - A human readable label as a string
+ * @property {URL} classified_as - aat:300220469, version of document
+ * @property {URL | object } about - IRI ou objet de l’activité d’exposition sur laquelle porte la version (selon les cas de figures)
+ * @property {object} digitally_carried_by représente le graphe nommé associé à la version
+ * @property {URL} digitally_carried_by.id - IRI du graphe nommé
+ * @property {string} digitally_carried_by.type - chaine "DigitalObject"
+ * @property {string} digitally_carried_by._label - A human readable label as a string
+ */
+{
+  "id": "https://ouvroir.umontreal.ca/data/version/tegqh4ow",
+  "type": "InformationObject",
+  "_label": "Version de travail portant activity/c6o5h6c4",
+  "classified_as": "http://vocab.getty.edu/aat/300220469",
+  "about": "https://ouvroir.umontreal.ca/data/activity/c6o5h6c4",
+  "digitally_carried_by": {
+    "id": "https://ouvroir.umontreal.ca/data/digital-object/tegqh4ow",
+    "type": "DigitalObject",
+    "_label": "The named graph containing triples of version/tegqh4ow"
+  }
+}
+```
+
+Remarque :
+
+- lors de la création de la version, la valeur de `digitally_carried_by.id` doit être transmise au serveur en utilisant le query parameter `graph` ; par la suite, toutes les requêtes associées à cette version doivent utiliser cette valeur avec ce paramètre ;
+  - exemple (non fonctionnel) : `https://crafts.ntnlv.ca:450/apis/display/resource?id=abstract-work&iri=https://ouvroir.umontreal.ca/data/version/bidonbidon&graph=https://ouvroir.umontreal.ca/data/digital-object/bidonbidon`
+- l’entité `DigitalObject` qui représente le graphe nommé est instancié en même temps que la version ; il n’y a rien d’autre à faire pour l’entité `DigitalObject`.
+
+#### Cas de figure : l’exposition n’existe pas
+
+La propriété `about` pour l’entité `InformationObject` est un objet (au lieu d’une URL) avec le schéma ci-dessous (l’activité d’exposition sera instanciée en même temps que la version) :
+
+```js
+/**
+ * Les core properties : le trio id-type-label
+ * @property {URL} about.id - IRI de l’activité d’exposition
+ * @property {string} about.type - chaine "Activity"
+ * @property {string} about._label - A human readable label as a string
+*/
+```
+
+Remarques :
+
+- les métadonnées détaillées sur l’activité doivent être transmises subséquemment au point d’accès pour les activités d’exposition (car en tant que valeur du champ about pour la version, seules les *core properties* peuvent être transmises) ;
+
+Certaines métadonnées pour les activités d’exposition sont attendues, notamment la classification et la collection d’œuvres.
+
+La requête subséquente minimale consiste donc à ajouter un terme de classification et la collection d’œuvre (qui est initialement vide) à l’activité d’exposition désignée par la version :
+
+- terme de classification : aat:300054766, Exhibiting
+- collection : Set vide
+
+```json
+[
+  {
+    "op": "add",
+    "path": "/classified_as",
+    "value": "http://vocab.getty.edu/aat/300054766"
+  },
+  {
+    "op": "add",
+    "path": "/used_specific_object",
+    "value": {
+      "id": "http://iriduset",
+      "type": "Set",
+      "_label": "Exhibits of activity/nanoID"
+    }
+  }
+]
+```
+
+#### Cas de figure : l’exposition existe
+
+La propriété `about` pour la version reçoit simplement l’IRI de l’activité d’exposition.
+
+Remarques :
+
+- la liste des œuvres instanciées et liées à l’exposition peut être utilisée par la version grâce à la propriété `used_specific_object` de l’activité sur laquelle porte la version
+- [pas implémenté mais possible] il existe des fonctions native en SPARQL qui permettent au backend du dupliquer efficacement et à coût minimal un graphe nommé ; par exemple en envoyant un champ booléen non-sémantisé dans l’objet décrivant une version afin de déclencher la duplication ; à discuter, si on veut un vrai système de versionnement dans nos données.
+
 # Points d’accès
 
 ## Décrire (GET)
