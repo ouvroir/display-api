@@ -233,6 +233,76 @@ Exemples :
 @queryparam {string} **`iri`** - (required) IRI d’un abstract-work
 @queryparam {string} **`graph`** - IRI d’un graphe nommé dont l’ensemble des nœuds contient l’IRI de l’entité décrite
 
+#### Remarque sur la sémantique de `abstract-work`
+
+Le sémantique du terme `abstract work` est plus près du terme anglais « work » (ouvrage ou travail) que du terme français « œuvre » qui a souvent tendance, mais pas nécessairement, à être connoté artistiquement. Il s’agit donc de travaux abstraits ou d’ouvrage abstrait, dont le sens peut être précisé par l’utilisation du mécanisme de typage par classification (propriété `classified_as`) ou par des sous-classes lorsque possible.
+
+#### L’idée d’une œuvre d’art (ou abstract work)
+
+PropositionalObject
+
+- classified_as aat:300387357 (creative work)
+- about [some Exhbitis]
+
+```json
+{
+  "id": "http://example/an-abstract-work",
+  "type": "PropositionalObject",
+  "classified_as": "http://vocab.getty.edu/aat/300387357",
+  "about": [
+    "http://example/an-exhibit",
+    "http://example/another-exhibit",
+  ]
+}
+```
+
+#### L’idée d’une exposition (exhibition concept)
+
+Exhibition as an abstract work, or exhibition concept
+
+À ma connaissance, nous n’avons pas formellement décidé de ce qu’il advenait de ce type d’entité, donc C’est consigné ici à titre informatif.
+
+PropositionalObject
+
+- classified_as aat:300417531 (exihibition)
+- influenced (Activity classified_as aat:300054766)
+
+```json
+{
+  "id": "http://example/an-exhibition-concept",
+  "type": "PropositionalObject",
+  "classified_as": "exhibition",
+  "influenced": [
+    "http://example/feux-pâles-1990",
+    "http://example/feux-pâles-2014",
+  ]
+}
+```
+
+Remarque : propriété `influenced` only usable when value is an entity of type `Activity`.
+
+#### Version de travail
+
+InformationObject
+
+- classified_as aat:300220469 (version)
+- about (activity classified_as aat:300054766 exhibiting)
+
+```json
+{
+  "id": "http://example/a-working-version",
+  "type": "InformationObject",
+  "classified_as": "http://vocab.getty.edu/aat/300220469",
+  "about": "http://example/feux-pâles-1990",
+  "digitally_carried_by": "http://example/a-named-graph"
+}
+```
+
+Remarque :
+
+- max 1 about
+- max 1 digitally_carried_by
+
 #### Exemples
 
 - https://ouvroir.umontreal.ca/data/abstract-work/9lh24u72
@@ -635,8 +705,6 @@ Exemple :
 
 #### PATCH add `/carried_out_by`
 
-Attention, effet indésirable : remplace l’array par un array avec la valeur de "value". Autrement dit, l’opération `add` sans indice pour la valeur de `path` et sur un champ déjà populé écrase ce champ. Voir l’exemple suivant pour workaround raisonnable.
-
 Exemple :
 
 ```json
@@ -649,6 +717,8 @@ Exemple :
 ```
 
 Remarque : on peut mettre un array dans le champ "value" afin d'insérer plusieurs valeurs.
+
+Attention, effet indésirable : remplace l’array par un array avec la valeur de "value". Autrement dit, l’opération `add` sans indice pour la valeur de `path` et sur un champ déjà populé écrase ce champ. Voir l’exemple suivant pour workaround raisonnable.
 
 #### PATCH add `/carried_out_by/-`
 
