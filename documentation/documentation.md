@@ -21,7 +21,8 @@ La sémantique d’une valeur associée à un paramètre `get` (`query parameter
 - `iri` : identifiant de la ressource RDF
   - exemples de valeur possible :
     - `https://ouvroir.umontreal.ca/data/activity0000`
-- donc : `/apis/display/resource?id=exhibition&iri=https://ouvroir.umontreal.ca/data/activity0000`
+- `graph` : identifiant d’un graphe nommé
+- donc : `/apis/display/resource?id=exhibition&iri=https://ouvroir.umontreal.ca/data/activity0000&graph=https://ouvroir.umontreal.ca/data/digital-object/{nanoID}`
 
 ## Accès
 
@@ -42,6 +43,7 @@ Statut : testing
 @method **`GET`**
 @queryparam {string} **`id`** - (required) Identifiant du modèle : **`exhibition`**
 @queryparam {string} **`iri`** - (required) IRI d’une exposition
+@queryparam {string} **`graph`** - IRI d’un graphe nommé dont l’ensemble des nœuds contient l’IRI de l’entité décrite.
 
 Exemple :
 
@@ -53,7 +55,7 @@ Note :
     
 ### Un ensemble exhibits
 
-Statut : unstable
+Statut : testing
 
 @path /apis/display/resource
 @method **`GET`**
@@ -66,12 +68,13 @@ Exemple :
 
 ### Un expôt (exhibit)
 
-Statut : unstable
+Statut : testing
 
 @path /apis/display/resource
 @method **`GET`**
 @queryparam {string} **`id`** - (required) Identifiant du modèle : **`exhibit`**
 @queryparam {string} **`iri`** - (required) IRI d’un exhibit
+@queryparam {string} **`graph`** - IRI d’un graphe nommé dont l’ensemble des nœuds contient l’IRI de l’entité décrite.
 
 Exemples :
 
@@ -109,6 +112,7 @@ Exemples :
 @method **`GET`**
 @queryparam {string} **`id`** - (required) Identifiant du modèle : **`abstract-work`**
 @queryparam {string} **`iri`** - (required) IRI d’un abstract-work
+@queryparam {string} **`graph`** - IRI d’un graphe nommé dont l’ensemble des nœuds contient l’IRI de l’entité décrite
 
 #### Exemples
 
@@ -125,12 +129,13 @@ Dans le sens inverse, les exhibits sont liés à l’œuvre abstraite par le cha
 
 ### Un espace
 
-Statut : unstable
+Statut : testing
 
 @path /apis/display/resource
 @method **`GET`**
 @queryparam {string} **`id`** - (required) Identifiant du modèle : **`space`**
 @queryparam {string} **`iri`** - (required) IRI d’un espace
+@queryparam {string} **`graph`** - IRI d’un graphe nommé dont l’ensemble des nœuds contient l’IRI de l’entité décrite
 
 Exemple :
 
@@ -167,6 +172,7 @@ space0000 dispose de deux interfaces de circulation vers d’autres espaces.
 @method **`GET`**
 @queryparam {string} **`id`** - (required) Identifiant du modèle : **`space`**
 @queryparam {string} **`iri`** - (required) IRI d’un espace
+@queryparam {string} **`graph`** - IRI d’un graphe nommé dont l’ensemble des nœuds contient l’IRI de l’entité décrite
 
 `space0000` : espace avec interfaces de circulation :
 
@@ -186,6 +192,7 @@ exhibit0001 (code-barres) dispose de d’une interface de d’accrochage avec el
 @method **`GET`**
 @queryparam {string} **`id`** - (required) Identifiant du modèle : **`exhibit`**
 @queryparam {string} **`iri`** - (required) IRI d’un exhibit
+@queryparam {string} **`graph`** - IRI d’un graphe nommé dont l’ensemble des nœuds contient l’IRI de l’entité décrite
 
 `exhibit0001` : exhibit et element avec interface d’accrochage :
 
