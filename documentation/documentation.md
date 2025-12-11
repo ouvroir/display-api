@@ -7,11 +7,9 @@ Display API : document de travail
 
 # Généralités
 
-## Description
+## Serveur CRAFTS
 
-### Serveur CRAFTS
-
-CRAFTS est une API configurable pour interagir avec des données RDF stockées dans un entrepôt de triplets.
+CRAFTS est une API REST configurable pour interagir avec des données RDF stockées dans un entrepôt de triplets.
  
 La sémantique d’un chemin reflète les opérations configurées pour une API. Par exemple, le chemin `/apis/display/resource` sert à récupérer les informations sur une ressource RDF accessible par l’API `display`.
 
@@ -25,55 +23,20 @@ La sémantique d’une valeur associée à un paramètre `get` (`query parameter
     - `https://ouvroir.umontreal.ca/data/activity0000`
 - donc : `/apis/display/resource?id=exhibition&iri=https://ouvroir.umontreal.ca/data/activity0000`
 
-### Configuration
-
-Dans l’application CRAFTS, les API sont configurées avec des documents structurés au format JSON.
-
-Le schéma de configuration est dispobible ici : <https://crafts.ntnlv.ca:450/docs/#/api/getApi>.
-
-En particulier, les deux champs suivants contiennent des `array` d’objets JSON permettant de configurer des opérations sur les ressources RDF :
-
-- `model` : contient les `model element` pour les opérations sur une ressource RDF
-    - chemin `/apis/{apiId}/resource`
-    - réponse : format JSON (configurable)
-    - possibilité d’imbriquer des descriptions (autrement dit, on peut suivre des chemins de propriété et se balader dans le graphe à partir de la ressource d’entrée)
-- `queryTemplate` : contient les `query template element` (gabarits de requête SPARQL sur mesure avec la clause `SELECT`), avec toute la complexité nécessaire et la possibilité de faire du templating pour injecter dans les requêtes SPARQL des valeurs passées par `get`
-    - chemin `/apis/{apiId}/query`
-    - réponse : format JSON SPARQL 1.1 Query Results conforme au standard, auquel s’ajoute la requête SPARQL
-    - possibilité de faire du templating pour injecter dans les requêtes SPARQL des valeurs passées par `get` (obligatoires ou facultatives) à partir de l’API
-
-### Documentation
-
-La documentation pour le seveur CRAFTS est pricipalement basée sur un article et sur des exemples :
-
-- Article : G. Vega-Gorgojo, "CRAFTS: Configurable REST APIs for Triple Stores," in IEEE Access, vol. 10, pp. 32426-32441, 2022, doi: 10.1109/ACCESS.2022.3160610.
-- Exemples de configuration :
-    - <https://crafts.gsic.uva.es/CRAFTSconfig101.html> (il est possible de se créer un compte pour tester les exemples)
-    - https://crafts.gsic.uva.es/CRAFTSaccess101.pdf
-
-Beaucoup de commentaires dans le code source.
-
-Info : CRAFTS is available under an Apache 2.0 license. Please send us an email to [guiveg@tel.uva.es](mailto:guiveg@tel.uva.es) if you use or plan to use CRAFTS. Drop us also a message if you have comments or suggestions for improvement.
-
 ## Accès
 
-- URL de l’interface Swagger : <https://crafts.ntnlv.ca:450/docs>
-    - **Note :** cette interface Swagger est avant tout une documentation pour le serveur CRAFTS lui-même, qui ne permet pas, par défaut, de documenter les API configurées (mais elle permet de les utiliser); **voir remarques sur la sémantique des chemins et des paramètres tout en haut du présent document**
-    - Options : **1)** Intégrer nos schémas à cette interface (lourd); **2)** Générer notre propre documentation
+URL de l’interface Swagger :
 
-# Définition des points d’accès
+- <https://crafts.ntnlv.ca:450/docs>
 
-Note interne : pour définir les endpoints côté SPARQL (sur lesquels CRAFTS lui-même effectue les requêtses), la spécification d’un graphe est obligatoire, même pour le graphe par défaut. Le graphe par défaut dans Fuseki est `urn:x-arq:DefaultGraph`.
+# Initialisation
+# Points d’accès
 
-```json
-{"endpoints":[{"graphURI": "urn:x-arq:DefaultGraph"}]}
-```
-
-## Décrire
+## Décrire (GET)
 
 ### Une exposition
 
-Statut : unstable
+Statut : testing
 
 @path /apis/display/resource
 @method **`GET`**
@@ -86,9 +49,9 @@ Exemple :
 
 Note :
 
-- L’attribut `used_specific_object` (Linked Art) renvoie les ensembles d’expôts utilisés dans l’exposition.
+- L’attribut `used_specific_object` (Linked Art) renvoie les ensembles exhibits utilisés dans l’exposition.
     
-### Un ensemble d’expôts (d’exhibits)
+### Un ensemble exhibits
 
 Statut : unstable
 
@@ -261,9 +224,9 @@ Voir le champ `carried_out_by` ou `produced_by.carried_out_by` si c’est un exh
 - https://ouvroir.umontreal.ca/data/activity0000
 - https://ouvroir.umontreal.ca/data/exhibit0015
 
-## Lister
+### Lister
 
-### Toutes les expositions
+#### Toutes les expositions
 
 Statut : unstable
 
@@ -271,16 +234,16 @@ Statut : unstable
 @method **`GET`**
 @queryparam {string} **`id`** - (required) Identifiant du modèle : **`set`**
 
-Note :
+Pour lister toutes les expositions disponibles, on utilise le @queryparam `id=set` avec une ressource spéciale : 
 
-- Pour lister toutes les expositions disponibles, on utilise le @queryparam `id=set` avec une ressource spéciale : https://ouvroir.umontreal.ca/data/exhibitions
+- https://ouvroir.umontreal.ca/data/exhibitions
 
 Exemple :
 
 - https://crafts.ntnlv.ca:450/apis/display/resource?id=set&iri=https://ouvroir.umontreal.ca/data/exhibitions
 
 
-## Créer
+## Créer (PUT)
 
 *Glossaire*
 
@@ -412,7 +375,7 @@ Résumé en deux points :
 - Une URL identifie une ressource principale dont la représentation peut être manipulée à travers un point d’accès
 - Un URN remplace l’identifiant de nœud anonyme (blank node) pour les ressources dont la représentation n’est accessible qu’à travers une ressource pricipale (nœud dépendant)
 
-## Modifier
+## Modifier (PATCH)
 
 La modification des ressources utilise les mêmes points d’accès que la méthode GET, mais avec la méthode PATCH
 
@@ -692,6 +655,8 @@ Fait pour application :
 
 ## Version d’exposition
 
+[Remarque : cette section sert à consigner des notes de rencontre (pas de la documentation)]
+
 - par exemple, comparer deux versions de salles
 - Emmanuel proposose : graphe nommé comme "display" de haut niveau chez nous, sans les alertes d'incohérences
 - donc graphe nommé, circonscrire les alertes au niveau de l'exposition, utilisant un mécanisme interne, Glenn et app n'ont pas à s'en rendre compte
@@ -826,7 +791,7 @@ Le modèle de Display vient s’y greffer. Ainsi, le modèle de Linked Art est u
     - **méthode `PATCH` (Update a resource) :**
         - utilise la spécification JSON Patch
         - PUT et PATCH, assez facile d'utilisation, notamment avec les use cases de Linked Art; par contre l'API doit être obligatoirement configurée pour gérer les propriétés utilisées, donc on ne peut pas dire n’importe quoi comme on ferait directement avec SPARQL; donc on peut dire n’importe quoi seuelement à l’intérieur du vocabulaire configuré dans l’API
-    - **méthode `DELETE` :** comme `PUT` (replace) est est un `delete` suivi d'un `insert`, je n'anticipe pas trop de problème
+    - **méthode `DELETE` :** comme `PUT` (replace) est un `delete` suivi d'un `insert`, je n'anticipe pas trop de problème
 
 # Remarques et notes techniques
 
