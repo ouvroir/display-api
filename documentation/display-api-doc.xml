@@ -173,7 +173,7 @@
         <en>An array of string values, each of which MUST be the HTTPS URI of a classification term</en>
       </description>
       <description about="digitally_carried_by">
-        <en>"A json object representing the named graph containing the triples of a working version. **Only usable when the `type` is `InformationObject`**'</en>
+        <en>'A json object representing the named graph containing the triples of a working version. **Only usable when the `type` is `InformationObject`**'</en>
       </description>
       <description about="dimension">
         <en>An array of json objects, each of which is a Dimension, such as height or width, of the current object</en>
