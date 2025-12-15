@@ -368,7 +368,7 @@
           "targetId": "coreProperties",
           "embed": true,
           "endpoint": "/display/sparql",
-          "record": "display"
+          "record": "global"
         },
         {
           "label": "subject_of",
