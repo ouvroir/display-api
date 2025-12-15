@@ -59,7 +59,7 @@ Les schémas présentés ci-dessous sont des exemples fonctionnels minimaux des 
 
 ### Version
 
-Les versions sont des entités instanciées comme membre de la classe `crm:E73_Information_Object` (aligné sur la chaîne `InformationObject`). Comme `InformationObject` est une sous-classe de `PropositionalObject`, ils utilisent le même point d’accès (voir [remarque sur la sémantique de abstract-work](#remarquesur-la-sémantique-de-abstract-work)).
+Les versions sont des entités instanciées comme membre de la classe `crm:E73_Information_Object` (aligné sur la chaîne `InformationObject`). Comme `InformationObject` est une sous-classe de `PropositionalObject`, ils utilisent le même point d’accès (abstract-work) ; à ce sujet, (voir [remarque sur la sémantique de abstract-work](#remarquesur-la-sémantique-de-abstract-work)).
 
 #### Schema
 
@@ -153,7 +153,7 @@ La propriété `about` pour la version reçoit simplement l’IRI de l’activit
 Remarques :
 
 - la liste des œuvres instanciées et liées à l’exposition peut être utilisée par la version grâce à la propriété `used_specific_object` de l’activité sur laquelle porte la version
-- [pas implémenté mais possible] il existe des fonctions native en SPARQL qui permettent au backend du dupliquer efficacement et à coût minimal un graphe nommé ; par exemple en envoyant un champ booléen non-sémantisé dans l’objet décrivant une version afin de déclencher la duplication ; à discuter, si on veut un vrai système de versionnement dans nos données.
+- [pas implémenté mais possible] il existe des fonctions native en SPARQL qui permettent au backend du dupliquer efficacement et à coût minimal un graphe nommé ; par exemple en envoyant un champ booléen (purement fonctionnel, non-sémantisé) dans l’objet décrivant une version afin de déclencher la duplication ; à discuter, si on veut un vrai système de versionnement dans nos données.
 
 # Points d’accès
 
