@@ -32,7 +32,7 @@ URL de l’interface Swagger :
 
 # Initialisation
 
-Cette section formule des recommandations sur les entités et les propriété qu’il est nécessaires de créer lors de l’intialisation d’un projet.
+Cette section formule des recommandations sur les entités et les propriétés qu’il est nécessaire de créer lors de l’intialisation d’un projet.
 
 ## Préambule
 
@@ -41,23 +41,21 @@ L’interprétation topologique d’une exposition prend la forme d’un ensembl
 Une version d’exposition est une entité permettant
 
 - l’identification et la description d’une interprétation topologique ;
-- l’identification de l’activité d’exposition sur laquelle porte ladite version.
+- le référencement de l’activité d’exposition sur laquelle porte ladite version.
 
 ## Technicalités
 
-Afin de lire ou d’écrire des informations spécifiques à une version, il faut transmettre avec la requête HTTP un IRI qui est le nom du graphe qui stocke les triplets associés.
+Afin de lire ou d’écrire des informations spécifiques à une version, il faut transmettre avec la requête HTTP un IRI qui est le nom du graphe contenant les triplets associés.
 
-REST : l’échange d’information sur les expositions est en mode stateless, il faut donc transmettre cet IRI avec chaque requête (on introduit un nouveau queryparam plus bas).
+L’échange d’information sur les expositions est en mode stateless, il faut donc transmettre cet IRI avec chaque requête (on introduit un nouveau `queryparam` plus bas).
 
-La version est toujours associée à un seul graphe nommé (1-1) et une seule activité d’exposition (1-1). À titre informatif : une activité d’expostion peut être associée théoriquement à un nombre indéterminé de version (N-1), mais la relation va dans l’autre sens.
+La version est toujours associée à un seul graphe nommé et une seule activité d’exposition (mais une activité peut être associée à plusieurs versions).
 
 Le lien entre les versions dans notre jeu de données et les projets dans l’application est laissé à l’entière discrétion du client.
 
 ## Formalisation
 
 Les schémas présentés ci-dessous sont des exemples fonctionnels minimaux des entités à créer lors de l’initialisation d’un projet.
-
-L’ordre dans lequel sont créées les entités n’a pas d’importance.
 
 ### Version
 
@@ -81,7 +79,7 @@ Les versions sont des entités instanciées comme membre de la classe `crm:E73_I
 {
   "id": "https://ouvroir.umontreal.ca/data/version/tegqh4ow",
   "type": "InformationObject",
-  "_label": "Version de travail portant activity/c6o5h6c4",
+  "_label": "Version de travail portant sur activity/c6o5h6c4",
   "classified_as": "http://vocab.getty.edu/aat/300220469",
   "about": "https://ouvroir.umontreal.ca/data/activity/c6o5h6c4",
   "digitally_carried_by": {
@@ -94,13 +92,15 @@ Les versions sont des entités instanciées comme membre de la classe `crm:E73_I
 
 Remarque :
 
-- lors de la création de la version, la valeur de `digitally_carried_by.id` doit être transmise au serveur en utilisant le query parameter `graph` ; par la suite, toutes les requêtes associées à cette version doivent utiliser cette valeur avec ce paramètre ;
+- lors de la création de la version, la valeur de `digitally_carried_by.id` doit être transmise au serveur en utilisant le query parameter **`graph`** ; par la suite, toutes les requêtes associées à cette version doivent utiliser cette valeur avec ce paramètre ;
   - exemple (non fonctionnel) : `https://crafts.ntnlv.ca:450/apis/display/resource?id=abstract-work&iri=https://ouvroir.umontreal.ca/data/version/bidonbidon&graph=https://ouvroir.umontreal.ca/data/digital-object/bidonbidon`
 - l’entité `DigitalObject` qui représente le graphe nommé est instancié en même temps que la version ; il n’y a rien d’autre à faire pour l’entité `DigitalObject`.
 
 #### Cas de figure : l’exposition n’existe pas
 
-La propriété `about` pour l’entité `InformationObject` est un objet (au lieu d’une URL) avec le schéma ci-dessous (l’activité d’exposition sera instanciée en même temps que la version) :
+Lors de la création de la version, si l’exposition n’existe pas :
+
+- La propriété `about` pour l’entité `InformationObject` est un objet (au lieu d’une URL) avec le schéma ci-dessous (l’activité d’exposition sera instanciée en même temps que la version) :
 
 ```js
 /**
@@ -117,7 +117,7 @@ Remarques :
 
 Certaines métadonnées pour les activités d’exposition sont attendues, notamment la classification et la collection d’œuvres.
 
-La requête subséquente minimale consiste donc à ajouter un terme de classification et la collection d’œuvre (qui est initialement vide) à l’activité d’exposition désignée par la version :
+La requête subséquente minimale consiste donc à ajouter un terme de classification et l’ensemble des des œuvres (qui est initialement vide) à l’activité d’exposition désignée par la version :
 
 - terme de classification : aat:300054766, Exhibiting
 - collection : Set vide
@@ -133,10 +133,15 @@ La requête subséquente minimale consiste donc à ajouter un terme de classific
     "op": "add",
     "path": "/used_specific_object",
     "value": {
-      "id": "http://iriduset",
+      "id": "https://example",
       "type": "Set",
       "_label": "Exhibits of activity/nanoID"
     }
+  },
+  {
+    "op": "add",
+    "path": "/member_of",
+    "value": "https://ouvroir.umontreal.ca/data/exhibitions"
   }
 ]
 ```
