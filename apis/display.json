@@ -2,8 +2,8 @@
   "apiId": "display",
   "endpoints": [
     {
-      "id": "/display/sparql",
-      "sparqlURI": "http://localhost:8080/display/sparql",
+      "id": "/display-v0.1/sparql",
+      "sparqlURI": "http://localhost:8080/display-v0.1/sparql",
       "graphURI": "urn:x-arq:DefaultGraph",
       "metadataGraphURI": "urn:ouvroir:display:metadata",
       "infGraphURI": [
@@ -18,8 +18,8 @@
         "type": "basic"
       },
       "sparqlUpdate": {
-        "id":	"/display/update",
-        "sparqlURI": "http://localhost:8080/display/update",
+        "id":	"/display-v0.1/update",
+        "sparqlURI": "http://localhost:8080/display-v0.1/update",
         "graphURI":	"urn:x-arq:DefaultGraph",
         "httpMethod":	"POST"
       }
@@ -62,7 +62,7 @@
         {
           "label": "_label",
           "iri": "http://www.w3.org/2000/01/rdf-schema#label",
-          "endpoint": "/display/sparql",
+          "endpoint": "/display-v0.1/sparql",
           "record": "global"
         }
       ],
@@ -72,35 +72,35 @@
           "iri": "http://www.cidoc-crm.org/cidoc-crm/P2_has_type",
           "targetId": "classified_as",
           "embed": true,
-          "endpoint": "/display/sparql"
+          "endpoint": "/display-v0.1/sparql"
         },
         {
           "label": "identified_by",
           "iri": "http://www.cidoc-crm.org/cidoc-crm/P1_is_identified_by",
           "targetId": "identified_by",
           "embed": true,
-          "endpoint": "/display/sparql"
+          "endpoint": "/display-v0.1/sparql"
         },
         {
           "label": "referred_to_by",
           "iri": "http://www.cidoc-crm.org/cidoc-crm/P67i_is_referred_to_by",
           "targetId": "referred_to_by",
           "embed": true,
-          "endpoint": "/display/sparql"
+          "endpoint": "/display-v0.1/sparql"
         },
         {
           "label": "about",
           "iri": "http://www.cidoc-crm.org/cidoc-crm/P129_is_about",
           "targetId": "coreProperties",
           "embed": true,
-          "endpoint": "/display/sparql"
+          "endpoint": "/display-v0.1/sparql"
         },
         {
           "label": "digitally_carried_by",
           "iri": "https://linked.art/ns/terms/digitally_carried_by",
           "targetId": "coreProperties",
           "embed": true,
-          "endpoint": "/display/sparql",
+          "endpoint": "/display-v0.1/sparql",
           "record": "global"
         },
         {
@@ -108,7 +108,7 @@
           "iri": "http://www.cidoc-crm.org/cidoc-crm/P15i_influenced",
           "targetId": "coreProperties",
           "embed": true,
-          "endpoint": "/display/sparql",
+          "endpoint": "/display-v0.1/sparql",
           "record": "global"
         },
         {
@@ -116,7 +116,7 @@
           "iri": "http://www.cidoc-crm.org/cidoc-crm/P94i_was_created_by",
           "targetId": "produced_by",
           "embed": true,
-          "endpoint": "/display/sparql"
+          "endpoint": "/display-v0.1/sparql"
         }
       ],
       "types":[
@@ -125,7 +125,7 @@
           "restrictions": [
             "FILTER (?type IN ( <http://www.cidoc-crm.org/cidoc-crm/E89_Propositional_Object> , <http://www.ics.forth.gr/isl/CRMdig/D1_Digital_Object> , <http://www.cidoc-crm.org/cidoc-crm/E73_Information_Object> ))"
           ],
-          "endpoint": "/display/sparql",
+          "endpoint": "/display-v0.1/sparql",
           "record": "global"
         }
       ]
@@ -136,7 +136,7 @@
         {
           "label": "_label",
           "iri": "http://www.w3.org/2000/01/rdf-schema#label",
-          "endpoint": "/display/sparql"
+          "endpoint": "/display-v0.1/sparql"
         }
       ],
       "oprops": [
@@ -145,20 +145,20 @@
           "iri": "http://www.cidoc-crm.org/cidoc-crm/P2_has_type",
           "targetId": "classified_as",
           "embed": true,
-          "endpoint": "/display/sparql"
+          "endpoint": "/display-v0.1/sparql"
         },
         {
           "label": "identified_by",
           "iri": "http://www.cidoc-crm.org/cidoc-crm/P1_is_identified_by",
           "targetId": "identified_by",
           "embed": true,
-          "endpoint": "/display/sparql"
+          "endpoint": "/display-v0.1/sparql"
         },
         {
           "label": "equivalent",
           "iri": "https://linked.art/ns/terms/equivalent",
           "embed": false,
-          "endpoint": "/display/sparql"
+          "endpoint": "/display-v0.1/sparql"
         }
       ],
       "types":[
@@ -167,7 +167,7 @@
           "restrictions": [
             "FILTER (?type IN ( <http://www.cidoc-crm.org/cidoc-crm/E21_Person> , <http://www.cidoc-crm.org/cidoc-crm/E74_Group> ))"
           ],
-          "endpoint": "/display/sparql"
+          "endpoint": "/display-v0.1/sparql"
         }
       ]
     },
@@ -225,7 +225,7 @@
         {
           "label": "_label",
           "iri": "http://www.w3.org/2000/01/rdf-schema#label",
-          "endpoint": "/display/sparql",
+          "endpoint": "/display-v0.1/sparql",
           "record": "global"
         }
       ],
@@ -237,7 +237,7 @@
             "FILTER (?type NOT IN ( <http://www.w3.org/2002/07/owl#Thing>, <http://www.w3.org/2000/01/rdf-schema#Resource>, <https://w3id.org/bot#Zone>, <http://www.cidoc-crm.org/cidoc-crm/E22_Human-Made_Object> ))",
             "FILTER NOT EXISTS { ?subclass ^a  ?iri ; <http://www.w3.org/2000/01/rdf-schema#subClassOf> ?type . FILTER (?subclass != ?type) FILTER (?subclass != <https://w3id.org/bot#Element>)}"
           ],
-          "endpoint": "/display/sparql",
+          "endpoint": "/display-v0.1/sparql",
           "record": "global"
         }
       ]
@@ -248,7 +248,7 @@
         {
           "label": "_label",
           "iri": "http://www.w3.org/2000/01/rdf-schema#label",
-          "endpoint": "/display/sparql"
+          "endpoint": "/display-v0.1/sparql"
         }
       ],
       "oprops": [
@@ -257,21 +257,21 @@
           "iri": "http://www.cidoc-crm.org/cidoc-crm/P14_carried_out_by",
           "targetId": "actor",
           "embed": true,
-          "endpoint": "/display/sparql"
+          "endpoint": "/display-v0.1/sparql"
         },
         {
           "label": "timespan",
           "iri": "http://www.cidoc-crm.org/cidoc-crm/P4_has_time-span",
           "targetId": "timeSpan",
           "embed": true,
-          "endpoint": "/display/sparql"
+          "endpoint": "/display-v0.1/sparql"
         }
       ],
       "types": [
         {
           "label": "type",
           "restrictions": [],
-          "endpoint": "/display/sparql"
+          "endpoint": "/display-v0.1/sparql"
         }
       ]
     },
@@ -281,12 +281,12 @@
         {
           "label": "_label",
           "iri": "http://www.w3.org/2000/01/rdf-schema#label",
-          "endpoint": "/display/sparql"
+          "endpoint": "/display-v0.1/sparql"
         },
         {
           "label": "value",
           "iri": "http://www.cidoc-crm.org/cidoc-crm/P90_has_value",
-          "endpoint": "/display/sparql"
+          "endpoint": "/display-v0.1/sparql"
         }
       ],
       "oprops": [
@@ -295,14 +295,14 @@
           "iri": "http://www.cidoc-crm.org/cidoc-crm/P2_has_type",
           "targetId": "classified_as",
           "embed": true,
-          "endpoint": "/display/sparql"
+          "endpoint": "/display-v0.1/sparql"
         },
         {
           "label": "unit",
           "iri": "http://www.cidoc-crm.org/cidoc-crm/P91_has_unit",
           "targetId": "unit",
           "embed": true,
-          "endpoint": "/display/sparql"
+          "endpoint": "/display-v0.1/sparql"
         }
       ],
       "types":[
@@ -311,7 +311,7 @@
           "restrictions": [
             "FILTER (?type IN ( <http://www.cidoc-crm.org/cidoc-crm/E54_Dimension> ))"
           ],
-          "endpoint": "/display/sparql"
+          "endpoint": "/display-v0.1/sparql"
         }
       ]
     },
@@ -322,7 +322,7 @@
         {
           "label": "_label",
           "iri": "http://www.w3.org/2000/01/rdf-schema#label",
-          "endpoint": "/display/sparql",
+          "endpoint": "/display-v0.1/sparql",
           "record": "global"
         }
       ],
@@ -332,42 +332,42 @@
           "iri": "http://www.cidoc-crm.org/cidoc-crm/P2_has_type",
           "targetId": "classified_as",
           "embed": true,
-          "endpoint": "/display/sparql"
+          "endpoint": "/display-v0.1/sparql"
         },
         {
           "label": "identified_by",
           "iri": "http://www.cidoc-crm.org/cidoc-crm/P1_is_identified_by",
           "targetId": "identified_by",
           "embed": true,
-          "endpoint": "/display/sparql"
+          "endpoint": "/display-v0.1/sparql"
         },
         {
           "label": "referred_to_by",
           "iri": "http://www.cidoc-crm.org/cidoc-crm/P67i_is_referred_to_by",
           "targetId": "referred_to_by",
           "embed": true,
-          "endpoint": "/display/sparql"
+          "endpoint": "/display-v0.1/sparql"
         },
         {
           "label": "produced_by",
           "iri": "http://www.cidoc-crm.org/cidoc-crm/P108i_was_produced_by",
           "targetId": "produced_by",
           "embed": true,
-          "endpoint": "/display/sparql"
+          "endpoint": "/display-v0.1/sparql"
         },
         {
           "label": "dimension",
           "iri": "http://www.cidoc-crm.org/cidoc-crm/P43_has_dimension",
           "targetId": "dimension",
           "embed": true,
-          "endpoint": "/display/sparql"
+          "endpoint": "/display-v0.1/sparql"
         },
         {
           "label": "member_of",
           "iri": "https://linked.art/ns/terms/member_of",
           "targetId": "coreProperties",
           "embed": true,
-          "endpoint": "/display/sparql",
+          "endpoint": "/display-v0.1/sparql",
           "record": "global"
         },
         {
@@ -375,14 +375,14 @@
           "iri": "http://www.cidoc-crm.org/cidoc-crm/P129i_is_subject_of",
           "targetId": "coreProperties",
           "embed": true,
-          "endpoint": "/display/sparql"
+          "endpoint": "/display-v0.1/sparql"
         },
         {
           "label": "sub_element",
           "iri": "https://w3id.org/bot#hasSubElement",
           "targetId": "coreProperties",
           "embed": true,
-          "endpoint": "/display/sparql",
+          "endpoint": "/display-v0.1/sparql",
           "record": "display"
         },
         {
@@ -390,7 +390,7 @@
           "iri": "https://w3id.org/display#above",
           "targetId": "coreProperties",
           "embed": true,
-          "endpoint": "/display/sparql",
+          "endpoint": "/display-v0.1/sparql",
           "record": "display"
         },
         {
@@ -398,7 +398,7 @@
           "iri": "https://w3id.org/display#backToBack",
           "targetId": "coreProperties",
           "embed": true,
-          "endpoint": "/display/sparql",
+          "endpoint": "/display-v0.1/sparql",
           "record": "display"
         },
         {
@@ -406,7 +406,7 @@
           "iri": "https://w3id.org/display#behind",
           "targetId": "coreProperties",
           "embed": true,
-          "endpoint": "/display/sparql",
+          "endpoint": "/display-v0.1/sparql",
           "record": "display"
         },
         {
@@ -414,7 +414,7 @@
           "iri": "https://w3id.org/display#below",
           "targetId": "coreProperties",
           "embed": true,
-          "endpoint": "/display/sparql",
+          "endpoint": "/display-v0.1/sparql",
           "record": "display"
         },
         {
@@ -422,7 +422,7 @@
           "iri": "https://w3id.org/display#containedIn",
           "targetId": "coreProperties",
           "embed": true,
-          "endpoint": "/display/sparql",
+          "endpoint": "/display-v0.1/sparql",
           "record": "display"
         },
         {
@@ -430,7 +430,7 @@
           "iri": "https://w3id.org/display#contains",
           "targetId": "coreProperties",
           "embed": true,
-          "endpoint": "/display/sparql",
+          "endpoint": "/display-v0.1/sparql",
           "record": "display"
         },
         {
@@ -438,7 +438,7 @@
           "iri": "https://w3id.org/display#coveredBy",
           "targetId": "coreProperties",
           "embed": true,
-          "endpoint": "/display/sparql",
+          "endpoint": "/display-v0.1/sparql",
           "record": "display"
         },
         {
@@ -446,7 +446,7 @@
           "iri": "https://w3id.org/display#covers",
           "targetId": "coreProperties",
           "embed": true,
-          "endpoint": "/display/sparql",
+          "endpoint": "/display-v0.1/sparql",
           "record": "display"
         },
         {
@@ -454,7 +454,7 @@
           "iri": "https://w3id.org/display#faces",
           "targetId": "coreProperties",
           "embed": true,
-          "endpoint": "/display/sparql",
+          "endpoint": "/display-v0.1/sparql",
           "record": "display"
         },
         {
@@ -462,7 +462,7 @@
           "iri": "https://w3id.org/display#inFrontOf",
           "targetId": "coreProperties",
           "embed": true,
-          "endpoint": "/display/sparql",
+          "endpoint": "/display-v0.1/sparql",
           "record": "display"
         },
         {
@@ -470,7 +470,7 @@
           "iri": "https://w3id.org/display#includedIn",
           "targetId": "coreProperties",
           "embed": true,
-          "endpoint": "/display/sparql",
+          "endpoint": "/display-v0.1/sparql",
           "record": "display"
         },
         {
@@ -478,7 +478,7 @@
           "iri": "https://w3id.org/display#includes",
           "targetId": "coreProperties",
           "embed": true,
-          "endpoint": "/display/sparql",
+          "endpoint": "/display-v0.1/sparql",
           "record": "display"
         },
         {
@@ -486,7 +486,7 @@
           "iri": "https://w3id.org/display#leftOf",
           "targetId": "coreProperties",
           "embed": true,
-          "endpoint": "/display/sparql",
+          "endpoint": "/display-v0.1/sparql",
           "record": "display"
         },
         {
@@ -494,7 +494,7 @@
           "iri": "https://w3id.org/display#liesAgainst",
           "targetId": "coreProperties",
           "embed": true,
-          "endpoint": "/display/sparql",
+          "endpoint": "/display-v0.1/sparql",
           "record": "display"
         },
         {
@@ -502,7 +502,7 @@
           "iri": "https://w3id.org/display#liesOn",
           "targetId": "coreProperties",
           "embed": true,
-          "endpoint": "/display/sparql",
+          "endpoint": "/display-v0.1/sparql",
           "record": "display"
         },
         {
@@ -510,7 +510,7 @@
           "iri": "https://w3id.org/display#nextTo",
           "targetId": "coreProperties",
           "embed": true,
-          "endpoint": "/display/sparql",
+          "endpoint": "/display-v0.1/sparql",
           "record": "display"
         },
         {
@@ -518,7 +518,7 @@
           "iri": "https://w3id.org/display#over",
           "targetId": "coreProperties",
           "embed": true,
-          "endpoint": "/display/sparql",
+          "endpoint": "/display-v0.1/sparql",
           "record": "display"
         },
         {
@@ -526,7 +526,7 @@
           "iri": "https://w3id.org/display#overlaps",
           "targetId": "coreProperties",
           "embed": true,
-          "endpoint": "/display/sparql",
+          "endpoint": "/display-v0.1/sparql",
           "record": "display"
         },
         {
@@ -534,7 +534,7 @@
           "iri": "https://w3id.org/display#rightOf",
           "targetId": "coreProperties",
           "embed": true,
-          "endpoint": "/display/sparql",
+          "endpoint": "/display-v0.1/sparql",
           "record": "display"
         },
         {
@@ -542,7 +542,7 @@
           "iri": "https://w3id.org/display#touches",
           "targetId": "coreProperties",
           "embed": true,
-          "endpoint": "/display/sparql",
+          "endpoint": "/display-v0.1/sparql",
           "record": "display"
         },
         {
@@ -550,7 +550,7 @@
           "iri": "https://w3id.org/display#under",
           "targetId": "coreProperties",
           "embed": true,
-          "endpoint": "/display/sparql",
+          "endpoint": "/display-v0.1/sparql",
           "record": "display"
         },
         {
@@ -559,7 +559,7 @@
           "inv": true,
           "targetId": "interface",
           "embed": true,
-          "endpoint": "/display/sparql",
+          "endpoint": "/display-v0.1/sparql",
           "record": "display"
         }
       ],
@@ -570,7 +570,7 @@
             "FILTER (?type IN ( <https://w3id.org/display#Exhibit>, <https://w3id.org/display#Element>, <https://w3id.org/display#Display> ))",
             "FILTER NOT EXISTS { ?subclass ^a  ?iri ; <http://www.w3.org/2000/01/rdf-schema#subClassOf> ?type . FILTER (?subclass != ?type) FILTER (?subclass != <https://w3id.org/bot#Element>)}"
           ],
-          "endpoint": "/display/sparql",
+          "endpoint": "/display-v0.1/sparql",
           "record": "global"
         }
       ]
@@ -582,7 +582,7 @@
         {
           "label": "_label",
           "iri": "http://www.w3.org/2000/01/rdf-schema#label",
-          "endpoint": "/display/sparql",
+          "endpoint": "/display-v0.1/sparql",
           "record": "global"
         }
       ],
@@ -592,28 +592,28 @@
           "iri": "http://www.cidoc-crm.org/cidoc-crm/P2_has_type",
           "targetId": "classified_as",
           "embed": true,
-          "endpoint": "/display/sparql"
+          "endpoint": "/display-v0.1/sparql"
         },
         {
           "label": "identified_by",
           "iri": "http://www.cidoc-crm.org/cidoc-crm/P1_is_identified_by",
           "targetId": "identified_by",
           "embed": true,
-          "endpoint": "/display/sparql"
+          "endpoint": "/display-v0.1/sparql"
         },
         {
           "label": "referred_to_by",
           "iri": "http://www.cidoc-crm.org/cidoc-crm/P67i_is_referred_to_by",
           "targetId": "referred_to_by",
           "embed": true,
-          "endpoint": "/display/sparql"
+          "endpoint": "/display-v0.1/sparql"
         },
         {
           "label": "influenced_by",
           "iri": "http://www.cidoc-crm.org/cidoc-crm/P15_was_influenced_by",
           "targetId": "coreProperties",
           "embed": true,
-          "endpoint": "/display/sparql",
+          "endpoint": "/display-v0.1/sparql",
           "record": "global"
         },
         {
@@ -621,35 +621,35 @@
           "iri": "http://www.cidoc-crm.org/cidoc-crm/P14_carried_out_by",
           "targetId": "actor",
           "embed": true,
-          "endpoint": "/display/sparql"
+          "endpoint": "/display-v0.1/sparql"
         },
         {
           "label": "member_of",
           "iri": "https://linked.art/ns/terms/member_of",
           "targetId": "coreProperties",
           "embed": true,
-          "endpoint": "/display/sparql"
+          "endpoint": "/display-v0.1/sparql"
         },
         {
           "label": "timespan",
           "targetId": "timeSpan",
           "embed": true,
           "iri": "http://www.cidoc-crm.org/cidoc-crm/P4_has_time-span",
-          "endpoint": "/display/sparql"
+          "endpoint": "/display-v0.1/sparql"
         },
         {
           "label": "used_specific_object",
           "targetId": "coreProperties",
           "embed": true,
           "iri": "http://www.cidoc-crm.org/cidoc-crm/P16_used_specific_object",
-          "endpoint": "/display/sparql"
+          "endpoint": "/display-v0.1/sparql"
         },
         {
           "label": "space",
           "iri": "http://www.cidoc-crm.org/cidoc-crm/P16_used_specific_object>/<https://linked.art/ns/terms/has_member>^<https://w3id.org/display#hasExhibit>^<https://w3id.org/display#hasExhibitionSpace*",
           "targetId": "coreProperties",
           "embed": true,
-          "endpoint": "/display/sparql"
+          "endpoint": "/display-v0.1/sparql"
         }
       ],
       "types": [
@@ -658,7 +658,7 @@
           "restrictions": [
             "FILTER (?type IN ( <http://www.cidoc-crm.org/cidoc-crm/E7_Activity> ))"
           ],
-          "endpoint": "/display/sparql",
+          "endpoint": "/display-v0.1/sparql",
           "record": "global"
         }
       ]
@@ -669,12 +669,12 @@
         {
           "label": "_label",
           "iri": "http://www.w3.org/2000/01/rdf-schema#label",
-          "endpoint": "/display/sparql"
+          "endpoint": "/display-v0.1/sparql"
         },
         {
           "label": "content",
           "iri": "http://www.cidoc-crm.org/cidoc-crm/P190_has_symbolic_content",
-          "endpoint": "/display/sparql"
+          "endpoint": "/display-v0.1/sparql"
         }
       ],
       "oprops": [
@@ -683,14 +683,14 @@
           "iri": "http://www.cidoc-crm.org/cidoc-crm/P2_has_type",
           "targetId": "classified_as",
           "embed": true,
-          "endpoint": "/display/sparql"
+          "endpoint": "/display-v0.1/sparql"
         },
         {
           "label": "language",
           "iri": "http://www.cidoc-crm.org/cidoc-crm/P72_has_language",
           "targetId": "language",
           "embed": true,
-          "endpoint": "/display/sparql"
+          "endpoint": "/display-v0.1/sparql"
         }
       ],
       "types":[
@@ -699,7 +699,7 @@
           "restrictions": [
             "FILTER (?type IN ( <http://www.cidoc-crm.org/cidoc-crm/E33_E41_Linguistic_Appellation> ))"
           ],
-          "endpoint": "/display/sparql"
+          "endpoint": "/display-v0.1/sparql"
         }
       ]
     },
@@ -709,7 +709,7 @@
         {
           "label": "_label",
           "iri": "http://www.w3.org/2000/01/rdf-schema#label",
-          "endpoint": "/display/sparql",
+          "endpoint": "/display-v0.1/sparql",
           "record": "global"
         }
       ],
@@ -719,7 +719,7 @@
           "iri": "https://w3id.org/bot#interfaceOf",
           "targetId": "coreProperties",
           "embed": true,
-          "endpoint": "/display/sparql",
+          "endpoint": "/display-v0.1/sparql",
           "record": "display"
         },
         {
@@ -727,7 +727,7 @@
           "iri": "https://w3id.org/display#interfaceProvidedBy",
           "targetId": "coreProperties",
           "embed": true,
-          "endpoint": "/display/sparql",
+          "endpoint": "/display-v0.1/sparql",
           "record": "display"
         }
       ],
@@ -737,7 +737,7 @@
           "restrictions": [
             "FILTER (?type IN ( <https://w3id.org/display#HangingInterface> , <https://w3id.org/display#PathwayInterface> ))"
           ],
-          "endpoint": "/display/sparql",
+          "endpoint": "/display-v0.1/sparql",
           "record": "global"
         }
       ]
@@ -773,7 +773,7 @@
         {
           "label": "_label",
           "iri": "http://www.w3.org/2000/01/rdf-schema#label",
-          "endpoint": "/display/sparql"
+          "endpoint": "/display-v0.1/sparql"
         }
       ],
       "oprops": [
@@ -782,14 +782,14 @@
           "iri": "http://www.cidoc-crm.org/cidoc-crm/P14_carried_out_by",
           "targetId": "actor",
           "embed": true,
-          "endpoint": "/display/sparql"
+          "endpoint": "/display-v0.1/sparql"
         },
         {
           "label": "timespan",
           "iri": "http://www.cidoc-crm.org/cidoc-crm/P4_has_time-span",
           "targetId": "timeSpan",
           "embed": true,
-          "endpoint": "/display/sparql"
+          "endpoint": "/display-v0.1/sparql"
         }
       ],
       "types": [
@@ -797,7 +797,7 @@
           "comment": "There is always only one type, so no filter needed.",
           "label": "type",
           "restrictions": [],
-          "endpoint": "/display/sparql"
+          "endpoint": "/display-v0.1/sparql"
         }
       ]
     },
@@ -807,12 +807,12 @@
         {
           "label": "_label",
           "iri": "http://www.w3.org/2000/01/rdf-schema#label",
-          "endpoint": "/display/sparql"
+          "endpoint": "/display-v0.1/sparql"
         },
         {
           "label": "content",
           "iri": "http://www.cidoc-crm.org/cidoc-crm/P190_has_symbolic_content",
-          "endpoint": "/display/sparql"
+          "endpoint": "/display-v0.1/sparql"
         }
       ],
       "oprops": [
@@ -821,14 +821,14 @@
           "iri": "http://www.cidoc-crm.org/cidoc-crm/P2_has_type",
           "targetId": "classified_as",
           "embed": true,
-          "endpoint": "/display/sparql"
+          "endpoint": "/display-v0.1/sparql"
         },
         {
           "label": "language",
           "iri": "http://www.cidoc-crm.org/cidoc-crm/P72_has_language",
           "targetId": "language",
           "embed": true,
-          "endpoint": "/display/sparql"
+          "endpoint": "/display-v0.1/sparql"
         }
       ],
       "types":[
@@ -837,7 +837,7 @@
           "restrictions": [
             "FILTER (?type IN ( <http://www.cidoc-crm.org/cidoc-crm/E33_Linguistic_Object> ))"
           ],
-          "endpoint": "/display/sparql"
+          "endpoint": "/display-v0.1/sparql"
         }
       ]
     },
@@ -848,7 +848,7 @@
         {
           "label": "_label",
           "iri": "http://www.w3.org/2000/01/rdf-schema#label",
-          "endpoint": "/display/sparql",
+          "endpoint": "/display-v0.1/sparql",
           "record": "global"
         }
       ],
@@ -858,28 +858,28 @@
           "iri": "http://www.cidoc-crm.org/cidoc-crm/P2_has_type",
           "targetId": "classified_as",
           "embed": true,
-          "endpoint": "/display/sparql"
+          "endpoint": "/display-v0.1/sparql"
         },
         {
           "label": "identified_by",
           "iri": "http://www.cidoc-crm.org/cidoc-crm/P1_is_identified_by",
           "targetId": "identified_by",
           "embed": true,
-          "endpoint": "/display/sparql"
+          "endpoint": "/display-v0.1/sparql"
         },
         {
           "label": "referred_to_by",
           "iri": "http://www.cidoc-crm.org/cidoc-crm/P67i_is_referred_to_by",
           "targetId": "referred_to_by",
           "embed": true,
-          "endpoint": "/display/sparql"
+          "endpoint": "/display-v0.1/sparql"
         },
         {
           "label": "used_for",
           "iri": "http://www.cidoc-crm.org/cidoc-crm/P16i_was_used_for",
           "targetId": "coreProperties",
           "embed": true,
-          "endpoint": "/display/sparql",
+          "endpoint": "/display-v0.1/sparql",
           "record": "global"
         },
         {
@@ -887,7 +887,7 @@
           "iri": "https://linked.art/ns/terms/has_member",
           "targetId": "coreProperties",
           "embed": true,
-          "endpoint": "/display/sparql"
+          "endpoint": "/display-v0.1/sparql"
         }
       ],
       "types": [
@@ -896,7 +896,7 @@
           "restrictions": [
             "FILTER (?type IN ( <https://linked.art/ns/terms/Set> ))"
           ],
-          "endpoint": "/display/sparql",
+          "endpoint": "/display-v0.1/sparql",
           "record": "global"
         }
       ]
@@ -908,7 +908,7 @@
         {
           "label": "_label",
           "iri": "http://www.w3.org/2000/01/rdf-schema#label",
-          "endpoint": "/display/sparql",
+          "endpoint": "/display-v0.1/sparql",
           "record": "global"
         }
       ],
@@ -918,7 +918,7 @@
           "iri": "http://www.cidoc-crm.org/cidoc-crm/P67i_is_referred_to_by",
           "targetId": "referred_to_by",
           "embed": true,
-          "endpoint": "/display/sparql"
+          "endpoint": "/display-v0.1/sparql"
         },
         {
           "label": "contains_exhibit",
@@ -926,7 +926,7 @@
           "updateIri": "https://w3id.org/display#containsExhibit",
           "targetId": "coreProperties",
           "embed": true,
-          "endpoint": "/display/sparql",
+          "endpoint": "/display-v0.1/sparql",
           "record": "display"
         },
         {
@@ -935,7 +935,7 @@
           "updateIri": "https://w3id.org/display#adjacentExhibit",
           "targetId": "coreProperties",
           "embed": true,
-          "endpoint": "/display/sparql",
+          "endpoint": "/display-v0.1/sparql",
           "record": "display"
         },
         {
@@ -944,7 +944,7 @@
           "updateIri": "https://w3id.org/display#intersectingExhibit",
           "targetId": "coreProperties",
           "embed": true,
-          "endpoint": "/display/sparql",
+          "endpoint": "/display-v0.1/sparql",
           "record": "display"
         },
         {
@@ -953,7 +953,7 @@
           "updateIri": "https://w3id.org/display#hasExhibitionSpace",
           "targetId": "coreProperties",
           "embed": true,
-          "endpoint": "/display/sparql",
+          "endpoint": "/display-v0.1/sparql",
           "record": "display",
           "restrictions": [
             "FILTER(?iri != ?value)"
@@ -964,7 +964,7 @@
           "iri": "https://w3id.org/bot#adjacentZone",
           "targetId": "coreProperties",
           "embed": true,
-          "endpoint": "/display/sparql",
+          "endpoint": "/display-v0.1/sparql",
           "record": "display"
         },
         {
@@ -972,7 +972,7 @@
           "iri": "https://w3id.org/bot#intersectsZone",
           "targetId": "coreProperties",
           "embed": true,
-          "endpoint": "/display/sparql",
+          "endpoint": "/display-v0.1/sparql",
           "record": "display"
         },
         {
@@ -981,7 +981,7 @@
           "inv": true,
           "targetId": "interface",
           "embed": true,
-          "endpoint": "/display/sparql",
+          "endpoint": "/display-v0.1/sparql",
           "record": "display"
         }
       ],
@@ -992,7 +992,7 @@
             "FILTER (?type IN ( <https://w3id.org/display#ExhibitionSpace> , <https://w3id.org/bot#Space> ))",
             "FILTER NOT EXISTS { ?subclass ^a  ?iri ; <http://www.w3.org/2000/01/rdf-schema#subClassOf> ?type . FILTER (?subclass != ?type)}"
           ],
-          "endpoint": "/display/sparql",
+          "endpoint": "/display-v0.1/sparql",
           "record": "global"
         }
       ]
@@ -1003,17 +1003,17 @@
         {
           "label": "_label",
           "iri": "http://www.w3.org/2000/01/rdf-schema#label",
-          "endpoint": "/display/sparql"
+          "endpoint": "/display-v0.1/sparql"
         },
         {
           "label": "begin_of_the_begin",
           "iri": "http://www.cidoc-crm.org/cidoc-crm/P82a_begin_of_the_begin",
-          "endpoint": "/display/sparql"
+          "endpoint": "/display-v0.1/sparql"
         },
         {
           "label": "end_of_the_end",
           "iri": "http://www.cidoc-crm.org/cidoc-crm/P82b_end_of_the_end",
-          "endpoint": "/display/sparql"
+          "endpoint": "/display-v0.1/sparql"
         }
       ],
       "oprops": [],
@@ -1023,7 +1023,7 @@
           "restrictions": [
             "FILTER (?type IN ( <http://www.cidoc-crm.org/cidoc-crm/E52_Time-Span> ))"
           ],
-          "endpoint": "/display/sparql"
+          "endpoint": "/display-v0.1/sparql"
         }
       ]
     },
