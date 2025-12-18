@@ -34,7 +34,7 @@
     <entities>
       <entity id="abstract-work" endpoint="true">
         <description>
-          <en>The idea (or abstract work) for an entity that is an `Event`, `Activity` or `Exhbit`. Physical objets (such as Exhibits) can be subject of the abstract work. Activities (such as Exhibitions) can be influenced by the abstract work.</en>
+          <en>The idea (or abstract work) for an entity that is an `Event`, `Activity` or `Exhibit`. Physical objets (such as Exhibits) can be subject of the abstract work. Activities (such as Exhibitions) can be influenced by the abstract work. An information object that represents a working version in the Display Application is also considered as an abstract work.</en>
         </description>
         <!-- doc: Authorized class mapping for JSON-LD -->
         <mappings>
@@ -46,9 +46,10 @@
               <type iri="urn:foobar:3"/>
             </types>
           </mapping>
+          <mapping string="InformationObject" subclassOf="PropositionalObject"/>
+          <mapping string="DigitalObject" subclassOf="InformationObject"/>
         </mappings>
       </entity>
-
       <entity id="exhibit" endpoint="true">
         <description>
           <en>Any exhibition entity, such as a work of art, artifact, device, building element, or furniture, with a characteristic artistic, aesthetic or technical function, with form or position that might be described by the means of topological relationship within an exhibition space, optionally constituent of a display entity.</en>
@@ -170,6 +171,9 @@
       </description>
       <description about="classified_as" type="array-uri">
         <en>An array of string values, each of which MUST be the HTTPS URI of a classification term</en>
+      </description>
+      <description about="digitally_carried_by">
+        <en>'A json object representing the named graph containing the triples of a working version. **Only usable when the `type` is `InformationObject`**'</en>
       </description>
       <description about="dimension">
         <en>An array of json objects, each of which is a Dimension, such as height or width, of the current object</en>

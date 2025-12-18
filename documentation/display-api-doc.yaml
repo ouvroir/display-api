@@ -1,7 +1,7 @@
 
      abstract-work:
        type: object
-       description: The idea (or abstract work) for an entity that is an `Event`, `Activity` or `Exhbit`. Physical objets (such as Exhibits) can be subject of the abstract work. Activities (such as Exhibitions) can be influenced by the abstract work.
+       description: The idea (or abstract work) for an entity that is an `Event`, `Activity` or `Exhibit`. Physical objets (such as Exhibits) can be subject of the abstract work. Activities (such as Exhibitions) can be influenced by the abstract work. An information object that represents a working version in the Display Application is also considered as an abstract work.
        required: [id, type, _label]
        properties:
          id:
@@ -11,7 +11,7 @@
              The value MUST be the HTTPS URI of the resource
          type:
            type: string
-           enum: [PropositionalObject]
+           enum: [PropositionalObject, InformationObject, DigitalObject]
            description: |
              The class for the resource
          _label:
@@ -42,6 +42,11 @@
            items:
              type: string
              format: uri
+         digitally_carried_by:
+           type: array
+           description: 'A json object representing the named graph containing the triples of a working version. **Only usable when the `type` is `InformationObject`**'
+           items:
+             $ref: '#/components/schemas/'
          influenced:
            type: array
            description: |

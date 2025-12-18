@@ -2382,6 +2382,14 @@ async function deleteApi(req, res, next) {
   *           format: uri
   *         allowReserved: true # para que no se queje el validador
   *         description: The IRI of the resource
+  *       - name: graph
+  *         in: query
+  *         required: false
+  *         schema:
+  *           type: string
+  *           format: uri
+  *         allowReserved: true # para que no se queje el validador
+  *         description: The IRI of the graph containing the resource
   *     responses:
   *       '200': 
   *         description: The data about a resource
@@ -2414,6 +2422,7 @@ async function getResource(req, res, next) {
 	const apiId = req.params.apiId;
 	const id = req.query.id;
 	const iri = req.query.iri;
+	const graph = req.query.graph;
 	
 	// pregenero objeto de respuesta
 	let objresp = {};	
@@ -2459,25 +2468,18 @@ async function getResource(req, res, next) {
 		// petición correcta, preparo objeto con la petición
 		let obj = {};
 		obj.api = apis[apiId]; // meto la API completa
+    obj.graph = graph;
 		obj.id = id;
 		obj.iris = [];
 		obj.iris.push(iri);
 		
 		try {
 
-      // il faut mettre ça dans la dataManager , car ne fonctionnera pas pour liste de ressources,dans la boucle
-      // ASK à utiliser éventuellement pour conditionner les traitements en écriture
-      const askQuery = `ASK{<${obj.iris[0]}> ?p ?o}`;
-      const ask = await fetch("http://localhost:8080/display/query", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/sparql-query",
-        },
-        body: askQuery
-      });
-      const askResponse = await ask.json();
+      // recupero datos
+			let datos = await dataManager.getData(obj, {quuid: req.quuid, apiId: apiId});
+
       try {
-        if (!askResponse.boolean) {
+        if (datos.boolean != undefined && !datos.boolean) {
           throw new Error(`Resource not found`);
         }
       } catch (err) {
@@ -2488,8 +2490,6 @@ async function getResource(req, res, next) {
         return;
       }
 
-      // recupero datos
-			let datos = await dataManager.getData(obj, {quuid: req.quuid, apiId: apiId});
 			// incorporo consultas para el log
 			res.numberOfQueries = datos.numberOfQueries;
 			res.allQueries = datos.allQueries;			
@@ -2507,7 +2507,7 @@ async function getResource(req, res, next) {
           return;
         }
 				res.type('json');
-				res.send( datos.data[0] );
+				res.send( datos.data[0] ); // normal output
 				return;
 			}	
 		} catch(err) {
@@ -2758,6 +2758,14 @@ async function getResources(req, res, next) {
   *           format: uri
   *         allowReserved: true # para que no se queje el validador
   *         description: The IRI of the resource
+  *       - name: graph
+  *         in: query
+  *         required: true
+  *         schema:
+  *           type: string
+  *           format: uri
+  *         allowReserved: true # para que no se queje el validador
+  *         description: The IRI of the graph where the resource is to be stored
   *     requestBody:
   *       description: The data about the resource
   *       required: true
@@ -2809,6 +2817,8 @@ async function putResource(req, res, next) {
 	const apiId = req.params.apiId;
 	const id = req.query.id;
 	const iri = req.query.iri;
+  const graph = req.query.graph;
+
 	
 	// pregenero objeto de respuesta
 	let objresp = {};
@@ -2868,7 +2878,7 @@ async function putResource(req, res, next) {
 		// ha pasado el validador, la actualización debería poder hacerse		
 		try {
 			// pido la actualización
-			let datos = await resourceUpdater.putResource(iri, objr, mel, apis[apiId], {quuid: req.quuid, apiId: apiId});
+			let datos = await resourceUpdater.putResource(iri, objr, mel, apis[apiId], {quuid: req.quuid, apiId: apiId}, graph);
 			// meto info de las triplas borradas/creadas y consultas
 			res.numberOfQueries = datos.numberOfQueries;
 			res.deletedTriples = datos.deletedTriples;
@@ -2966,6 +2976,14 @@ async function putResource(req, res, next) {
   *           format: uri
   *         allowReserved: true # para que no se queje el validador
   *         description: The IRI of the resource
+  *       - name: graph
+  *         in: query
+  *         required: true
+  *         schema:
+  *           type: string
+  *           format: uri
+  *         allowReserved: true # para que no se queje el validador
+  *         description: The IRI of the graph where the resource is to be stored
   *     requestBody:
   *       description: The data about the resource to be patched
   *       required: true
@@ -3024,7 +3042,8 @@ async function patchResource(req, res, next) {
 	const apiId = req.params.apiId;
 	const id = req.query.id;
 	const iri = req.query.iri;
-	
+  const graph = req.query.graph;
+
 	// pregenero objeto de respuesta
 	let objresp = {};
 	
@@ -3074,7 +3093,7 @@ async function patchResource(req, res, next) {
 		}
 		
 		// obtengo el patch del body
-		const patch = req.body;		
+		const patch = req.body;
 		try {
 			// pido la validación del patch
 			modelValidator.validatePatch(patch, mel, apis[apiId].config);
@@ -3089,7 +3108,7 @@ async function patchResource(req, res, next) {
 		// ha pasado el validador, la actualización debería poder hacerse		
 		try {
 			// pido la actualización (puede fallar dependiendo de los valores de la representación)
-			let datos = await resourceUpdater.patchResource(iri, patch, mel, apis[apiId], {quuid: req.quuid, apiId: apiId});
+			let datos = await resourceUpdater.patchResource(iri, patch, mel, apis[apiId], {quuid: req.quuid, apiId: apiId}, graph);
 			// meto info de las triplas borradas/creadas y consultas
 			res.numberOfQueries = datos.numberOfQueries;
 			res.deletedTriples = datos.deletedTriples;
@@ -3173,6 +3192,14 @@ async function patchResource(req, res, next) {
   *           format: uri
   *         allowReserved: true # para que no se queje el validador
   *         description: The IRI of the resource
+  *       - name: graph
+  *         in: query
+  *         required: true
+  *         schema:
+  *           type: string
+  *           format: uri
+  *         allowReserved: true # para que no se queje el validador
+  *         description: The IRI of the graph where the resource is to be stored
   *     responses:
   *       '200': 
   *         description: Resource deleted
@@ -3210,6 +3237,7 @@ async function deleteResource(req, res, next) {
 	const apiId = req.params.apiId;
 	const id = req.query.id;
 	const iri = req.query.iri;
+  const graph = req.query.graph;
 	
 	// pregenero objeto de respuesta
 	let objresp = {};
@@ -3261,7 +3289,7 @@ async function deleteResource(req, res, next) {
 		
 		// pido el borrado
 		try {
-			let datos = await resourceUpdater.deleteResource(iri, mel, apis[apiId], {quuid: req.quuid, apiId: apiId});
+			let datos = await resourceUpdater.deleteResource(iri, mel, apis[apiId], {quuid: req.quuid, apiId: apiId}, graph);
 			res.numberOfQueries = datos.numberOfQueries;
 			res.deletedTriples = datos.deletedTriples;
 			objresp.status = 200;

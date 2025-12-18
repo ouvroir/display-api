@@ -5,23 +5,29 @@ const display = require('./displayUtil');
 
 
 // CREACIÓN/REEMPLAZO DE RECURSO
-async function putResource(iri, objr, mel, api, qinfo) {
+async function putResource(iri, objr, mel, api, qinfo, graph) {
 	// 2021-mar incluyo datos writeonly en la definición del modelo		
 	// primero borro el recurso de la caché (para pedir de los endpoints todos los datos, incluidos los de solo escritura)
+  // translate: supprimer la ressource du cache (pour demander toutes les données des points d’accès, y compris l'écriture seule)
 	delete api.cache[mel.id][iri];
 
   display.replaceIriByUpdateIri(mel);
   display.replaceTargetIdByUpdateTargetId(mel);
 
 	// luego pido los datos del recurso en cuestión incluyendo datos de escritura (para poder borrarlos)
+  // translate: récupérer les paramètres, y compris les données d'écriture(?) (afin de pouvoir les supprimer)
 	let obj = {};
 	obj.api = api;
+  obj.graph = graph;
 	obj.id = mel.id;
 	obj.iris = [ iri ];
 
   // recupero datos,  incluyendo datos de escritura (la caché de la API se actualizará automáticamente)
-  // DV dans getData() le format JSON-LD est construit, mais aussi utilisé pour la lecture (méthode get), donc la conversion stringToIri doit se faire ailleurs
-	let datos = await dataManager.getData(obj, qinfo, true); // en datos.data[0] habrá una representación del recurso
+  // translate: récupérer les données, y compris les données d'écriture(?) (le cache de l'API se met à jour automatiquement)
+  // DV: dans getData() le format JSON-LD est construit,
+  // mais aussi utilisé pour la lecture (méthode get),
+  // donc la conversion stringToIri doit se faire ailleurs(?).
+	let datos = await dataManager.getData(obj, qinfo, true); // en datos.data[0] habrá una representación del recurso: représentation = format de sortie, donc JSON-LD
 	
 	// objeto donde guardo los recursos a borrar de la caché
 	let borrar = {};
@@ -29,6 +35,7 @@ async function putResource(iri, objr, mel, api, qinfo) {
 	// obtengo las triplas para borrar en los endpoints que soporten SPARQL Update
 	let edt = getEndpointTriples(false, iri, datos.data[0], mel, api, borrar);
 
+  objr.created = new Date().getTime();
 	// obtengo las triplas para insertar en los endpoints que soporten SPARQL Update
 	let eit = getEndpointTriples(true, iri, objr, mel, api, borrar);
 	
@@ -41,14 +48,14 @@ async function putResource(iri, objr, mel, api, qinfo) {
 	
 	// inicializo uris de los endpoints para borrar las consutas de la caché
 	let esuris = {};
-	
+
 	// hago las borrados
   // (epid : endpoint id)
 	for (const epid in edt) {
 		if (edt[epid].length > 0) {
 			// preparo la consulta
 			let qt = {};			
-			qt.template = getUpdateOperation(false, edt[epid]);			
+			qt.template = getUpdateOperation(false, edt[epid], graph);			
 			// pido el borrado
 			const ep = _.find(api.config.endpoints, el => el.id === epid);
 			await dataManager.answerQuery(ep.sparqlUpdate, qt, {}, qinfo); //, api.config.prefixes);
@@ -67,7 +74,7 @@ async function putResource(iri, objr, mel, api, qinfo) {
 		if (eit[epid].length > 0) {	
 			// preparo la consulta
 			let qt = {};			
-			qt.template = getUpdateOperation(true, eit[epid]);			
+			qt.template = getUpdateOperation(true, eit[epid], graph);			
 			// pido la inserción
 			const ep = _.find(api.config.endpoints, el => el.id === epid);
 			await dataManager.answerQuery(ep.sparqlUpdate, qt, {}, qinfo); //, api.config.prefixes);
@@ -100,7 +107,7 @@ async function putResource(iri, objr, mel, api, qinfo) {
 
 
 // BORRADO DE RECURSO
-async function deleteResource(iri, mel, api, qinfo) {
+async function deleteResource(iri, mel, api, qinfo, graph) {
 	// 2021-mar incluyo datos writeonly en la definición del modelo		
 	// primero borro el recurso de la caché (para pedir de los endpoints todos los datos, incluidos los de solo escritura)
 	delete api.cache[mel.id][iri];
@@ -110,6 +117,7 @@ async function deleteResource(iri, mel, api, qinfo) {
 	// luego pido los datos del recurso en cuestión incluyendo datos de escritura (para poder borrarlos)
 	let obj = {};
 	obj.api = api;
+  obj.graph = graph;
 	obj.id = mel.id;
 	obj.iris = [ iri ];
 	// recupero datos,  incluyendo datos de escritura (la caché de la API se actualizará automáticamente)
@@ -140,7 +148,7 @@ async function deleteResource(iri, mel, api, qinfo) {
 		if (edt[epid].length > 0) {
 			// preparo la consulta
 			let qt = {};			
-			qt.template = getUpdateOperation(false, edt[epid]);
+			qt.template = getUpdateOperation(false, edt[epid], graph);
 			// pido el borrado
 			const ep = _.find(api.config.endpoints, el => el.id === epid);
 			await dataManager.answerQuery(ep.sparqlUpdate, qt, {}, qinfo); //, api.config.prefixes);
@@ -173,7 +181,7 @@ async function deleteResource(iri, mel, api, qinfo) {
 
 
 // ACTUALIZACIÓN DE RECURSO
-async function patchResource(iri, patch, mel, api, qinfo) {
+async function patchResource(iri, patch, mel, api, qinfo, graph) {
 	// 2021-mar incluyo datos writeonly en la definición del modelo		
 	// primero borro el recurso de la caché (para pedir de los endpoints todos los datos, incluidos los de solo escritura)
 	delete api.cache[mel.id][iri];
@@ -183,6 +191,7 @@ async function patchResource(iri, patch, mel, api, qinfo) {
 	// luego pido los datos del recurso en cuestión incluyendo datos de escritura (para poder borrarlos)
 	let obj = {};
 	obj.api = api;
+  obj.graph = graph;
 	obj.id = mel.id;
 	obj.iris = [ iri ];
 	// recupero datos,  incluyendo datos de escritura (la caché de la API se actualizará automáticamente)
@@ -234,7 +243,7 @@ async function patchResource(iri, patch, mel, api, qinfo) {
 			if (request.edt[epid].length > 0) {
 				// preparo la consulta
 				let qt = {};			
-				qt.template = getUpdateOperation(false, request.edt[epid]);
+				qt.template = getUpdateOperation(false, request.edt[epid], graph);
 				// pido el borrado
 				const ep = _.find(api.config.endpoints, el => el.id === epid);
 				await dataManager.answerQuery(ep.sparqlUpdate, qt, {}, qinfo); //, api.config.prefixes);
@@ -252,7 +261,7 @@ async function patchResource(iri, patch, mel, api, qinfo) {
 			if (request.eit[epid].length > 0) {
 				// preparo la consulta
 				let qt = {};			
-				qt.template = getUpdateOperation(true, request.eit[epid]);
+				qt.template = getUpdateOperation(true, request.eit[epid], graph);
 				// pido la inserción
 				const ep = _.find(api.config.endpoints, el => el.id === epid);
 				await dataManager.answerQuery(ep.sparqlUpdate, qt, {}, qinfo); //, api.config.prefixes);
@@ -418,12 +427,22 @@ function applyPatch(iri, objr, pe, mel, api, borrar) {
 }
 
 
-function getUpdateOperation(esInsert, triples) {
+function getUpdateOperation(esInsert, triples, graph) {
+
+  // TODO une fonction
 	let prevtriple = null;
 	let request = esInsert? "INSERT DATA {\n" : "DELETE DATA {\n";
+  request += "GRAPH <urn:ouvroir:display:metadata> {\n";
 	for (let i=0; i<triples.length; i++) {
-		let triple = triples[i];
-		if (prevtriple == null)
+
+    let triple;
+    if (triples[i].r == "global" || triples[i].r == "meta") {
+      triple = triples[i];
+    } else {
+      continue;
+    }
+
+    if (prevtriple == null)
 			request += triple.s + " " + triple.p + " " + triple.o;
 		else {
 			if (triple.s !== prevtriple.s) // si no comparten sujeto
@@ -435,7 +454,37 @@ function getUpdateOperation(esInsert, triples) {
 		}
 		prevtriple = triple;
 	}
-	request += " .\n}";
+  request += "\n}\n";
+	request += "}";
+  request += ";\n"; // nouvelle requête
+
+  prevtriple = null;
+	request += esInsert? "INSERT DATA {\n" : "DELETE DATA {\n";
+  request += `GRAPH <${graph}> {\n`;
+	for (let i=0; i<triples.length; i++) {
+
+    let triple;
+    if (triples[i].r == "global" || triples[i].r == "display") {
+      triple = triples[i];
+    } else {
+      continue;
+    }
+
+    if (prevtriple == null)
+			request += triple.s + " " + triple.p + " " + triple.o;
+		else {
+			if (triple.s !== prevtriple.s) // si no comparten sujeto
+				request += " .\n" + triple.s + " " + triple.p + " " + triple.o;
+			else if (triple.p === prevtriple.p) // comparten sujeto y predicado
+				request += " ,\n    " + triple.o;
+			else // comparten sujeto
+				request += " ;\n  " + triple.p + " " + triple.o;				
+		}
+		prevtriple = triple;
+	}
+  request += "\n}\n";
+	request += "}";
+
 	return request;
 }
 
@@ -478,7 +527,10 @@ function getTriple(iri, valor, subel, tsubel) { // valores de tsubel => 0: type 
 			tripla.s = tripla.o;
 			tripla.o = oaux;
 		}	
-	}	
+	}
+
+  tripla.r = (subel.record !== undefined) ? subel.record : "meta";
+
 	// devuelvo la tripla
 	return tripla;
 }

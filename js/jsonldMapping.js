@@ -17,6 +17,7 @@ function stringToIri (string) {
     // prefixes
     const bot = "https://w3id.org/bot#";
     const crm = "http://www.cidoc-crm.org/cidoc-crm/";
+    const dig = "http://www.ics.forth.gr/isl/CRMdig/";
     const display = "https://w3id.org/display#";
     const la = "https://linked.art/ns/terms/";
 
@@ -39,11 +40,17 @@ function stringToIri (string) {
       case "Creation":
         iri = `${crm}E65_Creation`
         break;
-        case "Dimension":
+      case "DigitalObject":
+        iri = `${dig}D1_Digital_Object`
+        break;
+      case "Dimension":
         iri = `${crm}E54_Dimension`
         break;
       case "Group":
         iri = `${crm}E74_Group`
+        break;
+      case "InformationObject":
+        iri = `${crm}E73_Information_Object`
         break;
       case "LinguisticObject":
         iri = `${crm}E33_Linguistic_Object`

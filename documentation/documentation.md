@@ -7,11 +7,9 @@ Display API : document de travail
 
 # Généralités
 
-## Description
+## Serveur CRAFTS
 
-### Serveur CRAFTS
-
-CRAFTS est une API configurable pour interagir avec des données RDF stockées dans un entrepôt de triplets.
+CRAFTS est une API REST configurable pour interagir avec des données RDF stockées dans un entrepôt de triplets.
  
 La sémantique d’un chemin reflète les opérations configurées pour une API. Par exemple, le chemin `/apis/display/resource` sert à récupérer les informations sur une ressource RDF accessible par l’API `display`.
 
@@ -23,62 +21,153 @@ La sémantique d’une valeur associée à un paramètre `get` (`query parameter
 - `iri` : identifiant de la ressource RDF
   - exemples de valeur possible :
     - `https://ouvroir.umontreal.ca/data/activity0000`
-- donc : `/apis/display/resource?id=exhibition&iri=https://ouvroir.umontreal.ca/data/activity0000`
-
-### Configuration
-
-Dans l’application CRAFTS, les API sont configurées avec des documents structurés au format JSON.
-
-Le schéma de configuration est dispobible ici : <https://crafts.ntnlv.ca:450/docs/#/api/getApi>.
-
-En particulier, les deux champs suivants contiennent des `array` d’objets JSON permettant de configurer des opérations sur les ressources RDF :
-
-- `model` : contient les `model element` pour les opérations sur une ressource RDF
-    - chemin `/apis/{apiId}/resource`
-    - réponse : format JSON (configurable)
-    - possibilité d’imbriquer des descriptions (autrement dit, on peut suivre des chemins de propriété et se balader dans le graphe à partir de la ressource d’entrée)
-- `queryTemplate` : contient les `query template element` (gabarits de requête SPARQL sur mesure avec la clause `SELECT`), avec toute la complexité nécessaire et la possibilité de faire du templating pour injecter dans les requêtes SPARQL des valeurs passées par `get`
-    - chemin `/apis/{apiId}/query`
-    - réponse : format JSON SPARQL 1.1 Query Results conforme au standard, auquel s’ajoute la requête SPARQL
-    - possibilité de faire du templating pour injecter dans les requêtes SPARQL des valeurs passées par `get` (obligatoires ou facultatives) à partir de l’API
-
-### Documentation
-
-La documentation pour le seveur CRAFTS est pricipalement basée sur un article et sur des exemples :
-
-- Article : G. Vega-Gorgojo, "CRAFTS: Configurable REST APIs for Triple Stores," in IEEE Access, vol. 10, pp. 32426-32441, 2022, doi: 10.1109/ACCESS.2022.3160610.
-- Exemples de configuration :
-    - <https://crafts.gsic.uva.es/CRAFTSconfig101.html> (il est possible de se créer un compte pour tester les exemples)
-    - https://crafts.gsic.uva.es/CRAFTSaccess101.pdf
-
-Beaucoup de commentaires dans le code source.
-
-Info : CRAFTS is available under an Apache 2.0 license. Please send us an email to [guiveg@tel.uva.es](mailto:guiveg@tel.uva.es) if you use or plan to use CRAFTS. Drop us also a message if you have comments or suggestions for improvement.
+- `graph` : identifiant d’un graphe nommé
+- donc : `/apis/display/resource?id=exhibition&iri=https://ouvroir.umontreal.ca/data/activity0000&graph=https://ouvroir.umontreal.ca/data/digital-object/{nanoID}`
 
 ## Accès
 
-- URL de l’interface Swagger : <https://crafts.ntnlv.ca:450/docs>
-    - **Note :** cette interface Swagger est avant tout une documentation pour le serveur CRAFTS lui-même, qui ne permet pas, par défaut, de documenter les API configurées (mais elle permet de les utiliser); **voir remarques sur la sémantique des chemins et des paramètres tout en haut du présent document**
-    - Options : **1)** Intégrer nos schémas à cette interface (lourd); **2)** Générer notre propre documentation
+URL de l’interface Swagger :
 
-# Définition des points d’accès
+- <https://crafts.ntnlv.ca:450/docs>
 
-Note interne : pour définir les endpoints côté SPARQL (sur lesquels CRAFTS lui-même effectue les requêtses), la spécification d’un graphe est obligatoire, même pour le graphe par défaut. Le graphe par défaut dans Fuseki est `urn:x-arq:DefaultGraph`.
+# Initialisation
 
-```json
-{"endpoints":[{"graphURI": "urn:x-arq:DefaultGraph"}]}
+Cette section formule des recommandations sur les entités et les propriétés qu’il est nécessaire de créer lors de l’intialisation d’un projet.
+
+## Préambule
+
+L’interprétation topologique d’une exposition prend la forme d’un ensemble de triplets stocké dans un graphe nommé ([*named graph*](https://www.w3.org/TR/rdf11-concepts/#dfn-named-graph)) à l’intérieur de notre jeu de données RDF. Chaque graphe nommé est associé formellement à une version d’exposition.
+
+Une version d’exposition est une entité permettant
+
+- l’identification et la description d’une interprétation topologique ;
+- le référencement de l’activité d’exposition sur laquelle porte ladite version.
+
+## Technicalités
+
+Afin de lire ou d’écrire des informations spécifiques à une version, il faut transmettre avec la requête HTTP un IRI qui est le nom du graphe contenant les triplets associés.
+
+L’échange d’information sur les expositions est en mode stateless, il faut donc transmettre cet IRI avec chaque requête (on introduit un nouveau `queryparam` plus bas).
+
+La version est toujours associée à un seul graphe nommé et une seule activité d’exposition (mais une activité peut être associée à plusieurs versions).
+
+Le lien entre les versions dans notre jeu de données et les projets dans l’application est laissé à l’entière discrétion du client.
+
+## Formalisation
+
+Les schémas présentés ci-dessous sont des exemples fonctionnels minimaux des entités à créer lors de l’initialisation d’un projet.
+
+### Version
+
+Les versions sont des entités instanciées comme membre de la classe `crm:E73_Information_Object` (aligné sur la chaîne `InformationObject`). Comme `InformationObject` est une sous-classe de `PropositionalObject`, ils utilisent le même point d’accès (abstract-work) ; à ce sujet, (voir [remarque sur la sémantique de abstract-work](#remarquesur-la-sémantique-de-abstract-work)).
+
+#### Schema
+
+```js
+/**
+ * @type {Object}
+ * @property {URL} id - IRI de la version
+ * @property {string} type - chaine "InformationObject"
+ * @property {string} _label - A human readable label as a string
+ * @property {URL} classified_as - aat:300220469, version of document
+ * @property {URL | object } about - IRI ou objet de l’activité d’exposition sur laquelle porte la version (selon les cas de figures)
+ * @property {object} digitally_carried_by représente le graphe nommé associé à la version
+ * @property {URL} digitally_carried_by.id - IRI du graphe nommé
+ * @property {string} digitally_carried_by.type - chaine "DigitalObject"
+ * @property {string} digitally_carried_by._label - A human readable label as a string
+ */
+{
+  "id": "https://ouvroir.umontreal.ca/data/version/tegqh4ow",
+  "type": "InformationObject",
+  "_label": "Version de travail portant sur activity/c6o5h6c4",
+  "classified_as": "http://vocab.getty.edu/aat/300220469",
+  "about": "https://ouvroir.umontreal.ca/data/activity/c6o5h6c4",
+  "digitally_carried_by": {
+    "id": "https://ouvroir.umontreal.ca/data/digital-object/tegqh4ow",
+    "type": "DigitalObject",
+    "_label": "The named graph containing triples of version/tegqh4ow"
+  }
+}
 ```
 
-## Décrire
+Remarque :
+
+- lors de la création de la version, la valeur de `digitally_carried_by.id` doit être transmise au serveur en utilisant le query parameter **`graph`** ; par la suite, toutes les requêtes associées à cette version doivent utiliser cette valeur avec ce paramètre ;
+  - exemple (non fonctionnel) : `https://crafts.ntnlv.ca:450/apis/display/resource?id=abstract-work&iri=https://ouvroir.umontreal.ca/data/version/bidonbidon&graph=https://ouvroir.umontreal.ca/data/digital-object/bidonbidon`
+- l’entité `DigitalObject` qui représente le graphe nommé est instancié en même temps que la version ; il n’y a rien d’autre à faire pour l’entité `DigitalObject`.
+
+#### Cas de figure : l’exposition n’existe pas
+
+Lors de la création de la version, si l’exposition n’existe pas :
+
+- La propriété `about` pour l’entité `InformationObject` est un objet (au lieu d’une URL) avec le schéma ci-dessous (l’activité d’exposition sera instanciée en même temps que la version) :
+
+```js
+/**
+ * Les core properties : le trio id-type-label
+ * @property {URL} about.id - IRI de l’activité d’exposition
+ * @property {string} about.type - chaine "Activity"
+ * @property {string} about._label - A human readable label as a string
+*/
+```
+
+Remarques :
+
+- les métadonnées détaillées sur l’activité doivent être transmises subséquemment au point d’accès pour les activités d’exposition (car en tant que valeur du champ about pour la version, seules les *core properties* peuvent être transmises) ;
+
+Certaines métadonnées pour les activités d’exposition sont attendues, notamment la classification et la collection d’œuvres.
+
+La requête subséquente minimale consiste donc à ajouter un terme de classification et l’ensemble des des œuvres (qui est initialement vide) à l’activité d’exposition désignée par la version :
+
+- terme de classification : aat:300054766, Exhibiting
+- collection : Set vide
+
+```json
+[
+  {
+    "op": "add",
+    "path": "/classified_as",
+    "value": "http://vocab.getty.edu/aat/300054766"
+  },
+  {
+    "op": "add",
+    "path": "/used_specific_object",
+    "value": {
+      "id": "https://example",
+      "type": "Set",
+      "_label": "Exhibits of activity/nanoID"
+    }
+  },
+  {
+    "op": "add",
+    "path": "/member_of",
+    "value": "https://ouvroir.umontreal.ca/data/exhibitions"
+  }
+]
+```
+
+#### Cas de figure : l’exposition existe
+
+La propriété `about` pour la version reçoit simplement l’IRI de l’activité d’exposition.
+
+Remarques :
+
+- la liste des œuvres instanciées et liées à l’exposition peut être utilisée par la version grâce à la propriété `used_specific_object` de l’activité sur laquelle porte la version
+- [pas implémenté mais possible] il existe des fonctions native en SPARQL qui permettent au backend du dupliquer efficacement et à coût minimal un graphe nommé ; par exemple en envoyant un champ booléen (purement fonctionnel, non-sémantisé) dans l’objet décrivant une version afin de déclencher la duplication ; à discuter, si on veut un vrai système de versionnement dans nos données.
+
+# Points d’accès
+
+## Décrire (GET)
 
 ### Une exposition
 
-Statut : unstable
+Statut : testing
 
 @path /apis/display/resource
 @method **`GET`**
 @queryparam {string} **`id`** - (required) Identifiant du modèle : **`exhibition`**
 @queryparam {string} **`iri`** - (required) IRI d’une exposition
+@queryparam {string} **`graph`** - IRI d’un graphe nommé dont l’ensemble des nœuds contient l’IRI de l’entité décrite.
 
 Exemple :
 
@@ -86,11 +175,11 @@ Exemple :
 
 Note :
 
-- L’attribut `used_specific_object` (Linked Art) renvoie les ensembles d’expôts utilisés dans l’exposition.
+- L’attribut `used_specific_object` (Linked Art) renvoie les ensembles exhibits utilisés dans l’exposition.
     
-### Un ensemble d’expôts (d’exhibits)
+### Un ensemble exhibits
 
-Statut : unstable
+Statut : testing
 
 @path /apis/display/resource
 @method **`GET`**
@@ -103,12 +192,13 @@ Exemple :
 
 ### Un expôt (exhibit)
 
-Statut : unstable
+Statut : testing
 
 @path /apis/display/resource
 @method **`GET`**
 @queryparam {string} **`id`** - (required) Identifiant du modèle : **`exhibit`**
 @queryparam {string} **`iri`** - (required) IRI d’un exhibit
+@queryparam {string} **`graph`** - IRI d’un graphe nommé dont l’ensemble des nœuds contient l’IRI de l’entité décrite.
 
 Exemples :
 
@@ -146,6 +236,77 @@ Exemples :
 @method **`GET`**
 @queryparam {string} **`id`** - (required) Identifiant du modèle : **`abstract-work`**
 @queryparam {string} **`iri`** - (required) IRI d’un abstract-work
+@queryparam {string} **`graph`** - IRI d’un graphe nommé dont l’ensemble des nœuds contient l’IRI de l’entité décrite
+
+#### Remarque sur la sémantique de `abstract-work`
+
+Le sémantique du terme `abstract work` est plus près du terme anglais « work » (ouvrage ou travail) que du terme français « œuvre » qui a souvent tendance, mais pas nécessairement, à être connoté artistiquement. Il s’agit donc de travaux abstraits ou d’ouvrage abstrait, dont le sens peut être précisé par l’utilisation du mécanisme de typage par classification (propriété `classified_as`) ou par des sous-classes lorsque possible.
+
+#### L’idée d’une œuvre d’art (ou abstract work)
+
+PropositionalObject
+
+- classified_as aat:300387357 (creative work)
+- about [some Exhbitis]
+
+```json
+{
+  "id": "http://example/an-abstract-work",
+  "type": "PropositionalObject",
+  "classified_as": "http://vocab.getty.edu/aat/300387357",
+  "about": [
+    "http://example/an-exhibit",
+    "http://example/another-exhibit",
+  ]
+}
+```
+
+#### L’idée d’une exposition (exhibition concept)
+
+Exhibition as an abstract work, or exhibition concept
+
+À ma connaissance, nous n’avons pas formellement décidé de ce qu’il advenait de ce type d’entité, donc C’est consigné ici à titre informatif.
+
+PropositionalObject
+
+- classified_as aat:300417531 (exihibition)
+- influenced (Activity classified_as aat:300054766)
+
+```json
+{
+  "id": "http://example/an-exhibition-concept",
+  "type": "PropositionalObject",
+  "classified_as": "exhibition",
+  "influenced": [
+    "http://example/feux-pâles-1990",
+    "http://example/feux-pâles-2014",
+  ]
+}
+```
+
+Remarque : propriété `influenced` only usable when value is an entity of type `Activity`.
+
+#### Version de travail
+
+InformationObject
+
+- classified_as aat:300220469 (version)
+- about (activity classified_as aat:300054766 exhibiting)
+
+```json
+{
+  "id": "http://example/a-working-version",
+  "type": "InformationObject",
+  "classified_as": "http://vocab.getty.edu/aat/300220469",
+  "about": "http://example/feux-pâles-1990",
+  "digitally_carried_by": "http://example/a-named-graph"
+}
+```
+
+Remarque :
+
+- max 1 about
+- max 1 digitally_carried_by
 
 #### Exemples
 
@@ -162,12 +323,13 @@ Dans le sens inverse, les exhibits sont liés à l’œuvre abstraite par le cha
 
 ### Un espace
 
-Statut : unstable
+Statut : testing
 
 @path /apis/display/resource
 @method **`GET`**
 @queryparam {string} **`id`** - (required) Identifiant du modèle : **`space`**
 @queryparam {string} **`iri`** - (required) IRI d’un espace
+@queryparam {string} **`graph`** - IRI d’un graphe nommé dont l’ensemble des nœuds contient l’IRI de l’entité décrite
 
 Exemple :
 
@@ -204,6 +366,7 @@ space0000 dispose de deux interfaces de circulation vers d’autres espaces.
 @method **`GET`**
 @queryparam {string} **`id`** - (required) Identifiant du modèle : **`space`**
 @queryparam {string} **`iri`** - (required) IRI d’un espace
+@queryparam {string} **`graph`** - IRI d’un graphe nommé dont l’ensemble des nœuds contient l’IRI de l’entité décrite
 
 `space0000` : espace avec interfaces de circulation :
 
@@ -223,6 +386,7 @@ exhibit0001 (code-barres) dispose de d’une interface de d’accrochage avec el
 @method **`GET`**
 @queryparam {string} **`id`** - (required) Identifiant du modèle : **`exhibit`**
 @queryparam {string} **`iri`** - (required) IRI d’un exhibit
+@queryparam {string} **`graph`** - IRI d’un graphe nommé dont l’ensemble des nœuds contient l’IRI de l’entité décrite
 
 `exhibit0001` : exhibit et element avec interface d’accrochage :
 
@@ -261,9 +425,9 @@ Voir le champ `carried_out_by` ou `produced_by.carried_out_by` si c’est un exh
 - https://ouvroir.umontreal.ca/data/activity0000
 - https://ouvroir.umontreal.ca/data/exhibit0015
 
-## Lister
+### Lister
 
-### Toutes les expositions
+#### Toutes les expositions
 
 Statut : unstable
 
@@ -271,16 +435,16 @@ Statut : unstable
 @method **`GET`**
 @queryparam {string} **`id`** - (required) Identifiant du modèle : **`set`**
 
-Note :
+Pour lister toutes les expositions disponibles, on utilise le @queryparam `id=set` avec une ressource spéciale : 
 
-- Pour lister toutes les expositions disponibles, on utilise le @queryparam `id=set` avec une ressource spéciale : https://ouvroir.umontreal.ca/data/exhibitions
+- https://ouvroir.umontreal.ca/data/exhibitions
 
 Exemple :
 
 - https://crafts.ntnlv.ca:450/apis/display/resource?id=set&iri=https://ouvroir.umontreal.ca/data/exhibitions
 
 
-## Créer
+## Créer (PUT)
 
 *Glossaire*
 
@@ -412,7 +576,7 @@ Résumé en deux points :
 - Une URL identifie une ressource principale dont la représentation peut être manipulée à travers un point d’accès
 - Un URN remplace l’identifiant de nœud anonyme (blank node) pour les ressources dont la représentation n’est accessible qu’à travers une ressource pricipale (nœud dépendant)
 
-## Modifier
+## Modifier (PATCH)
 
 La modification des ressources utilise les mêmes points d’accès que la méthode GET, mais avec la méthode PATCH
 
@@ -546,8 +710,6 @@ Exemple :
 
 #### PATCH add `/carried_out_by`
 
-Attention, effet indésirable : remplace l’array par un array avec la valeur de "value". Autrement dit, l’opération `add` sans indice pour la valeur de `path` et sur un champ déjà populé écrase ce champ. Voir l’exemple suivant pour workaround raisonnable.
-
 Exemple :
 
 ```json
@@ -560,6 +722,8 @@ Exemple :
 ```
 
 Remarque : on peut mettre un array dans le champ "value" afin d'insérer plusieurs valeurs.
+
+Attention, effet indésirable : remplace l’array par un array avec la valeur de "value". Autrement dit, l’opération `add` sans indice pour la valeur de `path` et sur un champ déjà populé écrase ce champ. Voir l’exemple suivant pour workaround raisonnable.
 
 #### PATCH add `/carried_out_by/-`
 
@@ -691,6 +855,8 @@ Fait pour application :
 - à la recherche d'utilisateurs pour tester
 
 ## Version d’exposition
+
+[Remarque : cette section sert à consigner des notes de rencontre (pas de la documentation)]
 
 - par exemple, comparer deux versions de salles
 - Emmanuel proposose : graphe nommé comme "display" de haut niveau chez nous, sans les alertes d'incohérences
@@ -826,7 +992,7 @@ Le modèle de Display vient s’y greffer. Ainsi, le modèle de Linked Art est u
     - **méthode `PATCH` (Update a resource) :**
         - utilise la spécification JSON Patch
         - PUT et PATCH, assez facile d'utilisation, notamment avec les use cases de Linked Art; par contre l'API doit être obligatoirement configurée pour gérer les propriétés utilisées, donc on ne peut pas dire n’importe quoi comme on ferait directement avec SPARQL; donc on peut dire n’importe quoi seuelement à l’intérieur du vocabulaire configuré dans l’API
-    - **méthode `DELETE` :** comme `PUT` (replace) est est un `delete` suivi d'un `insert`, je n'anticipe pas trop de problème
+    - **méthode `DELETE` :** comme `PUT` (replace) est un `delete` suivi d'un `insert`, je n'anticipe pas trop de problème
 
 # Remarques et notes techniques
 
@@ -864,6 +1030,46 @@ La description des entités s’exprime selon deux conceptualisations (cidoc, Di
 - soit par des instanciations distinctes liées par une entité canonique
 
 # Notes obsolètes
+
+## Doc legacy
+
+### Configuration
+
+Dans l’application CRAFTS, les API sont configurées avec des documents structurés au format JSON.
+
+Le schéma de configuration est dispobible ici : <https://crafts.ntnlv.ca:450/docs/#/api/getApi>.
+
+En particulier, les deux champs suivants contiennent des `array` d’objets JSON permettant de configurer des opérations sur les ressources RDF :
+
+- `model` : contient les `model element` pour les opérations sur une ressource RDF
+    - chemin `/apis/{apiId}/resource`
+    - réponse : format JSON (configurable)
+    - possibilité d’imbriquer des descriptions (autrement dit, on peut suivre des chemins de propriété et se balader dans le graphe à partir de la ressource d’entrée)
+- `queryTemplate` : contient les `query template element` (gabarits de requête SPARQL sur mesure avec la clause `SELECT`), avec toute la complexité nécessaire et la possibilité de faire du templating pour injecter dans les requêtes SPARQL des valeurs passées par `get`
+    - chemin `/apis/{apiId}/query`
+    - réponse : format JSON SPARQL 1.1 Query Results conforme au standard, auquel s’ajoute la requête SPARQL
+    - possibilité de faire du templating pour injecter dans les requêtes SPARQL des valeurs passées par `get` (obligatoires ou facultatives) à partir de l’API
+
+### Documentation
+
+La documentation pour le seveur CRAFTS est pricipalement basée sur un article et sur des exemples :
+
+- Article : G. Vega-Gorgojo, "CRAFTS: Configurable REST APIs for Triple Stores," in IEEE Access, vol. 10, pp. 32426-32441, 2022, doi: 10.1109/ACCESS.2022.3160610.
+- Exemples de configuration :
+    - <https://crafts.gsic.uva.es/CRAFTSconfig101.html> (il est possible de se créer un compte pour tester les exemples)
+    - https://crafts.gsic.uva.es/CRAFTSaccess101.pdf
+
+Beaucoup de commentaires dans le code source.
+
+Info : CRAFTS is available under an Apache 2.0 license. Please send us an email to [guiveg@tel.uva.es](mailto:guiveg@tel.uva.es) if you use or plan to use CRAFTS. Drop us also a message if you have comments or suggestions for improvement.
+
+### Point d’accès
+
+Note interne : pour définir les endpoints côté SPARQL (sur lesquels CRAFTS lui-même effectue les requêtses), la spécification d’un graphe est obligatoire, même pour le graphe par défaut. Le graphe par défaut dans Fuseki est `urn:x-arq:DefaultGraph`.
+
+```json
+{"endpoints":[{"graphURI": "urn:x-arq:DefaultGraph"}]}
+```
 
 ## Décrire
 
