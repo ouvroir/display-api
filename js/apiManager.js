@@ -2416,9 +2416,21 @@ async function deleteApi(req, res, next) {
   *           application/json:
   *             schema: 
   *               $ref: '#/components/schemas/ApiResponse'
+  *       '409': 
+  *         description: Conflict
+  *         content:
+  *           application/json:
+  *             schema: 
+  *               $ref: '#/components/schemas/ApiResponse'
   */
 async function getResource(req, res, next) {
-	// extraigo parámetros de la URL
+
+  /** The inFlight Map. */
+  const inFlight = req.app.locals.inFlight;
+  /** The lock key for the resource being requested. */
+  const key = lockKey(req);
+
+  // extraigo parámetros de la URL
 	const apiId = req.params.apiId;
 	const id = req.query.id;
 	const iri = req.query.iri;
@@ -2449,7 +2461,15 @@ async function getResource(req, res, next) {
 		res.status(objresp.status).send(objresp);
 		return;
 	} 
-	
+
+  if (inFlight.has(key)) {
+    objresp.status = 409;
+    objresp.message = "An update operation is currently in progress for this resource. Retry the request after the update completes.";
+    res.errorMessage = objresp.message;
+    res.set("Retry-After", "3").status(objresp.status).send(objresp);
+    return;
+  }
+
 	// compruebo que exista el id correspondiente en el modelo de la configuración	
 	const mel = _.find(apis[apiId].config.model, (el) => el.id === id);
 	if (mel != undefined) {
@@ -2811,8 +2831,20 @@ async function getResources(req, res, next) {
   *           application/json:
   *             schema: 
   *               $ref: '#/components/schemas/ApiResponse'
+  *       '409': 
+  *         description: Conflict
+  *         content:
+  *           application/json:
+  *             schema: 
+  *               $ref: '#/components/schemas/ApiResponse'
   */
 async function putResource(req, res, next) {
+
+  /** The inFlight Map. */
+  const inFlight = req.app.locals.inFlight;
+  /** The lock key for the resource being requested. */
+  const key = lockKey(req);
+
 	// extraigo parámetros de la URL
 	const apiId = req.params.apiId;
 	const id = req.query.id;
@@ -2851,8 +2883,16 @@ async function putResource(req, res, next) {
 		res.errorMessage = objresp.message;
 		res.status(objresp.status).send(objresp);
 		return;
-	} 
-	
+	}
+
+  if (inFlight.has(key)) {
+    objresp.status = 409;
+    objresp.message = "An update operation is already in progress for this resource. Retry the request after the update completes.";
+    res.errorMessage = objresp.message;
+    res.set("Retry-After", "3").status(objresp.status).send(objresp);
+    return;
+  }
+
 	// compruebo que exista el id correspondiente en el modelo de la configuración	
 	const mel = _.find(apis[apiId].config.model, (el) => el.id === id);
 	if (mel != undefined) {		
@@ -2874,7 +2914,10 @@ async function putResource(req, res, next) {
 			res.status(objresp.status).send(objresp);
 			return;
 		}
-		
+
+    /** Lock activation */
+    inFlight.set(key, Date.now());
+
 		// ha pasado el validador, la actualización debería poder hacerse		
 		try {
 			// pido la actualización
@@ -2915,7 +2958,10 @@ async function putResource(req, res, next) {
 			res.errorMessage = objresp.message;
 			res.status(objresp.status).send(objresp);
 			return;
-		}
+		} finally {
+      /** Lock deleted no matter what */
+      inFlight.delete(key);
+    }
 	} else {
 		// mel no encontrado => id incorrecto
 		objresp.status = 400;
@@ -3038,6 +3084,12 @@ async function putResource(req, res, next) {
   *               $ref: '#/components/schemas/ApiResponse'
   */
 async function patchResource(req, res, next) {
+
+  /** The inFlight Map. */
+  const inFlight = req.app.locals.inFlight;
+  /** The lock key for the resource being requested. */
+  const key = lockKey(req);
+
 	// extraigo parámetros de la URL
 	const apiId = req.params.apiId;
 	const id = req.query.id;
@@ -3076,7 +3128,15 @@ async function patchResource(req, res, next) {
 		res.status(objresp.status).send(objresp);
 		return;
 	} 
-	
+
+  if (inFlight.has(key)) {
+    objresp.status = 409;
+    objresp.message = "An update operation is already in progress for this resource. Retry the request after the update completes.";
+    res.errorMessage = objresp.message;
+    res.set("Retry-After", "3").status(objresp.status).send(objresp);
+    return;
+  }
+
 	// compruebo que exista el id correspondiente en el modelo de la configuración	
 	const mel = _.find(apis[apiId].config.model, (el) => el.id === id);
 	if (mel != undefined) {
@@ -3104,7 +3164,10 @@ async function patchResource(req, res, next) {
 			res.status(objresp.status).send(objresp);
 			return;
 		}
-				
+
+    /** Lock activation */
+    inFlight.set(key, Date.now());
+
 		// ha pasado el validador, la actualización debería poder hacerse		
 		try {
 			// pido la actualización (puede fallar dependiendo de los valores de la representación)
@@ -3130,7 +3193,10 @@ async function patchResource(req, res, next) {
 			res.errorMessage = objresp.message;
 			res.status(objresp.status).send(objresp);
 			return;
-		}
+		} finally {
+      /** Lock deleted no matter what */
+      inFlight.delete(key);
+    }
 	} else {
 		// mel no encontrado => id incorrecto
 		objresp.status = 400;
@@ -3233,6 +3299,12 @@ async function patchResource(req, res, next) {
   *               $ref: '#/components/schemas/ApiResponse'
   */
 async function deleteResource(req, res, next) {
+
+  /** The inFlight Map. */
+  const inFlight = req.app.locals.inFlight;
+  /** The lock key for the resource being requested. */
+  const key = lockKey(req);
+
 	// extraigo parámetros de la URL
 	const apiId = req.params.apiId;
 	const id = req.query.id;
@@ -3271,7 +3343,15 @@ async function deleteResource(req, res, next) {
 		res.status(objresp.status).send(objresp);
 		return;
 	} 
-	
+
+  if (inFlight.has(key)) {
+    objresp.status = 409;
+    objresp.message = "An update operation is already in progress for this resource. Retry the request after the update completes.";
+    res.errorMessage = objresp.message;
+    res.set("Retry-After", "3").status(objresp.status).send(objresp);
+    return;
+  }
+
 	// compruebo que exista el id correspondiente en el modelo de la configuración	
 	const mel = _.find(apis[apiId].config.model, (el) => el.id === id);
 	if (mel != undefined) {
@@ -3286,7 +3366,10 @@ async function deleteResource(req, res, next) {
 			res.status(objresp.status).send(objresp);
 			return;
 		}
-		
+
+    /** Lock activation */
+    inFlight.set(key, Date.now());
+
 		// pido el borrado
 		try {
 			let datos = await resourceUpdater.deleteResource(iri, mel, apis[apiId], {quuid: req.quuid, apiId: apiId}, graph);
@@ -3307,7 +3390,10 @@ async function deleteResource(req, res, next) {
 			res.errorMessage = objresp.message;
 			res.status(objresp.status).send(objresp);
 			return;
-		}
+		} finally {
+      /** Lock deleted no matter what */
+      inFlight.delete(key);
+    }
 	} else {
 		// mel no encontrado => id incorrecto
 		objresp.status = 400;
@@ -4011,7 +4097,18 @@ function cleanCache() {
 	logger.info(logmess)
 }
 
-
+/**
+ * Creates a temporary lock key for a resource being processed
+ * @param {object} req - The Express req object
+ * @returns {string} The lock key
+ */
+function lockKey(req) {
+  const apiId = req.params.apiId ?? "";
+  const id = req.query.id ?? "";
+  const iri = req.query.iri ?? "";
+  const graph = req.query.graph ?? "";
+  return `${apiId}|${id}|${iri}`;
+}
 
 module.exports = {
 	init,

@@ -25,6 +25,16 @@ const app = new express();
 app.use(cors()); // habilito cors en todas las rutas
 app.set('trust proxy', true); // para registrar correctamente la IP del cliente
 
+/**
+ * In flight requests
+ * @description Temporary lock for concurrent requests processing
+ * Semantics:
+ * - Presence of a key means an update operation is currently in progress for that resource
+ * - Used to return HTTP 409 (Conflict) on concurrent requests
+ * @type {Map<string, number>}
+ */
+app.locals.inFlight = new Map();
+
 
 // inicializo rutas
 let getRoutes = { };
