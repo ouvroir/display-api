@@ -3082,6 +3082,12 @@ async function putResource(req, res, next) {
   *           application/json:
   *             schema: 
   *               $ref: '#/components/schemas/ApiResponse'
+  *       '409': 
+  *         description: Conflict
+  *         content:
+  *           application/json:
+  *             schema: 
+  *               $ref: '#/components/schemas/ApiResponse'
   */
 async function patchResource(req, res, next) {
 
@@ -3293,6 +3299,12 @@ async function patchResource(req, res, next) {
   *               $ref: '#/components/schemas/ApiResponse'
   *       '404': 
   *         description: Resource not found
+  *         content:
+  *           application/json:
+  *             schema: 
+  *               $ref: '#/components/schemas/ApiResponse'
+  *       '409': 
+  *         description: Conflict
   *         content:
   *           application/json:
   *             schema: 
