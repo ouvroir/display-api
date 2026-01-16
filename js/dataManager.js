@@ -165,8 +165,8 @@ async function getData(obj, qinfo, writeonlytoo) {
           aux.active = "true";
           let updateParams = endpoint.sparqlUpdate;
           let qtemp = _.find(queryTemplates.queryTemplates, el => el.id === 'toggleActiveInfGraph' );
-          // no await
-          sparqlClient.queryEndpoint(updateParams, qtemp.template, aux, qinfo);
+          // no await... but no...
+          await sparqlClient.queryEndpoint(updateParams, qtemp.template, aux, qinfo);
 
           // Load data in infGraph
           updateParams = inferenceEndpoint.sparqlUpdate;
@@ -199,14 +199,14 @@ async function getData(obj, qinfo, writeonlytoo) {
     aux.active = "false";
     let updateParams = endpoint.sparqlUpdate;
     let qtemp = _.find(queryTemplates.queryTemplates, el => el.id === 'toggleActiveInfGraph' );
-    // no await
-    sparqlClient.queryEndpoint(updateParams, qtemp.template, aux, qinfo);
+    // no await... but no...
+    await sparqlClient.queryEndpoint(updateParams, qtemp.template, aux, qinfo);
 
     aux.inferenceGraphIri = "<" + obj.infGraph + ">";
     updateParams = inferenceEndpoint.sparqlUpdate;
     qtemp = _.find(queryTemplates.queryTemplates, el => el.id === 'clearInfGraph' );
-    // no await
-    sparqlClient.queryEndpoint(updateParams, qtemp.template, aux, qinfo);
+    // no await... but no...
+    await sparqlClient.queryEndpoint(updateParams, qtemp.template, aux, qinfo);
   }
 
 	// ahora genero la salida deseada

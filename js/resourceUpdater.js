@@ -296,6 +296,10 @@ async function patchResource(iri, patch, mel, api, qinfo, graph) {
 
 // FUNCIONES AUXILIARES
 function applyPatch(iri, objr, pe, mel, api, borrar) {
+
+  let string = objr.type;
+  objr.type = jsonldMapping.stringToIri(string);
+
 	// inicializo modificaciones a hacer
 	let resp = {};
 	resp.edt = {};
@@ -537,6 +541,10 @@ function getTriple(iri, valor, subel, tsubel) { // valores de tsubel => 0: type 
 
 
 function getSubelementEndpointTriples(et, insert, iri, objr, subel, tsubel, api, borrar) {
+
+  let string = objr.type;
+  objr.type = jsonldMapping.stringToIri(string);
+
 	const ep = _.find(api.config.endpoints, el => el.id === subel.endpoint);
 	if (ep.sparqlUpdate != undefined) { // es actualizable
 		// si existe en la representación...

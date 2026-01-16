@@ -80,6 +80,7 @@ function stringToIri (string) {
         iri = `${crm}E55_Type`
         break;
       default:
+        //throw... 400 not valid
         break;
     }
 
