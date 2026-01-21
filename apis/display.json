@@ -53,7 +53,7 @@
       }
     }
   ],
-  "comment": "Nouveau champ 'record' des propriétés (dprops, oprops, types) : global = enregistrement dans les deux graphes (metadata et hypothèse); display = enresgistrement dans le grpahe d’hypothèse seulement; meta = enresgistrement dans le graphe d’hypothèse seulement; défaut (record is undefined) = metadata seulement",
+  "comment": "Nouveau champ 'record' des propriétés (dprops, oprops, types) : global = enregistrement dans les deux graphes (metadata et hypothèse); display = enresgistrement dans le grpahe d’hypothèse seulement; meta = enresgistrement dans le graphe metadata seulement; défaut (record is undefined) = metadata seulement",
   "model": [
     {
       "id": "abstract-work",
