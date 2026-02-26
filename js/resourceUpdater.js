@@ -234,8 +234,18 @@ async function patchResource(iri, patch, mel, api, qinfo, graph) {
 		}
 	}
 	
-	// resuelvo las inserciones / modificaciones en el orden pedido
-	for (let i=0; i<requests.length; i++) {
+  /**
+   * Note sur RDF vs JS Array
+   *  - L’ordre DELETE-INSERT n’est pas garanti pour les requêtes avec op:replace
+   *  - Conséquence : bogue lorsque survient INSERT-DELETE (donc résultats inopinés)
+   *  - Solution    : deux passes sur l’array `requests`
+   *      1 → edt seulement
+   *      2 → eit seulement
+   *      résultat : replace avec ordre delete-insert garanti
+   * Original comment:
+   *  - resuelvo las inserciones / modificaciones en el orden pedido
+   */
+	for (let i=0; i<requests.length; i++) { // passe 1
 		//console.log("PATCH #"+i);
 		const request = requests[i];
 		// hago los delete correspondientes
@@ -255,7 +265,11 @@ async function patchResource(iri, patch, mel, api, qinfo, graph) {
 				esuris[ep.sparqlURI] = true;
 				esuris[ep.sparqlUpdate.sparqlURI] = true;
 			}
-		}		
+		}
+  }
+
+  for (let i=0; i<requests.length; i++) { // passe 2
+    const request = requests[i];
 		// hago los insert correspondientes
 		for (const epid in request.eit) {
 			if (request.eit[epid].length > 0) {
