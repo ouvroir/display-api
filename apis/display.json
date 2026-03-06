@@ -92,6 +92,7 @@
           "label": "about",
           "iri": "http://www.cidoc-crm.org/cidoc-crm/P129_is_about",
           "targetId": "coreProperties",
+          "range": ["abstract-work", "exhibit", "exhibition"],
           "embed": true,
           "endpoint": "/display-v0.1/sparql"
         },
@@ -99,6 +100,7 @@
           "label": "digitally_carried_by",
           "iri": "https://linked.art/ns/terms/digitally_carried_by",
           "targetId": "coreProperties",
+          "range": "abstract-work",
           "embed": true,
           "endpoint": "/display-v0.1/sparql",
           "record": "global"
@@ -107,6 +109,7 @@
           "label": "influenced",
           "iri": "http://www.cidoc-crm.org/cidoc-crm/P15i_influenced",
           "targetId": "coreProperties",
+          "range": "exhibition",
           "embed": true,
           "endpoint": "/display-v0.1/sparql",
           "record": "global"
@@ -366,6 +369,7 @@
           "label": "member_of",
           "iri": "https://linked.art/ns/terms/member_of",
           "targetId": "coreProperties",
+          "range": "set",
           "embed": true,
           "endpoint": "/display-v0.1/sparql",
           "record": "global"
@@ -374,6 +378,7 @@
           "label": "subject_of",
           "iri": "http://www.cidoc-crm.org/cidoc-crm/P129i_is_subject_of",
           "targetId": "coreProperties",
+          "range": "abstract-work",
           "embed": true,
           "endpoint": "/display-v0.1/sparql"
         },
@@ -381,6 +386,7 @@
           "label": "sub_element",
           "iri": "https://w3id.org/bot#hasSubElement",
           "targetId": "coreProperties",
+          "range": "exhibit",
           "embed": true,
           "endpoint": "/display-v0.1/sparql",
           "record": "display"
@@ -389,6 +395,7 @@
           "label": "above",
           "iri": "https://w3id.org/display#above",
           "targetId": "coreProperties",
+          "range": "exhibit",
           "embed": true,
           "endpoint": "/display-v0.1/sparql",
           "record": "display"
@@ -397,6 +404,7 @@
           "label": "back_to_back",
           "iri": "https://w3id.org/display#backToBack",
           "targetId": "coreProperties",
+          "range": "exhibit",
           "embed": true,
           "endpoint": "/display-v0.1/sparql",
           "record": "display"
@@ -405,6 +413,7 @@
           "label": "behind",
           "iri": "https://w3id.org/display#behind",
           "targetId": "coreProperties",
+          "range": "exhibit",
           "embed": true,
           "endpoint": "/display-v0.1/sparql",
           "record": "display"
@@ -413,6 +422,7 @@
           "label": "below",
           "iri": "https://w3id.org/display#below",
           "targetId": "coreProperties",
+          "range": "exhibit",
           "embed": true,
           "endpoint": "/display-v0.1/sparql",
           "record": "display"
@@ -421,6 +431,7 @@
           "label": "contained_in",
           "iri": "https://w3id.org/display#containedIn",
           "targetId": "coreProperties",
+          "range": "exhibit",
           "embed": true,
           "endpoint": "/display-v0.1/sparql",
           "record": "display"
@@ -429,6 +440,7 @@
           "label": "contains",
           "iri": "https://w3id.org/display#contains",
           "targetId": "coreProperties",
+          "range": "exhibit",
           "embed": true,
           "endpoint": "/display-v0.1/sparql",
           "record": "display"
@@ -437,6 +449,7 @@
           "label": "covered_by",
           "iri": "https://w3id.org/display#coveredBy",
           "targetId": "coreProperties",
+          "range": "exhibit",
           "embed": true,
           "endpoint": "/display-v0.1/sparql",
           "record": "display"
@@ -445,6 +458,7 @@
           "label": "covers",
           "iri": "https://w3id.org/display#covers",
           "targetId": "coreProperties",
+          "range": "exhibit",
           "embed": true,
           "endpoint": "/display-v0.1/sparql",
           "record": "display"
@@ -453,6 +467,7 @@
           "label": "faces",
           "iri": "https://w3id.org/display#faces",
           "targetId": "coreProperties",
+          "range": "exhibit",
           "embed": true,
           "endpoint": "/display-v0.1/sparql",
           "record": "display"
@@ -461,6 +476,7 @@
           "label": "in_front_of",
           "iri": "https://w3id.org/display#inFrontOf",
           "targetId": "coreProperties",
+          "range": "exhibit",
           "embed": true,
           "endpoint": "/display-v0.1/sparql",
           "record": "display"
@@ -469,6 +485,7 @@
           "label": "included_in",
           "iri": "https://w3id.org/display#includedIn",
           "targetId": "coreProperties",
+          "range": "display",
           "embed": true,
           "endpoint": "/display-v0.1/sparql",
           "record": "display"
@@ -477,6 +494,7 @@
           "label": "includes",
           "iri": "https://w3id.org/display#includes",
           "targetId": "coreProperties",
+          "range": "exhibit",
           "embed": true,
           "endpoint": "/display-v0.1/sparql",
           "record": "display"
@@ -485,6 +503,7 @@
           "label": "left_of",
           "iri": "https://w3id.org/display#leftOf",
           "targetId": "coreProperties",
+          "range": "exhibit",
           "embed": true,
           "endpoint": "/display-v0.1/sparql",
           "record": "display"
@@ -493,6 +512,7 @@
           "label": "lies_against",
           "iri": "https://w3id.org/display#liesAgainst",
           "targetId": "coreProperties",
+          "range": "exhibit",
           "embed": true,
           "endpoint": "/display-v0.1/sparql",
           "record": "display"
@@ -501,6 +521,7 @@
           "label": "lies_on",
           "iri": "https://w3id.org/display#liesOn",
           "targetId": "coreProperties",
+          "range": "exhibit",
           "embed": true,
           "endpoint": "/display-v0.1/sparql",
           "record": "display"
@@ -509,6 +530,7 @@
           "label": "next_to",
           "iri": "https://w3id.org/display#nextTo",
           "targetId": "coreProperties",
+          "range": "exhibit",
           "embed": true,
           "endpoint": "/display-v0.1/sparql",
           "record": "display"
@@ -517,6 +539,7 @@
           "label": "over",
           "iri": "https://w3id.org/display#over",
           "targetId": "coreProperties",
+          "range": "exhibit",
           "embed": true,
           "endpoint": "/display-v0.1/sparql",
           "record": "display"
@@ -525,6 +548,7 @@
           "label": "overlaps",
           "iri": "https://w3id.org/display#overlaps",
           "targetId": "coreProperties",
+          "range": "exhibit",
           "embed": true,
           "endpoint": "/display-v0.1/sparql",
           "record": "display"
@@ -533,6 +557,7 @@
           "label": "right_of",
           "iri": "https://w3id.org/display#rightOf",
           "targetId": "coreProperties",
+          "range": "exhibit",
           "embed": true,
           "endpoint": "/display-v0.1/sparql",
           "record": "display"
@@ -541,6 +566,7 @@
           "label": "touches",
           "iri": "https://w3id.org/display#touches",
           "targetId": "coreProperties",
+          "range": "exhibit",
           "embed": true,
           "endpoint": "/display-v0.1/sparql",
           "record": "display"
@@ -549,6 +575,7 @@
           "label": "under",
           "iri": "https://w3id.org/display#under",
           "targetId": "coreProperties",
+          "range": "exhibit",
           "embed": true,
           "endpoint": "/display-v0.1/sparql",
           "record": "display"
@@ -612,6 +639,7 @@
           "label": "influenced_by",
           "iri": "http://www.cidoc-crm.org/cidoc-crm/P15_was_influenced_by",
           "targetId": "coreProperties",
+          "range": "abstract-work",
           "embed": true,
           "endpoint": "/display-v0.1/sparql",
           "record": "global"
@@ -627,6 +655,7 @@
           "label": "member_of",
           "iri": "https://linked.art/ns/terms/member_of",
           "targetId": "coreProperties",
+          "range": "set",
           "embed": true,
           "endpoint": "/display-v0.1/sparql"
         },
@@ -640,6 +669,7 @@
         {
           "label": "used_specific_object",
           "targetId": "coreProperties",
+          "range": "set",
           "embed": true,
           "iri": "http://www.cidoc-crm.org/cidoc-crm/P16_used_specific_object",
           "endpoint": "/display-v0.1/sparql"
@@ -648,6 +678,7 @@
           "label": "space",
           "iri": "http://www.cidoc-crm.org/cidoc-crm/P16_used_specific_object>/<https://linked.art/ns/terms/has_member>^<https://w3id.org/display#hasExhibit>^<https://w3id.org/display#hasExhibitionSpace*",
           "targetId": "coreProperties",
+          "range": "space",
           "embed": true,
           "endpoint": "/display-v0.1/sparql"
         }
@@ -718,6 +749,7 @@
           "label": "interface_of",
           "iri": "https://w3id.org/bot#interfaceOf",
           "targetId": "coreProperties",
+          "range": ["space", "exhibit"],
           "embed": true,
           "endpoint": "/display-v0.1/sparql",
           "record": "display"
@@ -726,6 +758,7 @@
           "label": "provided_by",
           "iri": "https://w3id.org/display#interfaceProvidedBy",
           "targetId": "coreProperties",
+          "range": "exhibit",
           "embed": true,
           "endpoint": "/display-v0.1/sparql",
           "record": "display"
@@ -878,6 +911,7 @@
           "label": "used_for",
           "iri": "http://www.cidoc-crm.org/cidoc-crm/P16i_was_used_for",
           "targetId": "coreProperties",
+          "range": "exhibition",
           "embed": true,
           "endpoint": "/display-v0.1/sparql",
           "record": "global"
@@ -886,6 +920,7 @@
           "label": "member",
           "iri": "https://linked.art/ns/terms/has_member",
           "targetId": "coreProperties",
+          "range": ["exhibit", "space"],
           "embed": true,
           "endpoint": "/display-v0.1/sparql"
         }
@@ -925,6 +960,7 @@
           "iri": "https://w3id.org/display#hasExhibitionSpace>*/<https://w3id.org/display#containsExhibit",
           "updateIri": "https://w3id.org/display#containsExhibit",
           "targetId": "coreProperties",
+          "range": "exhibit",
           "embed": true,
           "endpoint": "/display-v0.1/sparql",
           "record": "display"
@@ -934,6 +970,7 @@
           "iri": "https://w3id.org/display#hasExhibitionSpace>*/<https://w3id.org/display#adjacentExhibit",
           "updateIri": "https://w3id.org/display#adjacentExhibit",
           "targetId": "coreProperties",
+          "range": "exhibit",
           "embed": true,
           "endpoint": "/display-v0.1/sparql",
           "record": "display"
@@ -943,6 +980,7 @@
           "iri": "https://w3id.org/display#hasExhibitionSpace>*/<https://w3id.org/display#intersectingExhibit",
           "updateIri": "https://w3id.org/display#intersectingExhibit",
           "targetId": "coreProperties",
+          "range": "exhibit",
           "embed": true,
           "endpoint": "/display-v0.1/sparql",
           "record": "display"
@@ -952,6 +990,7 @@
           "iri": "https://w3id.org/display#hasExhibitionSpace*",
           "updateIri": "https://w3id.org/display#hasExhibitionSpace",
           "targetId": "coreProperties",
+          "range": "space",
           "embed": true,
           "endpoint": "/display-v0.1/sparql",
           "record": "display",
@@ -963,6 +1002,7 @@
           "label": "adjacent_zone",
           "iri": "https://w3id.org/bot#adjacentZone",
           "targetId": "coreProperties",
+          "range": "space",
           "embed": true,
           "endpoint": "/display-v0.1/sparql",
           "record": "display"
@@ -971,6 +1011,7 @@
           "label": "intersects_zone",
           "iri": "https://w3id.org/bot#intersectsZone",
           "targetId": "coreProperties",
+          "range": "space",
           "embed": true,
           "endpoint": "/display-v0.1/sparql",
           "record": "display"

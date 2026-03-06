@@ -583,6 +583,19 @@ function getSubelementEndpointTriples(et, insert, iri, objr, subel, tsubel, api,
 					// obtengo la iri objeto de manera diferente si hay algo embebido o no
 					const oiri = typeof valor === "object"? valor.iri : valor;
 					borrar[subel.targetId].push(oiri);
+
+          /**
+           * Ajout du range (config API) aux entités à supprimer du cache.
+           * Compense pour l’usage de coreProperties (config API).
+           */
+          if (subel.range != undefined) {
+            const ranges = Array.isArray(subel.range) ? subel.range : [subel.range];
+            for (const range of ranges) {
+              if (borrar[range] == undefined)
+                borrar[range] = [];
+              borrar[range].push(oiri);
+            }
+          }
 				}
 				// si es una inserción y tsubel no es 2 (dprop) puede haber info embebida 
 				// y entonces recuperar sus triplas a insertar
@@ -607,7 +620,8 @@ function actualizarIrisApuntadasBorrar(iri, mel, api, borrar) {
 		// analizo oprops
 		for (let j=0; j<evmel.oprops.length; j++) {
 			const oprop = evmel.oprops[j];
-			if (oprop.targetId != undefined && oprop.targetId === mel.id) {
+			if (oprop.targetId != undefined
+        && (oprop.targetId === mel.id || oprop.range === mel.id)) {
 				// aquí hay candidato, analizo la caché por si apuntan a iri
 				for (let eviri in api.cache[evmel.id]) {
 					if (api.cache[evmel.id][eviri][oprop.label] != undefined 
@@ -615,7 +629,7 @@ function actualizarIrisApuntadasBorrar(iri, mel, api, borrar) {
 						// eviri apunta a iri, lo borramos de la caché
 						if (borrar[evmel.id] == undefined)
 							borrar[evmel.id] = [];
-						borrar[evmel.id].push(eviri);						
+						borrar[evmel.id].push(eviri);
 					}				
 				}
 			}
@@ -631,7 +645,7 @@ function actualizarIrisApuntadasBorrar(iri, mel, api, borrar) {
 						// eviri apunta a iri, lo borramos de la caché
 						if (borrar[evmel.id] == undefined)
 							borrar[evmel.id] = [];
-						borrar[evmel.id].push(eviri);			
+						borrar[evmel.id].push(eviri);
 					}				
 				}
 			}
