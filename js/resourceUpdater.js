@@ -234,8 +234,18 @@ async function patchResource(iri, patch, mel, api, qinfo, graph) {
 		}
 	}
 	
-	// resuelvo las inserciones / modificaciones en el orden pedido
-	for (let i=0; i<requests.length; i++) {
+  /**
+   * Note sur RDF vs JS Array
+   *  - L’ordre DELETE-INSERT n’est pas garanti pour les requêtes avec op:replace
+   *  - Conséquence : bogue lorsque survient INSERT-DELETE (donc résultats inopinés)
+   *  - Solution    : deux passes sur l’array `requests`
+   *      1 → edt seulement
+   *      2 → eit seulement
+   *      résultat : replace avec ordre delete-insert garanti
+   * Original comment:
+   *  - resuelvo las inserciones / modificaciones en el orden pedido
+   */
+	for (let i=0; i<requests.length; i++) { // passe 1
 		//console.log("PATCH #"+i);
 		const request = requests[i];
 		// hago los delete correspondientes
@@ -255,7 +265,11 @@ async function patchResource(iri, patch, mel, api, qinfo, graph) {
 				esuris[ep.sparqlURI] = true;
 				esuris[ep.sparqlUpdate.sparqlURI] = true;
 			}
-		}		
+		}
+  }
+
+  for (let i=0; i<requests.length; i++) { // passe 2
+    const request = requests[i];
 		// hago los insert correspondientes
 		for (const epid in request.eit) {
 			if (request.eit[epid].length > 0) {
@@ -296,6 +310,10 @@ async function patchResource(iri, patch, mel, api, qinfo, graph) {
 
 // FUNCIONES AUXILIARES
 function applyPatch(iri, objr, pe, mel, api, borrar) {
+
+  let string = objr.type;
+  objr.type = jsonldMapping.stringToIri(string);
+
 	// inicializo modificaciones a hacer
 	let resp = {};
 	resp.edt = {};
@@ -537,6 +555,10 @@ function getTriple(iri, valor, subel, tsubel) { // valores de tsubel => 0: type 
 
 
 function getSubelementEndpointTriples(et, insert, iri, objr, subel, tsubel, api, borrar) {
+
+  let string = objr.type;
+  objr.type = jsonldMapping.stringToIri(string);
+
 	const ep = _.find(api.config.endpoints, el => el.id === subel.endpoint);
 	if (ep.sparqlUpdate != undefined) { // es actualizable
 		// si existe en la representación...
@@ -561,6 +583,19 @@ function getSubelementEndpointTriples(et, insert, iri, objr, subel, tsubel, api,
 					// obtengo la iri objeto de manera diferente si hay algo embebido o no
 					const oiri = typeof valor === "object"? valor.iri : valor;
 					borrar[subel.targetId].push(oiri);
+
+          /**
+           * Ajout du range (config API) aux entités à supprimer du cache.
+           * Compense pour l’usage de coreProperties (config API).
+           */
+          if (subel.range != undefined) {
+            const ranges = Array.isArray(subel.range) ? subel.range : [subel.range];
+            for (const range of ranges) {
+              if (borrar[range] == undefined)
+                borrar[range] = [];
+              borrar[range].push(oiri);
+            }
+          }
 				}
 				// si es una inserción y tsubel no es 2 (dprop) puede haber info embebida 
 				// y entonces recuperar sus triplas a insertar
@@ -585,7 +620,8 @@ function actualizarIrisApuntadasBorrar(iri, mel, api, borrar) {
 		// analizo oprops
 		for (let j=0; j<evmel.oprops.length; j++) {
 			const oprop = evmel.oprops[j];
-			if (oprop.targetId != undefined && oprop.targetId === mel.id) {
+			if (oprop.targetId != undefined
+        && (oprop.targetId === mel.id || oprop.range === mel.id)) {
 				// aquí hay candidato, analizo la caché por si apuntan a iri
 				for (let eviri in api.cache[evmel.id]) {
 					if (api.cache[evmel.id][eviri][oprop.label] != undefined 
@@ -593,7 +629,7 @@ function actualizarIrisApuntadasBorrar(iri, mel, api, borrar) {
 						// eviri apunta a iri, lo borramos de la caché
 						if (borrar[evmel.id] == undefined)
 							borrar[evmel.id] = [];
-						borrar[evmel.id].push(eviri);						
+						borrar[evmel.id].push(eviri);
 					}				
 				}
 			}
@@ -609,7 +645,7 @@ function actualizarIrisApuntadasBorrar(iri, mel, api, borrar) {
 						// eviri apunta a iri, lo borramos de la caché
 						if (borrar[evmel.id] == undefined)
 							borrar[evmel.id] = [];
-						borrar[evmel.id].push(eviri);			
+						borrar[evmel.id].push(eviri);
 					}				
 				}
 			}

@@ -427,7 +427,11 @@ function validatePatch(patch, mel, apiconfig) {
 	// itero por cada elemento del patch
 	for (let i=0; i<patch.length; i++) {
 		const pe = patch[i];
-		
+
+    if (pe.path === '/type') {
+      pe.value = jsonldMapping.stringToIri(pe.value);
+    }
+
 		// validación de existencia del value (peticiones add y replace)
 		if (pe.value == undefined && pe.op !== "remove")
 			throw new Error('Missing value in patch[' + i +']');

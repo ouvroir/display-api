@@ -22,9 +22,15 @@ async function answerQuery(endpoint, qtemp, aux, qinfo) {
 	// 2021-02-02: cacheo consultas
 	// 2021-07-12: reajusto el cacheo de consultas, agrupando por cada uri del punto sparql (esuri)
 	// preparo objeto con las consultas del endpoint si hace falta
-	const esuri = endpoint.sparqlURI;
-	if (cachedQueries[esuri] == undefined)
-		cachedQueries[esuri] = {};
+  
+  /** Endpoint Sparql URI. Diffère pour lecture et écriture. */
+  const esuri = endpoint.sparqlURI;
+	
+  if (cachedQueries[esuri] == undefined)
+		cachedQueries[esuri] = Object.create(null);
+
+  /** Local scope (safer en contexte de concurrence) */
+  const bucket = cachedQueries[esuri];
 
 	// obtengo el hash de las consultas
 	const objaux = {
@@ -34,14 +40,17 @@ async function answerQuery(endpoint, qtemp, aux, qinfo) {
 	}
 	const hash = util.getHash(objaux);
 
+  /** Local scope (plus robuste en contexte de concurrence) */
+  let entry = bucket[hash];
+
 	// si no está cacheada hay que hacer la consulta...
-	if (cachedQueries[esuri][hash] == undefined) {
-		cachedQueries[esuri][hash] = {}; // inicializo
-		cachedQueries[esuri][hash].datos = await sparqlClient.queryEndpoint(endpoint, qtemp.template, aux, qinfo);
-		cachedQueries[esuri][hash].timestampCache = new Date().getTime();		
+	if (!entry) {
+    entry = bucket[hash] = Object.create(null);
+		entry.datos = await sparqlClient.queryEndpoint(endpoint, qtemp.template, aux, qinfo);
+		entry.timestampCache = new Date().getTime();		
 	}
 	// devuelvo los datos
-	return cachedQueries[esuri][hash].datos;
+	return entry.datos;
 }
 
 // FUNCIÓN PARA LIMPIAR LA CACHÉ DE CONSULTAS POR THRESHOLD
@@ -74,7 +83,14 @@ function cleanCachedQueries(timeThreshold) {
 // FUNCIÓN PARA LIMPIAR LA CACHÉ DE CONSULTAS POR ENDPOINT
 // se usa en las escrituras para limpiar las consultas cacheadas
 function cleanCachedQueriesEndpoint(esuri) {
-	cachedQueries[esuri] = {};
+	// cachedQueries[esuri] = {};
+  const bucket = cachedQueries[esuri];
+   if (!bucket) return;
+
+   // Au lieu de réassigner (crée un nouvel objet),
+   // on vide l’objet actuel pour éviter la tentative
+   // d’accès à l’ancien objet lors de requêtes concurentes.
+   for (const k of Object.keys(bucket)) delete bucket[k];
 }
 
 
@@ -165,8 +181,8 @@ async function getData(obj, qinfo, writeonlytoo) {
           aux.active = "true";
           let updateParams = endpoint.sparqlUpdate;
           let qtemp = _.find(queryTemplates.queryTemplates, el => el.id === 'toggleActiveInfGraph' );
-          // no await
-          sparqlClient.queryEndpoint(updateParams, qtemp.template, aux, qinfo);
+          // no await... but no...
+          await sparqlClient.queryEndpoint(updateParams, qtemp.template, aux, qinfo);
 
           // Load data in infGraph
           updateParams = inferenceEndpoint.sparqlUpdate;
@@ -199,14 +215,14 @@ async function getData(obj, qinfo, writeonlytoo) {
     aux.active = "false";
     let updateParams = endpoint.sparqlUpdate;
     let qtemp = _.find(queryTemplates.queryTemplates, el => el.id === 'toggleActiveInfGraph' );
-    // no await
-    sparqlClient.queryEndpoint(updateParams, qtemp.template, aux, qinfo);
+    // no await... but no...
+    await sparqlClient.queryEndpoint(updateParams, qtemp.template, aux, qinfo);
 
     aux.inferenceGraphIri = "<" + obj.infGraph + ">";
     updateParams = inferenceEndpoint.sparqlUpdate;
     qtemp = _.find(queryTemplates.queryTemplates, el => el.id === 'clearInfGraph' );
-    // no await
-    sparqlClient.queryEndpoint(updateParams, qtemp.template, aux, qinfo);
+    // no await... but no...
+    await sparqlClient.queryEndpoint(updateParams, qtemp.template, aux, qinfo);
   }
 
 	// ahora genero la salida deseada
