@@ -3,7 +3,7 @@ console.log("dev:", dev);
 
 const config = {
 	// node server
-	port: 8888,
+	port: process.env.PORT,
 	
 	// URI and location preparation
 	userPath: "users",
@@ -12,8 +12,8 @@ const config = {
 	dataPath: "data",
 	
 	// web server
-	scheme: dev ? "http" : "https",
-	authority:  dev ? "localhost:8888" : "crafts.ntnlv.ca:450",
+	scheme: process.env.SCHEME,
+	authority:  process.env.AUTHORITY,
 	prepath: "", 
 	
 	// users, api and dump lists
