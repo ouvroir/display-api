@@ -1083,6 +1083,23 @@ var apis = {};
  */ 
 
 
+// Permet de surcharger l'hôte/port des endpoints SPARQL d'une config d'API via une variable
+// d'environnement (ex. pour tester localement avec un Fuseki sur un autre port, sans modifier le
+// fichier apis/<apiId>.json committé). Ne fait rien si FUSEKI_BASE_URL n'est pas définie.
+function applyFusekiBaseUrl(apiConfig) {
+	const base = process.env.FUSEKI_BASE_URL;
+	if (!base || !Array.isArray(apiConfig.endpoints)) return apiConfig;
+	for (const endpoint of apiConfig.endpoints) {
+		if (endpoint.sparqlURI) {
+			endpoint.sparqlURI = endpoint.sparqlURI.replace(/^https?:\/\/[^/]+/, base);
+		}
+		if (endpoint.sparqlUpdate && endpoint.sparqlUpdate.sparqlURI) {
+			endpoint.sparqlUpdate.sparqlURI = endpoint.sparqlUpdate.sparqlURI.replace(/^https?:\/\/[^/]+/, base);
+		}
+	}
+	return apiConfig;
+}
+
 // LECTURA DE USUARIOS DE FICHERO E INICIALIZACIÓN DE SUS APIs
 async function init() {
 	let existe = await util.checkFile(usersFilePath);
@@ -1102,6 +1119,7 @@ async function init() {
 						if (confExiste) {
 							// cargo api del fichero
 							let apiConfig = await util.loadFile(path);
+							apiConfig = applyFusekiBaseUrl(apiConfig);
 							// analizo si la api cargada es correcta
 							if (apiConfig.apiId != undefined && apiConfig.apiId === apiId) {			
 								// 2021-07-11 dejo de validar el modelo al iniciar, se supone que se hizo bien en su momento
