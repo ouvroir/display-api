@@ -8,3 +8,4 @@ worktrees
 NOTES*
 post-receive
 /*.sh
+data/users.json
