@@ -2927,10 +2927,12 @@ async function putResource(req, res, next) {
 			res.deletedTriples = datos.deletedTriples;
 			res.insertedTriples = datos.insertedTriples;			
 			// preparo la ruta y url para incluir en objresp
-			const loc = req.url;
+			// (config.prepath ajouté pour rester cohérent avec les autres emplacements de
+			// construction d'URL absolue — voir createAPI/putApi/postUser plus haut)
+			const loc = config.prepath + req.url;
 			const url = config.scheme + '://' + config.authority + loc;
 			objresp.location = loc;
-			objresp.url = url;	
+			objresp.url = url;
 			// ajusto también localización en la respuesta
 			res.location(loc); 
 			res.loc = loc;

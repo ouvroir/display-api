@@ -13,8 +13,8 @@ const config = {
 	
 	// web server
 	scheme: process.env.SCHEME,
-	authority:  process.env.AUTHORITY,
-	prepath: "", 
+	authority: process.env.AUTHORITY,
+	prepath: process.env.PREPATH,
 	
 	// users, api and dump lists
 	usersFile: "users.json",
