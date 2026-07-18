@@ -29,7 +29,7 @@ const config = {
 	
 	// SMTP server
 	smtpServer: {
-		host: "ntnlv.ca",
+		host: process.env.SMTP_SERVER_HOST,
 		port: process.env.SMTP_SERVER_PORT,
 		secure: true,
 		auth: {

@@ -3,7 +3,7 @@
   "endpoints": [
     {
       "id": "/display-v0.1/sparql",
-      "sparqlURI": "http://localhost:8080/display-v0.1/sparql",
+      "sparqlURI": "http://127.0.0.1:3030/display-v0.1/sparql",
       "graphURI": "urn:x-arq:DefaultGraph",
       "metadataGraphURI": "urn:ouvroir:display:metadata",
       "infGraphURI": [
@@ -19,14 +19,14 @@
       },
       "sparqlUpdate": {
         "id":	"/display-v0.1/update",
-        "sparqlURI": "http://localhost:8080/display-v0.1/update",
+        "sparqlURI": "http://127.0.0.1:3030/display-v0.1/update",
         "graphURI":	"urn:x-arq:DefaultGraph",
         "httpMethod":	"POST"
       }
     },
     {
       "id": "/display-reasoner",
-      "sparqlURI": "http://localhost:8080/display-reasoner/query",
+      "sparqlURI": "http://127.0.0.1:3030/display-reasoner/query",
       "graphURI": "urn:x-arq:DefaultGraph",
       "httpMethod": "GET",
       "authInfo": {
@@ -36,14 +36,14 @@
       },
       "sparqlUpdate": {
         "id":	"/display-reasoner/update",
-        "sparqlURI": "http://localhost:8080/display-reasoner/update",
+        "sparqlURI": "http://127.0.0.1:3030/display-reasoner/update",
         "graphURI":	"urn:x-arq:DefaultGraph",
         "httpMethod":	"POST"
       }
     },
     {
       "id": "/skosmos/sparql",
-      "sparqlURI": "http://localhost:8080/skosmos/sparql",
+      "sparqlURI": "http://127.0.0.1:3030/skosmos/sparql",
       "graphURI": "urn:ouvroir:vocab",
       "httpMethod": "GET",
       "authInfo": {
