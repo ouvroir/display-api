@@ -15,6 +15,7 @@ const config = {
 	scheme: process.env.SCHEME,
 	authority: process.env.AUTHORITY,
 	prepath: process.env.PREPATH,
+	host: process.env.HOST,
 	
 	// users, api and dump lists
 	usersFile: "users.json",
