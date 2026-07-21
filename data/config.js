@@ -13,8 +13,9 @@ const config = {
 	
 	// web server
 	scheme: process.env.SCHEME,
-	authority:  process.env.AUTHORITY,
-	prepath: "", 
+	authority: process.env.AUTHORITY,
+	prepath: process.env.PREPATH,
+	host: process.env.HOST,
 	
 	// users, api and dump lists
 	usersFile: "users.json",
@@ -29,7 +30,7 @@ const config = {
 	
 	// SMTP server
 	smtpServer: {
-		host: "ntnlv.ca",
+		host: process.env.SMTP_SERVER_HOST,
 		port: process.env.SMTP_SERVER_PORT,
 		secure: true,
 		auth: {
